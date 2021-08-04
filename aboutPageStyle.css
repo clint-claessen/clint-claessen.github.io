@@ -41,11 +41,12 @@ header .profilePhoto {
     align-content: center;
 }
 header .profileHeader h1 {
-	font-family: 'Montserrat', sans-serif;
-	color: rgba(146,146,146,1.00);
-	font-size: 30px;
-	font-weight: 700;
-	line-height: 24px;
+    font-family: 'Montserrat', sans-serif;
+    color: rgba(146,146,146,1.00);
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 24px;
+    margin-bottom: 0px;
 }
 header .profileHeader h3 {
 	font-family: sans-serif;
@@ -279,19 +280,20 @@ header .profilePhoto {
     float: left;
     clear: both;
     margin-right: 3%;
-    margin-top: 5%;
-    margin-bottom: 5%;
+    margin-top: 2%;
 }
 header .profileHeader {
-	text-align: left;
-	margin-top: 7%;
+    text-align: justify;
+    display: inline-block;
+    margin-top: -4%;
 }
 header .socialNetworkNavBar .socialNetworkNav {
     width: 36px;
     height: 36px;
     display: inline-block;
     margin-right: 10px;
-    margin-top: -1%;
+    margin-top: 65px;
+    margin-bottom: 0px;
 }
 /* Main content and sections */
 .section1 .section1Title, .section2 .section1Title {
