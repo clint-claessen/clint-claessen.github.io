@@ -196,8 +196,10 @@ header .profileLogo .logoPlaceholder {
 }
 header .profilePhoto {
     display: inline-block;
-    margin-left: 50px;
     margin-bottom: 30px;
+    margin-right: auto;
+    justify-content: center;
+    margin-left: 50px;
 }
 header .profileHeader {
 	text-align: center;
