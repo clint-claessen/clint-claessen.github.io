@@ -188,22 +188,20 @@ footer .footerNote span {
 @media only screen and (min-width : 285px) and (max-width : 480px) {
 /* Header */
 header {
-	width: 100%;
-	float: none;
+    width: 100%;
 }
 header .profileLogo .logoPlaceholder {
 	display: inline-block;
 }
 header .profilePhoto {
-    display: inline-block;
-    margin-bottom: 30px;
+    display: block;
     margin-right: auto;
     justify-content: center;
-    margin-left: 50px;
+    margin-left: auto;
+    margin-bottom: 0px;
 }
 header .profileHeader {
-	text-align: center;
-	margin-top: 10%;
+    text-align: center;
 }
 header .profileHeader p {
 	text-align: justify;
@@ -211,9 +209,9 @@ header .profileHeader p {
 header .socialNetworkNavBar {
     text-align: center;
     display: block;
-    margin-top: -445px;
+    margin-top: auto;
     clear: both;
-    margin-bottom: 405px;
+    margin-bottom: auto;
 }
 header .socialNetworkNavBar .socialNetworkNav {
     width: 30px;
