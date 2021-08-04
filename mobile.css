@@ -15,7 +15,7 @@ header {
 	display: block;
 }
 header .profileLogo .logoPlaceholder {
-	background-color: rgba(255,255,255,1.00);
+	background-color: rgba(208,207,207,1.00);
 	width: 187px;
 	height: 61px;
 	text-align: center;
@@ -31,7 +31,7 @@ header .logoPlaceholder span {
 	line-height: 53px;
 }
 header .profilePhoto {
-    background-color: rgba(255,255,255,0.00);
+    background-color: rgba(237,237,237,1.00);
     width: 259px;
     border-radius: 50%;
     height: 259px;
@@ -195,9 +195,7 @@ header .profileLogo .logoPlaceholder {
 	display: inline-block;
 }
 header .profilePhoto {
-    display: inline-block;
-    margin-left: 50px;
-    margin-bottom: 30px;
+	display: inline-block;
 }
 header .profileHeader {
 	text-align: center;
@@ -207,18 +205,18 @@ header .profileHeader p {
 	text-align: justify;
 }
 header .socialNetworkNavBar {
-    text-align: center;
-    display: block;
-    margin-top: -445px;
-    clear: both;
-    margin-bottom: 405px;
+	text-align: center;
+	display: block;
+	margin-top: 60px;
+	clear: both;
+	margin-bottom: 15%;
 }
 header .socialNetworkNavBar .socialNetworkNav {
-    width: 30px;
-    height: 30px;
-    display: inline-block;
-    margin-right: 23px;
-    position: static;
+	width: 60px;
+	height: 60px;
+	display: inline-block;
+	margin-right: 23px;
+	position: absolute;
 }
 /* Main content sections */
 .mainContent .section1 {
@@ -245,7 +243,9 @@ header .socialNetworkNavBar .socialNetworkNav {
 	text-align: center;
 }
 .section2 .section2Content {
-    text-align: justify;
+	margin-top: 10%;
+	text-align: justify;
+	margin-bottom: 10%;
 }
 .mainContent .externalResourcesNav {
 	margin-bottom: 10%;
@@ -270,10 +270,8 @@ header {
 	float: none;
 }
 header .profileLogo .logoPlaceholder {
-    display: inline-block;
-    font-family: 'Montserrat', sans-serif;
-    margin-top: 20px;
-    margin-bottom: -100px;
+	display: inline-block;
+	font-family: 'Montserrat', sans-serif;
 }
 header .profilePhoto {
 	float: left;
@@ -286,11 +284,10 @@ header .profileHeader {
 	margin-top: 7%;
 }
 header .socialNetworkNavBar .socialNetworkNav {
-    width: 36px;
-    height: 36px;
-    display: inline-block;
-    margin-right: 10px;
-    margin-top: 18px;
+	width: 74px;
+	height: 74px;
+	display: inline-block;
+	margin-right: 23px;
 }
 /* Main content and sections */
 .section1 .section1Title, .section2 .section1Title {
@@ -313,8 +310,11 @@ header .socialNetworkNavBar .socialNetworkNav {
 	clear: both;
 }
 .section2 .section2Content {
-    padding: 0px;
-    font-family: sans-serif;
+	padding: 0px;
+	margin-left: 20%;
+	font-family: sans-serif;
+	margin-top: 5%;
+	margin-bottom: 5%;
 }
 .mainContent .externalResourcesNav {
 	margin-left: 20%;
@@ -408,3 +408,4 @@ footer .footerNote {
 	margin-top: -2px;
 }
 }
+@charset "UTF-8";
