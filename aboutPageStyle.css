@@ -213,6 +213,7 @@ header .socialNetworkNavBar .socialNetworkNav {
 	height: 60px;
 	display: inline-block;
 	margin-right: 23px;
+	position: absolute;
 }
 /* Main content sections */
 .mainContent .section1 {
