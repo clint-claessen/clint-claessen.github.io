@@ -276,10 +276,11 @@ header .profileLogo .logoPlaceholder {
     margin-bottom: -100px;
 }
 header .profilePhoto {
-	float: left;
-	clear: both;
-	margin-right: 3%;
-	margin-top: 5%;
+    float: left;
+    clear: both;
+    margin-right: 3%;
+    margin-top: 5%;
+    margin-bottom: 5%;
 }
 header .profileHeader {
 	text-align: left;
@@ -290,7 +291,7 @@ header .socialNetworkNavBar .socialNetworkNav {
     height: 36px;
     display: inline-block;
     margin-right: 10px;
-    margin-top: 18px;
+    margin-top: -1%;
 }
 /* Main content and sections */
 .section1 .section1Title, .section2 .section1Title {
