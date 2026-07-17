@@ -7,133 +7,152 @@
   <meta name="description" content="Academic positions and education of Clint Claessen — political scientist at SCEUS." />
   <link rel="icon" type="image/png" href="assets/favicon.png" />
   <link rel="apple-touch-icon" href="assets/favicon.png" />
-  <meta name="theme-color" content="#0a3d62" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="theme-color" content="#1c4587" />
+  <link rel="preload" href="assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/montserrat.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
+<div class="scroll-progress"></div>
+
 <header class="topbar">
-  <div class="topbar-inner">
-    <a class="brand" href="index.html"><span class="brand-mark"></span>Clint Claessen</a>
-    <nav>
-      <ul>
-        <li><a href="index.html">About</a></li>
-        <li><a href="publications.html">Publications</a></li>
-        <li><a href="teaching.html">Teaching</a></li>
-        <li><a href="resume.html" class="active">Resume</a></li>
-      </ul>
+  <div class="bar-inner">
+    <a class="brand" href="index.html" aria-label="Clint Claessen — home">
+      <img class="brand-logo" src="assets/favicon.png" alt="" />
+      <span class="brand-name">CLINT&nbsp;CLAESSEN</span>
+    </a>
+    <nav class="nav" id="sitenav">
+      <a href="index.html">About</a>
+      <a href="publications.html">Publications</a>
+      <a href="teaching.html">Teaching</a>
+      <a href="resume.html" class="active">Resume</a>
     </nav>
+    <button class="nav-burger" aria-label="Menu" aria-expanded="false" aria-controls="sitenav"><span></span></button>
   </div>
 </header>
 
 <main>
-  <div class="container">
 
-    <header class="fade-in" style="margin-bottom: 24px;">
-      <p class="eyebrow">CV</p>
-      <h1>Resume</h1>
-      <p class="lead narrow" style="margin-top:14px;">
+  <section class="page-hero">
+    <div class="hero-bg">
+      <div class="blob b1"></div>
+      <div class="blob b2"></div>
+    </div>
+    <div class="container">
+      <p class="eyebrow" data-reveal>CV</p>
+      <h1 data-reveal data-delay="1">Resume</h1>
+      <p class="lead" data-reveal data-delay="2">
         A snapshot of my academic positions and training. To download the full CV in PDF form, please <a href="https://drive.google.com/file/d/1XNt_O4rcVrqhp0GSQrTLmNOWvOaRcmDv/view" target="_blank" rel="noopener">click here</a>.
       </p>
-    </header>
+    </div>
+  </section>
 
-    <section>
-      <div class="section-head">
+  <section class="section tight">
+    <div class="container">
+      <div class="section-head" data-reveal>
         <p class="eyebrow">Career</p>
-        <h2>Academic positions</h2>
+        <h2>Academic <em>positions</em></h2>
       </div>
-
       <ol class="timeline">
-        <li>
+        <li data-reveal>
           <span class="when">2025 – present</span>
-          <div><span class="what">Postdoctoral Researcher</span> · <span class="where">University of Salzburg — SCEUS · INCONEX ERC project</span></div>
+          <span class="what">Postdoctoral Researcher</span>
+          <span class="where">University of Salzburg — SCEUS · INCONEX ERC project</span>
         </li>
-        <li>
+        <li data-reveal data-delay="1">
           <span class="when">2020 – 2026</span>
-          <div><span class="what">PhD Student</span> · <span class="where">University of Basel — Institute of Political Science</span></div>
+          <span class="what">PhD Student</span>
+          <span class="where">University of Basel — Institute of Political Science</span>
         </li>
-        <li>
+        <li data-reveal data-delay="2">
           <span class="when">2021 – 2022</span>
-          <div><span class="what">Visiting Scholar</span> · <span class="where">Hertie School / LSE / Carleton University</span></div>
+          <span class="what">Visiting Scholar</span>
+          <span class="where">Hertie School / LSE / Carleton University</span>
         </li>
-        <li>
+        <li data-reveal>
           <span class="when">2020</span>
-          <div><span class="what">Research Assistant</span> · <span class="where">University of Basel</span></div>
+          <span class="what">Research Assistant</span>
+          <span class="where">University of Basel</span>
         </li>
-        <li>
+        <li data-reveal data-delay="1">
           <span class="when">2015</span>
-          <div><span class="what">Teaching Assistant</span> · <span class="where">University of Zurich</span></div>
+          <span class="what">Teaching Assistant</span>
+          <span class="where">University of Zurich</span>
         </li>
-        <li>
+        <li data-reveal data-delay="2">
           <span class="when">2014 – 2015</span>
-          <div><span class="what">Research Assistant</span> · <span class="where">ETH Zurich</span></div>
+          <span class="what">Research Assistant</span>
+          <span class="where">ETH Zurich</span>
         </li>
       </ol>
-    </section>
+    </div>
+  </section>
 
-    <section>
-      <div class="section-head">
+  <section class="section">
+    <div class="container">
+      <div class="section-head" data-reveal>
         <p class="eyebrow">Training</p>
         <h2>Education</h2>
       </div>
-
       <ol class="timeline">
-        <li>
+        <li data-reveal>
           <span class="when">2026</span>
-          <div><span class="what">PhD in Political Science</span> · <span class="where">University of Basel — Summa Cum Laude</span></div>
+          <span class="what">PhD in Political Science</span>
+          <span class="where">University of Basel — Summa Cum Laude</span>
         </li>
-        <li>
+        <li data-reveal data-delay="1">
           <span class="when">2018</span>
-          <div><span class="what">MSc, Teacher Training Social Studies</span> · <span class="where">University of Amsterdam</span></div>
+          <span class="what">MSc, Teacher Training Social Studies</span>
+          <span class="where">University of Amsterdam</span>
         </li>
-        <li>
+        <li data-reveal data-delay="2">
           <span class="when">2016</span>
-          <div><span class="what">MA, Comparative and International Studies</span> · <span class="where">ETH Zurich & University of Zurich</span></div>
+          <span class="what">MA, Comparative and International Studies</span>
+          <span class="where">ETH Zurich &amp; University of Zurich</span>
         </li>
-        <li>
+        <li data-reveal>
           <span class="when">2013</span>
-          <div><span class="what">BA, Political Science</span> · <span class="where">University of Amsterdam</span></div>
+          <span class="what">BA, Political Science</span>
+          <span class="where">University of Amsterdam</span>
         </li>
       </ol>
-    </section>
-
-    <section id="cv">
-      <div class="callout">
-        <p class="eyebrow">Full CV</p>
-        <h2 style="color:#fff; margin: 4px 0 12px;">Want the long version?</h2>
-        <p style="margin-bottom: 18px;">A complete CV with publications, talks, awards, grants, and service is available as a PDF.</p>
-        <a class="btn btn-ghost" style="background:#fff; color:var(--ocean-900); border-color:#fff;" href="https://drive.google.com/file/d/1XNt_O4rcVrqhp0GSQrTLmNOWvOaRcmDv/view" target="_blank" rel="noopener">Download full CV (PDF) →</a>
-      </div>
-    </section>
-
-    <div class="contact-card">
-      <div>
-        <div class="label">Email</div>
-        <a class="email" href="mailto:clint.claessen@plus.ac.at">clint.claessen@plus.ac.at</a>
-      </div>
-      <div>
-        <div class="label">Affiliation</div>
-        <div>SCEUS — University of Salzburg</div>
-      </div>
     </div>
+  </section>
 
-  </div>
+  <section class="section dark tight">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">Full CV</p>
+        <h2>Want the <em>long version</em>?</h2>
+        <p>A complete CV with publications, talks, awards, grants, and service is available as a PDF.</p>
+      </div>
+      <a class="btn btn-primary" data-reveal data-delay="1" href="https://drive.google.com/file/d/1XNt_O4rcVrqhp0GSQrTLmNOWvOaRcmDv/view" target="_blank" rel="noopener">Download full CV (PDF) <span class="arrow">→</span></a>
+    </div>
+  </section>
+
 </main>
 
 <footer>
-  <div class="footer-inner">
-    <div>© <span id="yr"></span> Clint Claessen</div>
-    <div>
-      <a href="index.html">About</a> ·
-      <a href="publications.html">Publications</a> ·
-      <a href="teaching.html">Teaching</a>
+  <div class="foot-cta" data-reveal>
+    <p class="eyebrow">Get in touch</p>
+    <h2>Interested in party leaders, careers, or <em>text-as-data</em>?</h2>
+    <a class="btn btn-primary" href="mailto:clint.claessen@plus.ac.at">Email me <span class="arrow">→</span></a>
+  </div>
+  <div class="foot-main">
+    <div class="foot-bar">
+      <span class="brand-name">CLINT&nbsp;CLAESSEN</span>
+      <div class="foot-links">
+        <a href="index.html">About</a>
+        <a href="publications.html">Publications</a>
+        <a href="teaching.html">Teaching</a>
+        <a href="resume.html">Resume</a>
+      </div>
+      <span>© <span id="yr"></span> Clint Claessen</span>
     </div>
   </div>
 </footer>
 
-<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+<script src="app.js"></script>
 </body>
 </html>

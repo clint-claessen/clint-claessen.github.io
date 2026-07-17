@@ -7,168 +7,182 @@
   <meta name="description" content="Publications, working papers, public outreach, and academic service of Clint Claessen." />
   <link rel="icon" type="image/png" href="assets/favicon.png" />
   <link rel="apple-touch-icon" href="assets/favicon.png" />
-  <meta name="theme-color" content="#0a3d62" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="theme-color" content="#1c4587" />
+  <link rel="preload" href="assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/montserrat.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
+<div class="scroll-progress"></div>
+
 <header class="topbar">
-  <div class="topbar-inner">
-    <a class="brand" href="index.html"><span class="brand-mark"></span>Clint Claessen</a>
-    <nav>
-      <ul>
-        <li><a href="index.html">About</a></li>
-        <li><a href="publications.html" class="active">Publications</a></li>
-        <li><a href="teaching.html">Teaching</a></li>
-        <li><a href="resume.html">Resume</a></li>
-      </ul>
+  <div class="bar-inner">
+    <a class="brand" href="index.html" aria-label="Clint Claessen — home">
+      <img class="brand-logo" src="assets/favicon.png" alt="" />
+      <span class="brand-name">CLINT&nbsp;CLAESSEN</span>
+    </a>
+    <nav class="nav" id="sitenav">
+      <a href="index.html">About</a>
+      <a href="publications.html" class="active">Publications</a>
+      <a href="teaching.html">Teaching</a>
+      <a href="resume.html">Resume</a>
     </nav>
+    <button class="nav-burger" aria-label="Menu" aria-expanded="false" aria-controls="sitenav"><span></span></button>
   </div>
 </header>
 
 <main>
-  <div class="container">
 
-    <header class="fade-in" style="margin-bottom: 24px;">
-      <p class="eyebrow">Scholarship</p>
-      <h1>Publications</h1>
-      <p class="lead narrow" style="margin-top:14px;">
-        Peer-reviewed articles, working papers, public outreach and academic service.
-      </p>
-    </header>
+  <section class="page-hero">
+    <div class="hero-bg">
+      <div class="blob b1"></div>
+      <div class="blob b3"></div>
+    </div>
+    <div class="container">
+      <p class="eyebrow" data-reveal>Scholarship</p>
+      <h1 data-reveal data-delay="1">Publications</h1>
+      <p class="lead" data-reveal data-delay="2">Peer-reviewed articles, working papers, public outreach and academic service.</p>
+    </div>
+  </section>
 
-    <section>
-      <div class="section-head">
+  <section class="section tight">
+    <div class="container">
+
+      <div class="pub-group" data-reveal>
         <p class="eyebrow">Peer-reviewed</p>
         <h2>Articles in journals</h2>
+        <ol class="pub-list">
+          <li data-reveal>
+            <span class="title">Accruing career capital: How party leaders with more political experience survive longer</span>
+            <span class="venue">Party Politics</span>, 30(4): 719–735
+            <span class="meta">2024</span>
+          </li>
+          <li data-reveal data-delay="1">
+            <span class="title">The winners of legislative mandate: An analysis of post-parliamentary career positions in Germany and the Netherlands</span>
+            <span class="venue">European Journal of Political Research</span>, Vol. 60 (1), pp. 25–45
+            <span class="meta">2021 · with Stefanie Bailer and Tomas Turner-Zwinkels</span>
+          </li>
+        </ol>
       </div>
-      <ol class="pub-list">
-        <li class="pub-item">
-          <span class="num">2</span>
-          <span class="title">Accruing career capital: How party leaders with more political experience survive longer</span>
-          <span class="meta">2024 · in <em>Party Politics</em>, 30(4): 719–735.</span>
-        </li>
-        <li class="pub-item">
-          <span class="num">1</span>
-          <span class="title">The winners of legislative mandate: An analysis of post-parliamentary career positions in Germany and the Netherlands</span>
-          <span class="meta">2021 · in <em>European Journal of Political Research</em>, Vol. 60 (1), pp. 25–45 · with Stefanie Bailer and Tomas Turner-Zwinkels.</span>
-        </li>
-      </ol>
-    </section>
 
-    <section>
-      <div class="section-head">
+      <div class="pub-group" data-reveal>
         <p class="eyebrow">In progress</p>
         <h2>Working papers</h2>
+        <ul class="pub-list">
+          <li data-reveal>
+            <span class="title">Voter signalling and coalition adjustment: Party competition and environmental speeches in the German Bundestag</span>
+            <span class="meta">with Denise Traber and Martijn Schoonvelde</span>
+          </li>
+          <li data-reveal data-delay="1">
+            <span class="title">Risen to the Top, but Put at a Disadvantage: Examining the role of career capital in gendered party leaders' political survival</span>
+          </li>
+          <li data-reveal data-delay="2">
+            <span class="title">Picture-perfect: The relationship between party leader visibility and voting during party leader elections</span>
+            <span class="meta">with Maxime Walder and Anthea Alberto</span>
+          </li>
+          <li data-reveal data-delay="3">
+            <span class="title">Ideology or career? On the individual and structural reasons for joining youth parties</span>
+            <span class="meta">with Stefanie Bailer and Tamaki Ohmura</span>
+          </li>
+        </ul>
       </div>
-      <ul class="flat-list">
-        <li>
-          <strong>Voter signalling and coalition adjustment:</strong> Party competition and environmental speeches in the German Bundestag.
-          <div class="meta" style="color:var(--muted); font-size:.92rem; margin-top:4px;">with Denise Traber and Martijn Schoonvelde</div>
-        </li>
-        <li>
-          <strong>Risen to the Top, but Put at a Disadvantage:</strong> Examining the role of career capital in gendered party leaders' political survival.
-        </li>
-        <li>
-          <strong>Picture-perfect:</strong> The relationship between party leader visibility and voting during party leader elections.
-          <div class="meta" style="color:var(--muted); font-size:.92rem; margin-top:4px;">with Maxime Walder and Anthea Alberto</div>
-        </li>
-        <li>
-          <strong>Ideology or career?</strong> On the individual and structural reasons for joining youth parties.
-          <div class="meta" style="color:var(--muted); font-size:.92rem; margin-top:4px;">with Stefanie Bailer and Tamaki Ohmura</div>
-        </li>
-      </ul>
-    </section>
 
-    <section>
-      <div class="section-head">
+      <div class="pub-group" data-reveal>
         <p class="eyebrow">Beyond academia</p>
         <h2>Public outreach</h2>
+
+        <h3 class="subhead">Political science blogs</h3>
+        <ul class="pub-list">
+          <li data-reveal>
+            <span class="title"><a href="https://blogs.lse.ac.uk/europpblog/" target="_blank" rel="noopener">Does political experience matter for the success of party leaders?</a></span>
+            <span class="venue">LSE EUROPP Blog</span> <span class="meta">2023 · 5 October</span>
+          </li>
+          <li data-reveal data-delay="1">
+            <span class="title"><a href="https://blogs.lse.ac.uk/europpblog/" target="_blank" rel="noopener">Is there really a revolving door between politics and business?</a></span>
+            <span class="venue">LSE EUROPP Blog</span> <span class="meta">2020 · 9 June · with Stefanie Bailer and Tomas Turner-Zwinkels</span>
+          </li>
+          <li data-reveal data-delay="2">
+            <span class="title">De Parlementaire 'baantjescarrousel': feit of fictie?</span>
+            <span class="venue">StukRoodVlees</span> <span class="meta">2020 · 7 April · with Stefanie Bailer and Tomas Turner-Zwinkels</span>
+          </li>
+        </ul>
+
+        <h3 class="subhead">News &amp; radio</h3>
+        <ul class="pub-list">
+          <li data-reveal>
+            <span class="title">Rechtspopulist Geert Wilders gewinnt Wahlen in den Niederlanden</span>
+            <span class="venue">SRF 10 vor 10</span> <span class="meta">23 November 2023 · Switzerland</span>
+          </li>
+          <li data-reveal data-delay="1">
+            <span class="title">Koolmees naar NS: Bewijst dit het bestaan van een Haagse baantjescarrousel?</span>
+            <span class="venue">Radio 1</span> <span class="meta">11 October 2022 · The Netherlands</span>
+          </li>
+          <li data-reveal data-delay="2">
+            <span class="title">Angriff auf das "Haus der Demokratie"</span>
+            <span class="venue">Telebasel</span> <span class="meta">7 January 2021 · Switzerland</span>
+          </li>
+        </ul>
       </div>
 
-      <h3 style="margin-top:8px;">Political science blogs</h3>
-      <ul class="flat-list">
-        <li>
-          <a href="https://blogs.lse.ac.uk/europpblog/" target="_blank" rel="noopener">Does political experience matter for the success of party leaders?</a>
-          — 2023, <em>LSE EUROPP Blog</em>, 5 October.
-        </li>
-        <li>
-          <a href="https://blogs.lse.ac.uk/europpblog/" target="_blank" rel="noopener">Is there really a revolving door between politics and business?</a>
-          — 2020, <em>LSE EUROPP Blog</em>, 9 June. <span style="color:var(--muted);">with Stefanie Bailer and Tomas Turner-Zwinkels</span>
-        </li>
-        <li>
-          De Parlementaire 'baantjescarrousel': feit of fictie? — 2020, <em>StukRoodVlees</em>, 7 April.
-          <span style="color:var(--muted);">with Stefanie Bailer and Tomas Turner-Zwinkels</span>
-        </li>
-      </ul>
+    </div>
+  </section>
 
-      <h3 style="margin-top:32px;">News & radio</h3>
-      <ul class="flat-list">
-        <li>
-          Rechtspopulist Geert Wilders gewinnt Wahlen in den Niederlanden — 23 November 2023, <em>SRF 10 vor 10</em>, Switzerland.
-        </li>
-        <li>
-          Koolmees naar NS: Bewijst dit het bestaan van een Haagse baantjescarrousel? — 11 October 2022, <em>Radio 1</em>, The Netherlands.
-        </li>
-        <li>
-          Angriff auf das "Haus der Demokratie" — 7 January 2021, <em>Telebasel</em>, Switzerland.
-        </li>
-      </ul>
-    </section>
-
-    <section>
-      <div class="section-head">
+  <section class="section dark">
+    <div class="container">
+      <div class="section-head" data-reveal>
         <p class="eyebrow">Service to the discipline</p>
-        <h2>Reviewing & conferences</h2>
+        <h2>Reviewer <em>for</em></h2>
       </div>
+      <p class="manifesto" data-reveal data-delay="1" style="max-width:100%;">
+        Journal of Politics · Comparative Political Studies · European Journal of Political Research · Party Politics · European Journal of Gender and Politics · European Union Politics · Swiss Political Science Review · Scandinavian Political Studies · Journal of Diversity and Gender Studies · Parliamentary Affairs · EPJ Data Science · Politics and Governance · Austrian Journal of Political Science · CPSS Conference 2024/25
+      </p>
+    </div>
+  </section>
 
-      <div class="callout" style="margin-bottom: 28px;">
-        <p class="eyebrow">Reviewer for</p>
-        <p>
-          Journal of Politics · Comparative Political Studies · European Journal of Political Research · Party Politics · European Journal of Gender and Politics · European Union Politics · Swiss Political Science Review · Scandinavian Political Studies · Journal of Diversity and Gender Studies · Parliamentary Affairs · EPJ Data Science · Politics and Governance · Austrian Journal of Political Science · CPSS Conference 2024/25
-        </p>
+  <section class="section">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">On the road</p>
+        <h2>Conferences <em>attended</em></h2>
       </div>
-
-      <h3>Conferences attended</h3>
-      <div class="card-grid">
-        <article class="card">
-          <h4 style="color:var(--ocean-700);">Europe</h4>
-          <p style="font-size:.95rem;">SISP 2023/24 · ECPR General 2021/23/24/25 · ECPR Parliaments 2016/21/23/25 · ECPR JS 2023 · COMPTEXT 2023/24/25 · EPSA 2021/22/23/24 · SPSA 2020/23/24/26 · AuPSA 2025 · Political Careers Conference 2022 · PSAI 2021/25 · GraPa 2021</p>
+      <div class="pillars">
+        <article class="pillar" data-reveal>
+          <span class="k">Europe</span>
+          <h3>European conferences</h3>
+          <p>SISP 2023/24 · ECPR General 2021/23/24/25 · ECPR Parliaments 2016/21/23/25 · ECPR JS 2023 · COMPTEXT 2023/24/25 · EPSA 2021/22/23/24 · SPSA 2020/23/24/26 · AuPSA 2025 · Political Careers Conference 2022 · PSAI 2021/25 · GraPa 2021</p>
         </article>
-        <article class="card">
-          <h4 style="color:var(--ocean-700);">North America</h4>
-          <p style="font-size:.95rem;">APSA 2022/24 · CPSA 2022/24</p>
+        <article class="pillar" data-reveal data-delay="1">
+          <span class="k">North America</span>
+          <h3>North American conferences</h3>
+          <p>APSA 2022/24 · CPSA 2022/24</p>
         </article>
-      </div>
-    </section>
-
-    <div class="contact-card">
-      <div>
-        <div class="label">Email</div>
-        <a class="email" href="mailto:clint.claessen@plus.ac.at">clint.claessen@plus.ac.at</a>
-      </div>
-      <div>
-        <a class="btn btn-ghost" href="resume.html">View full CV →</a>
       </div>
     </div>
+  </section>
 
-  </div>
 </main>
 
 <footer>
-  <div class="footer-inner">
-    <div>© <span id="yr"></span> Clint Claessen</div>
-    <div>
-      <a href="index.html">About</a> ·
-      <a href="teaching.html">Teaching</a> ·
-      <a href="resume.html">Resume</a>
+  <div class="foot-cta" data-reveal>
+    <p class="eyebrow">Get in touch</p>
+    <h2>Interested in party leaders, careers, or <em>text-as-data</em>?</h2>
+    <a class="btn btn-primary" href="mailto:clint.claessen@plus.ac.at">Email me <span class="arrow">→</span></a>
+  </div>
+  <div class="foot-main">
+    <div class="foot-bar">
+      <span class="brand-name">CLINT&nbsp;CLAESSEN</span>
+      <div class="foot-links">
+        <a href="index.html">About</a>
+        <a href="publications.html">Publications</a>
+        <a href="teaching.html">Teaching</a>
+        <a href="resume.html">Resume</a>
+      </div>
+      <span>© <span id="yr"></span> Clint Claessen</span>
     </div>
   </div>
 </footer>
 
-<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+<script src="app.js"></script>
 </body>
 </html>

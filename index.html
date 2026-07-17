@@ -7,54 +7,76 @@
   <meta name="description" content="Clint Claessen — postdoctoral researcher in political science at the Salzburg Centre of European Union Studies (SCEUS), studying representative absence, political careers, and party leaders." />
   <link rel="icon" type="image/png" href="assets/favicon.png" />
   <link rel="apple-touch-icon" href="assets/favicon.png" />
-  <meta name="theme-color" content="#0a3d62" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="theme-color" content="#1c4587" />
+  <link rel="preload" href="assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/montserrat.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
+<div class="scroll-progress"></div>
+
 <header class="topbar">
-  <div class="topbar-inner">
-    <a class="brand" href="index.html"><span class="brand-mark"></span>Clint Claessen</a>
-    <nav>
-      <ul>
-        <li><a href="index.html" class="active">About</a></li>
-        <li><a href="publications.html">Publications</a></li>
-        <li><a href="teaching.html">Teaching</a></li>
-        <li><a href="resume.html">Resume</a></li>
-      </ul>
+  <div class="bar-inner">
+    <a class="brand" href="index.html" aria-label="Clint Claessen — home">
+      <img class="brand-logo" src="assets/favicon.png" alt="" />
+      <span class="brand-name">CLINT&nbsp;CLAESSEN</span>
+    </a>
+    <nav class="nav" id="sitenav">
+      <a href="index.html" class="active">About</a>
+      <a href="publications.html">Publications</a>
+      <a href="teaching.html">Teaching</a>
+      <a href="resume.html">Resume</a>
     </nav>
+    <button class="nav-burger" aria-label="Menu" aria-expanded="false" aria-controls="sitenav"><span></span></button>
   </div>
 </header>
 
 <main>
-  <div class="container">
 
-    <section class="hero">
-      <div class="hero-text fade-in">
-        <p class="eyebrow">Political Scientist · SCEUS, Salzburg</p>
-        <h1>Studying who is <span class="accent">heard</span> — and who is missing — in political speech.</h1>
-        <p class="lead">
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="blob b1"></div>
+      <div class="blob b2"></div>
+      <div class="blob b3"></div>
+    </div>
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow" data-reveal>Political Scientist · SCEUS, Salzburg</p>
+        <h1 data-reveal data-delay="1">Studying who is <em>heard</em> — and who is <em>missing</em> — in political speech.</h1>
+        <p class="lead" data-reveal data-delay="2">
           I am a postdoctoral researcher in the INCONEX ERC project at the Salzburg Centre of European Union Studies, measuring representative absence in political speech across Austria, Germany, Spain, and the European Parliament.
         </p>
-        <div class="hero-cta">
-          <a class="btn btn-primary" href="publications.html">View publications →</a>
+        <div class="hero-cta" data-reveal data-delay="3">
+          <a class="btn btn-primary" href="publications.html">View publications <span class="arrow">→</span></a>
           <a class="btn btn-ghost" href="mailto:clint.claessen@plus.ac.at">Get in touch</a>
         </div>
       </div>
-      <div class="hero-photo fade-in-2">
-        <img src="assets/profile.jpg" alt="Portrait of Clint Claessen" />
+      <div class="hero-badge" data-reveal data-delay="2">
+        <div class="logo-core"><img src="assets/profile.jpg" alt="Portrait of Clint Claessen" /></div>
+        <svg class="ring-text" viewBox="0 0 200 200" aria-hidden="true">
+          <defs><path id="ringpath" d="M 100,100 m -82,0 a 82,82 0 1,1 164,0 a 82,82 0 1,1 -164,0" /></defs>
+          <text><textPath href="#ringpath">PARTY LEADERS · POLITICAL CAREERS · TEXT-AS-DATA ·&nbsp;</textPath></text>
+        </svg>
       </div>
-    </section>
+    </div>
+    <div class="scroll-cue">Scroll<span class="bar"></span></div>
+  </section>
 
-    <section>
-      <div class="section-head">
+  <div class="marquee">
+    <div class="marquee-track" aria-hidden="true">
+      <span>Representative Absence</span><span>Party Leaders</span><span>Political Careers</span><span>Sequence Analysis</span><span>Machine Learning</span><span>Text-as-Data</span><span>Legislative Speech</span>
+      <span>Representative Absence</span><span>Party Leaders</span><span>Political Careers</span><span>Sequence Analysis</span><span>Machine Learning</span><span>Text-as-Data</span><span>Legislative Speech</span>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head" data-reveal>
         <p class="eyebrow">About</p>
-        <h2>Welcome to my homepage</h2>
+        <h2>Welcome to my <em>homepage</em></h2>
       </div>
-      <div class="narrow">
+      <div class="narrow prose" data-reveal data-delay="1">
         <p>
           My name is Clint Claessen. I am a postdoctoral researcher in the
           <a href="https://www.plus.ac.at/sceus/inconex/" target="_blank" rel="noopener">INCONEX ERC project</a>
@@ -74,78 +96,104 @@
           <a href="https://politikwissenschaft.philhist.unibas.ch/de/forschung/projekte/parliamentary-careers-in-comparison/" target="_blank" rel="noopener">Parliamentary Careers in Comparison (PCC) project</a>.
         </p>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section>
-      <div class="section-head">
+  <section class="section dark">
+    <div class="container">
+      <div class="section-head" data-reveal>
         <p class="eyebrow">Research focus</p>
-        <h2>What I study</h2>
+        <h2>What I <em>study</em></h2>
       </div>
-      <div class="card-grid">
-        <article class="card">
+      <div class="pillars">
+        <article class="pillar" data-reveal>
+          <div class="num">01</div>
+          <span class="k">INCONEX · Text-as-data</span>
           <h3>Representative absence</h3>
           <p>Measuring who is — and who is not — present in legislative speech across Austria, Germany, Spain, and the European Parliament.</p>
-          <div class="tag-row">
-            <span class="tag">INCONEX</span>
-            <span class="tag">Text-as-data</span>
-          </div>
         </article>
-        <article class="card">
+        <article class="pillar" data-reveal data-delay="1">
+          <div class="num">02</div>
+          <span class="k">Party politics · Careers</span>
           <h3>Party leaders</h3>
           <p>Examining how political experience and career capital shape the survival, selection, and visibility of party leaders.</p>
-          <div class="tag-row">
-            <span class="tag">Party Politics</span>
-            <span class="tag">Careers</span>
-          </div>
         </article>
-        <article class="card">
+        <article class="pillar" data-reveal data-delay="2">
+          <div class="num">03</div>
+          <span class="k">Sequence analysis · PCC</span>
           <h3>Political careers</h3>
           <p>Tracing trajectories before and after parliamentary mandates — including the much-debated revolving door between politics and business.</p>
-          <div class="tag-row">
-            <span class="tag">Sequence analysis</span>
-            <span class="tag">PCC</span>
-          </div>
         </article>
-        <article class="card">
+        <article class="pillar" data-reveal data-delay="3">
+          <div class="num">04</div>
+          <span class="k">R · ML · NLP</span>
           <h3>Methods</h3>
           <p>Sequence analysis, machine learning, and quantitative text analysis — including images-as-data approaches to political communication.</p>
-          <div class="tag-row">
-            <span class="tag">R</span>
-            <span class="tag">ML</span>
-            <span class="tag">NLP</span>
-          </div>
         </article>
       </div>
-    </section>
 
-    <div class="contact-card">
-      <div>
-        <div class="label">Email</div>
-        <a class="email" href="mailto:clint.claessen@plus.ac.at">clint.claessen@plus.ac.at</a>
-      </div>
-      <div>
-        <div class="label">Affiliation</div>
-        <div>SCEUS — University of Salzburg</div>
-      </div>
-      <div>
-        <a class="btn btn-primary" href="resume.html">See full CV →</a>
+      <div class="stats" style="margin-top:72px;">
+        <div class="stat" data-reveal>
+          <div class="figure"><span data-count="4">0</span></div>
+          <div class="label">Parliaments studied — Austria, Germany, Spain &amp; the EP</div>
+        </div>
+        <div class="stat" data-reveal data-delay="1">
+          <div class="figure"><span data-count="2">0</span></div>
+          <div class="label">Articles in peer-reviewed journals</div>
+        </div>
+        <div class="stat" data-reveal data-delay="2">
+          <div class="figure"><span data-count="4">0</span></div>
+          <div class="label">Working papers in progress</div>
+        </div>
+        <div class="stat" data-reveal data-delay="3">
+          <div class="figure"><span data-count="6">0</span></div>
+          <div class="label">BA seminars taught at the University of Basel</div>
+        </div>
       </div>
     </div>
+  </section>
 
-  </div>
+  <section class="section">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">Contact</p>
+        <h2>Where to <em>find me</em></h2>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-card" data-reveal>
+          <div class="label">Email</div>
+          <a class="email" href="mailto:clint.claessen@plus.ac.at">clint.claessen@plus.ac.at</a>
+        </div>
+        <div class="contact-card" data-reveal data-delay="1">
+          <div class="label">Affiliation</div>
+          <address>Salzburg Centre of European Union Studies (SCEUS)<br />University of Salzburg, Austria</address>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer>
-  <div class="footer-inner">
-    <div>© <span id="yr"></span> Clint Claessen</div>
-    <div>
-      <a href="publications.html">Publications</a> ·
-      <a href="teaching.html">Teaching</a> ·
-      <a href="resume.html">Resume</a>
+  <div class="foot-cta" data-reveal>
+    <p class="eyebrow">Get in touch</p>
+    <h2>Interested in party leaders, careers, or <em>text-as-data</em>?</h2>
+    <a class="btn btn-primary" href="mailto:clint.claessen@plus.ac.at">Email me <span class="arrow">→</span></a>
+  </div>
+  <div class="foot-main">
+    <div class="foot-bar">
+      <span class="brand-name">CLINT&nbsp;CLAESSEN</span>
+      <div class="foot-links">
+        <a href="index.html">About</a>
+        <a href="publications.html">Publications</a>
+        <a href="teaching.html">Teaching</a>
+        <a href="resume.html">Resume</a>
+      </div>
+      <span>© <span id="yr"></span> Clint Claessen</span>
     </div>
   </div>
 </footer>
 
-<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+<script src="app.js"></script>
 </body>
 </html>

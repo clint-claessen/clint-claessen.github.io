@@ -7,136 +7,140 @@
   <meta name="description" content="Teaching, courses, and workshops by Clint Claessen at the University of Basel and beyond." />
   <link rel="icon" type="image/png" href="assets/favicon.png" />
   <link rel="apple-touch-icon" href="assets/favicon.png" />
-  <meta name="theme-color" content="#0a3d62" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="theme-color" content="#1c4587" />
+  <link rel="preload" href="assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/montserrat.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
+<div class="scroll-progress"></div>
+
 <header class="topbar">
-  <div class="topbar-inner">
-    <a class="brand" href="index.html"><span class="brand-mark"></span>Clint Claessen</a>
-    <nav>
-      <ul>
-        <li><a href="index.html">About</a></li>
-        <li><a href="publications.html">Publications</a></li>
-        <li><a href="teaching.html" class="active">Teaching</a></li>
-        <li><a href="resume.html">Resume</a></li>
-      </ul>
+  <div class="bar-inner">
+    <a class="brand" href="index.html" aria-label="Clint Claessen — home">
+      <img class="brand-logo" src="assets/favicon.png" alt="" />
+      <span class="brand-name">CLINT&nbsp;CLAESSEN</span>
+    </a>
+    <nav class="nav" id="sitenav">
+      <a href="index.html">About</a>
+      <a href="publications.html">Publications</a>
+      <a href="teaching.html" class="active">Teaching</a>
+      <a href="resume.html">Resume</a>
     </nav>
+    <button class="nav-burger" aria-label="Menu" aria-expanded="false" aria-controls="sitenav"><span></span></button>
   </div>
 </header>
 
 <main>
-  <div class="container">
 
-    <header class="fade-in" style="margin-bottom: 24px;">
-      <p class="eyebrow">In the classroom</p>
-      <h1>Teaching</h1>
-      <p class="lead narrow" style="margin-top:14px;">
+  <section class="page-hero">
+    <div class="hero-bg">
+      <div class="blob b2"></div>
+      <div class="blob b3"></div>
+    </div>
+    <div class="container">
+      <p class="eyebrow" data-reveal>In the classroom</p>
+      <h1 data-reveal data-delay="1">Teaching</h1>
+      <p class="lead" data-reveal data-delay="2">
         During my time at the University of Basel, I regularly taught classes about US politics as well as about party leaders and applied quantitative methods. Moreover, I supervised seminar papers on the BA level and provided help with R on both BA and MA level.
       </p>
-    </header>
+    </div>
+  </section>
 
-    <section>
-      <div class="narrow">
+  <section class="section tight">
+    <div class="container">
+      <div class="narrow prose" data-reveal>
         <p>
           During my time as a high school teacher, I was awarded the
           <strong>NVLM-Prize</strong> for the best series of lessons in civics.
         </p>
       </div>
-
-      <figure class="figure">
+      <figure class="photo-card" data-reveal data-delay="1" style="margin-top:36px;">
         <img src="assets/teaching.jpg" alt="Clint Claessen teaching a workshop at the COMPTEXT 2023 conference" />
-        <figcaption>Pre-conference workshop at COMPTEXT 2023 — analyzing images as data.</figcaption>
+        <figcaption>Pre-conference workshop · COMPTEXT 2023 · Analyzing images as data</figcaption>
       </figure>
-    </section>
+    </div>
+  </section>
 
-    <section>
-      <div class="section-head">
+  <section class="section">
+    <div class="container">
+      <div class="section-head" data-reveal>
         <p class="eyebrow">University of Basel</p>
-        <h2>BA seminars</h2>
+        <h2>BA <em>seminars</em></h2>
       </div>
-      <ul class="flat-list">
-        <li>
-          <strong>From Party Members to Party Leaders:</strong> Selecting the Party Executive
-          <div class="meta" style="color:var(--muted); font-size:.92rem; margin-top:4px;">BA Seminar · Spring 2021 / 2023 / 2025 · evaluations available</div>
+      <ul class="pub-list">
+        <li data-reveal>
+          <span class="title">From Party Members to Party Leaders: Selecting the Party Executive</span>
+          <span class="meta">BA Seminar · Spring 2021 / 2023 / 2025 · evaluations available</span>
         </li>
-        <li>
-          <strong>Analyzing Politicians' Social Media with Data Science</strong>
-          <div class="meta" style="color:var(--muted); font-size:.92rem; margin-top:4px;">BA Seminar · Fall 2024</div>
+        <li data-reveal data-delay="1">
+          <span class="title">Analyzing Politicians' Social Media with Data Science</span>
+          <span class="meta">BA Seminar · Fall 2024</span>
         </li>
-        <li>
-          <strong>The 2024 Presidential Election:</strong> An Introduction to US Political Parties and Their Candidate Selection Process
-          <div class="meta" style="color:var(--muted); font-size:.92rem; margin-top:4px;">BA Seminar · Spring 2024</div>
+        <li data-reveal data-delay="2">
+          <span class="title">The 2024 Presidential Election: An Introduction to US Political Parties and Their Candidate Selection Process</span>
+          <span class="meta">BA Seminar · Spring 2024</span>
         </li>
-        <li>
-          <strong>Unlocking Social Media:</strong> Investigating Image-based Political Communication during Elections through Applied Methods
-          <div class="meta" style="color:var(--muted); font-size:.92rem; margin-top:4px;">BA Seminar · Fall 2023</div>
+        <li data-reveal>
+          <span class="title">Unlocking Social Media: Investigating Image-based Political Communication during Elections through Applied Methods</span>
+          <span class="meta">BA Seminar · Fall 2023</span>
         </li>
-        <li>
-          <strong>Introduction to the Political System of the United States:</strong> The 2022 Midterm Elections
-          <div class="meta" style="color:var(--muted); font-size:.92rem; margin-top:4px;">BA Seminar · Fall 2022</div>
+        <li data-reveal data-delay="1">
+          <span class="title">Introduction to the Political System of the United States: The 2022 Midterm Elections</span>
+          <span class="meta">BA Seminar · Fall 2022</span>
         </li>
-        <li>
-          <strong>The 2020 Presidential Election:</strong> An Introduction to the United States and its Electoral Process
-          <div class="meta" style="color:var(--muted); font-size:.92rem; margin-top:4px;">BA Seminar · Fall 2020</div>
+        <li data-reveal data-delay="2">
+          <span class="title">The 2020 Presidential Election: An Introduction to the United States and its Electoral Process</span>
+          <span class="meta">BA Seminar · Fall 2020</span>
         </li>
       </ul>
-    </section>
+    </div>
+  </section>
 
-    <section>
-      <div class="section-head">
-        <p class="eyebrow">Workshops</p>
-        <h2>COMPTEXT Conference 2023</h2>
+  <section class="section dark tight">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">Workshops &amp; earlier teaching</p>
+        <h2>Beyond <em>Basel</em></h2>
       </div>
-      <ul class="flat-list">
-        <li>
-          <strong>Analyzing with Images as Data</strong>
-          <div class="meta" style="color:var(--muted); font-size:.92rem; margin-top:4px;">Pre-conference workshop · 11 May 2023</div>
-        </li>
-      </ul>
-    </section>
-
-    <section>
-      <div class="section-head">
-        <p class="eyebrow">Earlier teaching</p>
-        <h2>ETH Zurich</h2>
-      </div>
-      <ul class="flat-list">
-        <li>
-          <strong>Tutorial for Prof. J. Baer's course:</strong> The Legitimating of Empire — Nikolai Ia. Danilevskii's <em>Russia and Europe</em>
-          <div class="meta" style="color:var(--muted); font-size:.92rem; margin-top:4px;">MA Tutorial · Spring 2015</div>
-        </li>
-      </ul>
-    </section>
-
-    <div class="contact-card">
-      <div>
-        <div class="label">Interested in collaborating?</div>
-        <a class="email" href="mailto:clint.claessen@plus.ac.at">clint.claessen@plus.ac.at</a>
-      </div>
-      <div>
-        <a class="btn btn-primary" href="resume.html">See full CV →</a>
+      <div class="pillars">
+        <article class="pillar" data-reveal>
+          <span class="k">COMPTEXT Conference 2023</span>
+          <h3>Analyzing with Images as Data</h3>
+          <p>Pre-conference workshop · 11 May 2023</p>
+        </article>
+        <article class="pillar" data-reveal data-delay="1">
+          <span class="k">ETH Zurich</span>
+          <h3>Tutorial for Prof. J. Baer's course</h3>
+          <p>The Legitimating of Empire — Nikolai Ia. Danilevskii's <em>Russia and Europe</em> · MA Tutorial · Spring 2015</p>
+        </article>
       </div>
     </div>
+  </section>
 
-  </div>
 </main>
 
 <footer>
-  <div class="footer-inner">
-    <div>© <span id="yr"></span> Clint Claessen</div>
-    <div>
-      <a href="index.html">About</a> ·
-      <a href="publications.html">Publications</a> ·
-      <a href="resume.html">Resume</a>
+  <div class="foot-cta" data-reveal>
+    <p class="eyebrow">Get in touch</p>
+    <h2>Interested in party leaders, careers, or <em>text-as-data</em>?</h2>
+    <a class="btn btn-primary" href="mailto:clint.claessen@plus.ac.at">Email me <span class="arrow">→</span></a>
+  </div>
+  <div class="foot-main">
+    <div class="foot-bar">
+      <span class="brand-name">CLINT&nbsp;CLAESSEN</span>
+      <div class="foot-links">
+        <a href="index.html">About</a>
+        <a href="publications.html">Publications</a>
+        <a href="teaching.html">Teaching</a>
+        <a href="resume.html">Resume</a>
+      </div>
+      <span>© <span id="yr"></span> Clint Claessen</span>
     </div>
   </div>
 </footer>
 
-<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+<script src="app.js"></script>
 </body>
 </html>
