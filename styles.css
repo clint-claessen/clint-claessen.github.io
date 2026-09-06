@@ -289,6 +289,9 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .pub-list li { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px 26px; font-size: 1rem; transition: transform .3s var(--ease-out), box-shadow .3s; }
 .pub-list li:hover { transform: translateY(-3px); box-shadow: 0 20px 40px -26px rgba(24,36,46,.3); }
 .pub-list .title { font-family: var(--serif); font-size: 1.28rem; color: var(--ink); display: block; margin-bottom: 4px; }
+/* linked titles look identical to unlinked ones; affordance on hover only */
+.pub-list .title a { color: inherit; }
+.pub-list .title a:hover { color: var(--accent-h); }
 .pub-list .venue { font-style: italic; color: var(--ink-2); }
 .pub-list .meta { font-size: .92rem; color: var(--muted); display: block; margin-top: 4px; }
 .badge { display: inline-block; font-family: var(--ui); font-size: .68rem; font-weight: 600; letter-spacing: .04em; color: var(--accent-h); border: 1px solid var(--accent-soft); background: rgba(28,69,135,.07); border-radius: 999px; padding: 2px 11px; margin-left: 6px; }
