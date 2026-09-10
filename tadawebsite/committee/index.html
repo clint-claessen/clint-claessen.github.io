@@ -1,314 +1,411 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TaDa Executive Committee</title>
-  <meta name="robots" content="noindex, nofollow" />
-  <link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon.png" />
-  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
-  <meta name="theme-color" content="#0167d4" />
-  <link rel="preload" href="../assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="../assets/fonts/jetbrainsmono.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="../styles.css" />
-  <link rel="stylesheet" href="committee.css" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TaDa Executive Committee</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" type="image/png" sizes="64x64" href="../assets/favicon.png" />
+<meta name="theme-color" content="#0167d4" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/tada.css" />
+<link rel="stylesheet" href="committee.css" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="../assets/tw-config.js"></script>
 </head>
-<body class="committee">
+<body class="bg-surface font-body-md text-body-md text-on-surface antialiased">
 
-<!-- ============ LOGIN ============ -->
-<section class="auth" id="view-login" hidden>
-  <div class="auth-card">
-    <a class="brand" href="../" aria-label="TaDa — public site">
-      <img class="brand-mark" src="../assets/tada-logo.png" alt="" width="36" height="36" />
-      <span class="brand-name">TaDa</span>
-      <span class="brand-tag">executive committee</span>
-    </a>
-    <h1>Organizer login</h1>
-    <p class="auth-lead">Accounts exist only for the four organizers. Sign in with the e-mail your account was created with.</p>
-    <form id="login-form" novalidate>
-      <label>E-mail<input type="email" id="login-email" autocomplete="username" required /></label>
-      <label>Password<input type="password" id="login-password" autocomplete="current-password" required /></label>
-      <p class="form-error" id="login-error" role="alert"></p>
-      <div class="form-row">
-        <button class="btn btn-primary" type="submit">Sign in <span class="arrow">→</span></button>
-        <button class="btn-text" type="button" id="login-reset">Forgot password?</button>
+<!-- ===== LOGIN ===== -->
+<div id="view-login" class="min-h-screen flex items-center justify-center p-6" hidden>
+  <div class="w-full max-w-sm bg-surface-container-lowest rounded-xl shadow-md p-space-xl flex flex-col gap-space-lg">
+    <div class="flex items-center gap-space-sm">
+      <img src="../assets/tada-logo.png" alt="" width="44" height="44" class="w-11 h-11 rounded-full shadow-sm bg-white" />
+      <div class="flex flex-col">
+        <div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm font-bold tracking-tight">TaDa</span><span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-code-sm text-code-sm uppercase tracking-wider">Exec</span></div>
+        <span class="font-label-sm text-label-sm text-on-surface-variant">Executive Committee</span>
       </div>
+    </div>
+    <form id="login-form" class="flex flex-col gap-space-md" autocomplete="on">
+      <div><label class="flabel" for="login-email">E-mail</label><input class="field" id="login-email" type="email" autocomplete="username" required placeholder="you@university.edu" /></div>
+      <div><label class="flabel" for="login-password">Password</label><input class="field" id="login-password" type="password" autocomplete="current-password" required placeholder="••••••••" /></div>
+      <button class="btn btn-primary btn-lg w-full" type="submit"><span class="material-symbols-outlined text-[18px]">login</span>Sign in</button>
+      <p id="login-error" class="font-body-sm text-body-sm text-error min-h-[18px]" aria-live="polite"></p>
+      <button class="text-primary font-label-sm text-label-sm hover:underline self-start" id="login-reset" type="button">Forgot password?</button>
     </form>
-    <div class="setup-help" id="setup-help" hidden>
-      <p class="card-label">Not connected yet</p>
-      <p>The committee app needs a Firebase project. Open <code>committee/SETUP.md</code> in the repository for the ten-minute setup, then paste the web config into <code>committee/config.js</code>.</p>
+    <div id="setup-help" class="hint err" hidden>Firebase is not configured: fill in config.js (see SETUP.md).</div>
+    <div class="flex items-center justify-between pt-space-sm">
+      <span class="hint">Organizer accounts only</span>
+      <a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary inline-flex items-center gap-1 whitespace-nowrap" href="../"><span class="material-symbols-outlined text-[14px]">arrow_back</span>Public site</a>
     </div>
   </div>
-</section>
-
-<!-- ============ APP ============ -->
-<div id="view-app" hidden>
-  <header class="topbar app-bar">
-    <div class="bar-inner container">
-      <a class="brand" href="../" aria-label="TaDa — public site">
-        <img class="brand-mark" src="../assets/tada-logo.png" alt="" width="36" height="36" />
-        <span class="brand-name">TaDa</span>
-        <span class="brand-tag">executive committee</span>
-      </a>
-      <nav class="tabs" aria-label="Sections">
-        <button class="tab is-on" data-tab="series" type="button">Series</button>
-        <button class="tab" data-tab="candidates" type="button">Candidates</button>
-        <button class="tab" data-tab="messages" type="button">Messages <span class="badge" id="msg-badge" hidden></span></button>
-        <button class="tab" data-tab="profile" type="button">Profile</button>
-      </nav>
-      <div class="user-chip" id="user-chip" title="Signed in">
-        <span class="mono-badge" id="user-initials">–</span>
-        <button class="btn-text" type="button" id="sign-out">Sign out</button>
-      </div>
-    </div>
-  </header>
-
-  <main class="app container">
-
-    <!-- ---------- SERIES ---------- -->
-    <section class="panel" id="tab-series">
-      <div class="panel-head">
-        <div>
-          <p class="eyebrow">Speaker series</p>
-          <h2 id="series-title">Fall 2026</h2>
-          <p class="panel-lead" id="series-theme"></p>
-        </div>
-        <div class="panel-actions">
-          <label class="select-wrap"><span class="sr-only">Term</span><select id="term-select"></select></label>
-          <button class="btn btn-ghost btn-small" type="button" id="new-term">New term</button>
-          <button class="btn btn-ghost btn-small" type="button" id="new-session">Add session</button>
-          <button class="btn btn-primary btn-small" type="button" id="publish-programme" title="Write the programme of this term to the public website">Publish to website</button>
-        </div>
-      </div>
-      <p class="hint" id="publish-hint"></p>
-      <div class="table-wrap">
-        <table class="grid" id="sessions-table">
-          <thead>
-            <tr>
-              <th>Date</th><th>Speaker &amp; title</th><th>Status</th><th>Chair</th>
-              <th>Invitation</th><th>Newsletter</th><th>LinkedIn</th><th>Bluesky</th><th>Website</th><th></th>
-            </tr>
-          </thead>
-          <tbody id="sessions-body"></tbody>
-        </table>
-      </div>
-      <div class="empty" id="sessions-empty" hidden>
-        <p>No sessions in this term yet.</p>
-        <button class="btn btn-primary btn-small" type="button" id="seed-btn">Import Fall 2026 (5 slots + 6 candidates)</button>
-      </div>
-      <p class="legend">Status colours: <span class="st st-open">open</span> <span class="st st-invited">invited</span> <span class="st st-confirmed">confirmed</span> <span class="st st-declined">declined</span> <span class="st st-done">done</span>. Click a row to edit details, drafts and promotion.</p>
-    </section>
-
-    <!-- ---------- CANDIDATES ---------- -->
-    <section class="panel" id="tab-candidates" hidden>
-      <div class="panel-head">
-        <div>
-          <p class="eyebrow">Pipeline</p>
-          <h2>Candidate speakers</h2>
-          <p class="panel-lead">Ideas → invited → confirmed. Confirmed candidates move into a session slot.</p>
-        </div>
-        <div class="panel-actions">
-          <label class="select-wrap"><span class="sr-only">Filter</span><select id="cand-filter"><option value="active">Active</option><option value="all">All</option><option value="idea">Ideas</option><option value="invited">Invited</option><option value="confirmed">Confirmed</option><option value="declined">Declined / waitlist</option></select></label>
-          <button class="btn btn-primary btn-small" type="button" id="new-candidate">Add candidate</button>
-        </div>
-      </div>
-      <div class="table-wrap">
-        <table class="grid" id="cand-table">
-          <thead><tr><th>Name</th><th>Affiliation</th><th>Proposed by</th><th>Owner</th><th>Status</th><th>Invitation</th><th>Updated</th></tr></thead>
-          <tbody id="cand-body"></tbody>
-        </table>
-      </div>
-      <div class="empty" id="cand-empty" hidden><p>No candidates yet.</p></div>
-    </section>
-
-    <!-- ---------- MESSAGES ---------- -->
-    <section class="panel" id="tab-messages" hidden>
-      <div class="msg-layout">
-        <div class="msg-main">
-          <div class="panel-head">
-            <div><p class="eyebrow">Team</p><h2>Messages</h2><p class="panel-lead">Kept forever, unlike Slack. Decisions still go into the session notes.</p></div>
-          </div>
-          <div class="msg-list" id="msg-list" aria-live="polite"></div>
-          <form class="msg-form" id="msg-form">
-            <label class="sr-only" for="msg-input">Message</label>
-            <textarea id="msg-input" rows="2" placeholder="Write to the team… (Enter to send, Shift+Enter for a new line)"></textarea>
-            <button class="btn btn-primary btn-small" type="submit">Send</button>
-          </form>
-        </div>
-        <aside class="msg-side">
-          <p class="card-label">Pinned</p>
-          <textarea id="pinned" rows="12" placeholder="Zoom link, WhatsApp rules, who does what this term…"></textarea>
-          <button class="btn btn-ghost btn-small" type="button" id="pinned-save">Save pinned</button>
-          <p class="hint" id="pinned-hint"></p>
-          <p class="card-label" style="margin-top:28px">Team</p>
-          <ul class="member-list" id="member-list"></ul>
-        </aside>
-      </div>
-    </section>
-
-    <!-- ---------- PROFILE ---------- -->
-    <section class="panel" id="tab-profile" hidden>
-      <div class="panel-head"><div><p class="eyebrow">You</p><h2>Profile &amp; account</h2></div></div>
-      <div class="profile-grid">
-        <form class="card" id="profile-form">
-          <p class="card-label">Profile</p>
-          <label>Display name<input type="text" id="pf-name" autocomplete="name" /></label>
-          <label>Username<input type="text" id="pf-username" placeholder="e.g. nico" /></label>
-          <label>Initials (used as chair / owner)<input type="text" id="pf-initials" maxlength="3" placeholder="NB" /></label>
-          <label>How you introduce yourself in invitations<textarea id="pf-intro" rows="2" placeholder="a Postdoc at Dominik Hangartner's group at ETH Zurich"></textarea></label>
-          <p class="hint">Used by “Generate draft”: “My name is {name}, I am {intro}, as well as one of the co-organizers…”</p>
-          <p class="form-error" id="pf-error" role="alert"></p>
-          <button class="btn btn-primary btn-small" type="submit">Save profile</button>
-          <span class="hint" id="pf-hint"></span>
-        </form>
-
-        <form class="card" id="email-form">
-          <p class="card-label">Login e-mail</p>
-          <p>Current: <b id="cur-email"></b></p>
-          <label>New e-mail<input type="email" id="new-email" autocomplete="email" /></label>
-          <label>Current password (to confirm it is you)<input type="password" id="email-pw" autocomplete="current-password" /></label>
-          <p class="form-error" id="email-error" role="alert"></p>
-          <button class="btn btn-ghost btn-small" type="submit">Send verification link</button>
-          <p class="hint">A link goes to the new address; the change takes effect once you click it. The allow-list is updated automatically.</p>
-        </form>
-
-        <form class="card" id="pw-form">
-          <p class="card-label">Password</p>
-          <label>Current password<input type="password" id="pw-old" autocomplete="current-password" /></label>
-          <label>New password (min. 8 characters)<input type="password" id="pw-new" autocomplete="new-password" minlength="8" /></label>
-          <p class="form-error" id="pw-error" role="alert"></p>
-          <button class="btn btn-ghost btn-small" type="submit">Change password</button>
-        </form>
-
-        <form class="card" id="allow-form">
-          <p class="card-label">Who may create an organizer profile</p>
-          <p class="hint">One e-mail per line (lower-case). Accounts are still created only in the Firebase console; this list is a second lock.</p>
-          <textarea id="allow-emails" rows="5"></textarea>
-          <button class="btn btn-ghost btn-small" type="submit">Save allow-list</button>
-          <span class="hint" id="allow-hint"></span>
-        </form>
-      </div>
-    </section>
-  </main>
 </div>
 
-<!-- ============ SESSION DIALOG ============ -->
-<dialog class="dlg" id="session-dlg">
-  <form method="dialog" class="dlg-form" id="session-form">
-    <div class="dlg-head">
-      <div><p class="eyebrow">Session</p><h3 id="sd-title">Edit session</h3></div>
-      <button class="btn-text" type="button" data-close>Close</button>
-    </div>
-    <div class="dlg-body">
-      <div class="fields two">
-        <label>Date<input type="date" id="sd-date" required /></label>
-        <label>Time (Berlin)<input type="time" id="sd-time" value="17:00" /></label>
-        <label>Term<input type="text" id="sd-term" /></label>
-        <label>Status<select id="sd-status"><option value="open">open</option><option value="invited">invited</option><option value="confirmed">confirmed</option><option value="declined">declined</option><option value="done">done</option><option value="cancelled">cancelled</option></select></label>
-        <label>Speaker<input type="text" id="sd-speaker" /></label>
-        <label>Affiliation<input type="text" id="sd-affiliation" /></label>
-        <label>Speaker e-mail<input type="email" id="sd-email" /></label>
-        <label>Speaker page URL<input type="url" id="sd-url" /></label>
-        <label>Chair (initials)<input type="text" id="sd-chair" maxlength="3" /></label>
-        <label>Speaker Bluesky handle<input type="text" id="sd-bsky" placeholder="@name.bsky.social" /></label>
-      </div>
-      <label>Title<input type="text" id="sd-talktitle" /></label>
-      <label>Abstract<textarea id="sd-abstract" rows="4"></textarea></label>
-      <div class="fields two">
-        <label>Paper / project link<input type="url" id="sd-paper" /></label>
-        <label>Zoom link<input type="url" id="sd-zoom" /></label>
-        <label>Recording link<input type="url" id="sd-recording" /></label>
-        <label>Notes (decisions, logistics)<input type="text" id="sd-notes" /></label>
-      </div>
-
-      <div class="block">
-        <div class="block-head"><p class="card-label">Invitation e-mail</p>
-          <div class="block-actions">
-            <select id="sd-inv-status"><option value="none">not sent</option><option value="draft">draft</option><option value="sent">sent</option><option value="replied">replied</option><option value="confirmed">confirmed</option><option value="declined">declined</option></select>
-            <button class="btn btn-ghost btn-small" type="button" data-gen="invitation">Generate draft</button>
-            <button class="btn btn-ghost btn-small" type="button" data-copy="sd-inv-draft">Copy</button>
-            <button class="btn btn-ghost btn-small" type="button" data-mailto="invitation">Open in e-mail</button>
-            <button class="btn btn-primary btn-small" type="button" data-mark-sent>Mark sent by me</button>
-          </div>
-        </div>
-        <p class="hint" id="sd-inv-meta"></p>
-        <textarea id="sd-inv-draft" rows="10" placeholder="Generate a draft or paste your own."></textarea>
-      </div>
-
-      <div class="block">
-        <div class="block-head"><p class="card-label">Promotion</p><p class="hint">Statuses: todo → draft → scheduled → done</p></div>
-        <div class="promo">
-          <div class="promo-row">
-            <div class="promo-label">Newsletter<select id="sd-p-newsletter"><option>todo</option><option>draft</option><option>scheduled</option><option>done</option></select></div>
-            <div class="promo-actions"><button class="btn btn-ghost btn-small" type="button" data-gen="newsletter">Generate</button><button class="btn btn-ghost btn-small" type="button" data-copy="sd-d-newsletter">Copy</button><button class="btn btn-ghost btn-small" type="button" data-mailto="newsletter">Open in e-mail</button></div>
-            <textarea id="sd-d-newsletter" rows="7"></textarea>
-          </div>
-          <div class="promo-row">
-            <div class="promo-label">LinkedIn<select id="sd-p-linkedin"><option>todo</option><option>draft</option><option>scheduled</option><option>done</option></select></div>
-            <div class="promo-actions"><button class="btn btn-ghost btn-small" type="button" data-gen="linkedin">Generate</button><button class="btn btn-ghost btn-small" type="button" data-copy="sd-d-linkedin">Copy</button></div>
-            <textarea id="sd-d-linkedin" rows="7"></textarea>
-          </div>
-          <div class="promo-row">
-            <div class="promo-label">Bluesky <span class="count" id="bsky-count">0/300</span><select id="sd-p-bluesky"><option>todo</option><option>draft</option><option>scheduled</option><option>done</option></select></div>
-            <div class="promo-actions"><button class="btn btn-ghost btn-small" type="button" data-gen="bluesky">Generate</button><button class="btn btn-ghost btn-small" type="button" data-copy="sd-d-bluesky">Copy</button></div>
-            <textarea id="sd-d-bluesky" rows="4"></textarea>
-          </div>
-          <div class="promo-row">
-            <div class="promo-label">Website<select id="sd-p-website"><option>todo</option><option>done</option></select></div>
-            <p class="hint">“Publish to website” on the Series tab updates the public programme for the whole term.</p>
-          </div>
+<!-- ===== APP ===== -->
+<div id="view-app" hidden>
+  <aside id="sidebar" class="fixed left-0 top-0 h-screen w-64 bg-surface-container-low flex flex-col justify-between z-50 shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+    <div class="flex flex-col">
+      <div class="p-space-lg flex items-center gap-space-sm">
+        <img src="../assets/tada-logo.png" alt="" width="40" height="40" class="w-10 h-10 rounded-full shadow-sm bg-white" />
+        <div class="flex flex-col">
+          <div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm font-bold tracking-tight">TaDa</span><span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-code-sm text-code-sm uppercase tracking-wider">Exec</span></div>
+          <span class="font-label-sm text-label-sm text-on-surface-variant">Executive Committee</span>
         </div>
       </div>
+      <div class="px-space-md py-space-xs"><span class="px-space-sm font-code-sm text-code-sm text-outline uppercase tracking-wider">Navigation</span></div>
+      <nav class="flex flex-col px-space-sm gap-1" id="nav">
+        <button class="nav-item is-on" data-view="series" type="button"><span class="flex items-center gap-space-sm"><span class="material-symbols-outlined">calendar_month</span>Series</span></button>
+        <button class="nav-item" data-view="responses" type="button"><span class="flex items-center gap-space-sm"><span class="material-symbols-outlined">fact_check</span>Speaker responses</span><span class="badge badge-new" id="resp-badge" hidden></span></button>
+        <button class="nav-item" data-view="candidates" type="button"><span class="flex items-center gap-space-sm"><span class="material-symbols-outlined">person_add</span>Candidates</span></button>
+        <button class="nav-item" data-view="messages" type="button"><span class="flex items-center gap-space-sm"><span class="material-symbols-outlined">chat_bubble</span>Messages</span><span class="badge badge-unread" id="msg-badge" hidden></span></button>
+        <button class="nav-item" data-view="profile" type="button"><span class="flex items-center gap-space-sm"><span class="material-symbols-outlined">tune</span>Profile &amp; settings</span></button>
+      </nav>
     </div>
-    <div class="dlg-foot">
-      <button class="btn-text danger" type="button" data-delete-session>Delete session</button>
-      <span class="hint" id="sd-hint"></span>
-      <button class="btn btn-primary" type="submit">Save</button>
-    </div>
-  </form>
-</dialog>
-
-<!-- ============ CANDIDATE DIALOG ============ -->
-<dialog class="dlg" id="cand-dlg">
-  <form method="dialog" class="dlg-form" id="cand-form">
-    <div class="dlg-head">
-      <div><p class="eyebrow">Candidate</p><h3 id="cd-title">Edit candidate</h3></div>
-      <button class="btn-text" type="button" data-close>Close</button>
-    </div>
-    <div class="dlg-body">
-      <div class="fields two">
-        <label>Name<input type="text" id="cd-name" required /></label>
-        <label>Affiliation<input type="text" id="cd-affiliation" /></label>
-        <label>E-mail<input type="email" id="cd-email" /></label>
-        <label>Page URL<input type="url" id="cd-url" /></label>
-        <label>Proposed by (initials)<input type="text" id="cd-proposedBy" maxlength="3" /></label>
-        <label>Owner (who invites)<input type="text" id="cd-owner" maxlength="3" /></label>
-        <label>Status<select id="cd-status"><option value="idea">idea</option><option value="invited">invited</option><option value="replied">replied</option><option value="confirmed">confirmed</option><option value="declined">declined</option><option value="waitlist">waitlist (next term)</option></select></label>
-        <label>Move into session slot<select id="cd-slot"><option value="">— keep in pipeline —</option></select></label>
+    <div class="p-space-md bg-surface-container-lowest m-space-sm rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.06)]">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-space-sm min-w-0">
+          <div class="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-md text-label-md font-semibold" id="user-initials">··</div>
+          <div class="flex flex-col min-w-0"><span class="font-label-md text-label-md font-semibold leading-tight truncate" id="user-name">…</span><span class="font-code-sm text-code-sm text-on-surface-variant">Organizer</span></div>
+        </div>
+        <button class="p-1 text-on-surface-variant hover:text-error transition-colors" id="sign-out" type="button" title="Sign out"><span class="material-symbols-outlined text-[18px]">logout</span></button>
       </div>
-      <label>Why they fit / hook for the e-mail<textarea id="cd-notes" rows="3"></textarea></label>
-      <div class="block">
-        <div class="block-head"><p class="card-label">Invitation e-mail</p>
-          <div class="block-actions">
-            <button class="btn btn-ghost btn-small" type="button" data-gen="cand-invitation">Generate draft</button>
-            <button class="btn btn-ghost btn-small" type="button" data-copy="cd-draft">Copy</button>
-            <button class="btn btn-ghost btn-small" type="button" data-mailto="cand-invitation">Open in e-mail</button>
-            <button class="btn btn-primary btn-small" type="button" data-cand-sent>Mark invited by me</button>
+    </div>
+  </aside>
+  <div id="sb-backdrop" class="fixed inset-0 bg-on-surface/30 z-40 lg:hidden" hidden></div>
+
+  <div class="lg:pl-64">
+    <header class="fixed top-0 left-0 lg:left-64 right-0 h-14 bg-surface/90 backdrop-blur-xl z-40 flex items-center justify-between px-space-md lg:px-space-lg shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+      <div class="flex items-center gap-space-md min-w-0">
+        <button class="lg:hidden w-9 h-9 rounded flex items-center justify-center hover:bg-surface-container" id="sb-toggle" type="button" aria-label="Menu"><span class="material-symbols-outlined">menu</span></button>
+        <div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm min-w-0"><span class="material-symbols-outlined text-[16px]">domain</span><span class="hidden sm:inline">TaDa Executive</span><span class="text-outline hidden sm:inline">/</span><span class="font-semibold text-on-surface truncate" id="crumb">Series</span></div>
+        <div class="h-4 w-px bg-outline-variant hidden md:block"></div>
+        <div class="hidden md:flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container font-code-sm text-code-sm text-on-surface" id="crumb-term"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span><span id="crumb-term-name">—</span></div>
+      </div>
+      <div class="flex items-center gap-space-sm">
+        <span class="hint hidden md:inline" id="sync-hint"></span>
+        <a class="btn btn-secondary" href="../" target="_blank" rel="noopener"><span class="material-symbols-outlined text-[16px]">open_in_new</span><span class="hidden sm:inline">View public site</span></a>
+      </div>
+    </header>
+
+    <main class="pt-14 min-h-screen">
+
+      <!-- ===== SERIES ===== -->
+      <section class="view p-space-md lg:p-space-lg flex flex-col gap-space-md" id="v-series">
+        <div class="flex flex-wrap items-end justify-between gap-space-md">
+          <div class="flex flex-col gap-space-xs">
+            <div class="flex items-center gap-space-sm">
+              <select class="field w-auto h-9 font-headline-sm text-headline-sm pr-8" id="term-select" aria-label="Term"></select>
+              <button class="btn btn-ghost" id="edit-term" type="button" title="Edit theme"><span class="material-symbols-outlined text-[18px]">edit</span>Theme</button>
+            </div>
+            <p class="font-body-sm text-body-sm text-on-surface-variant" id="series-theme"></p>
+          </div>
+          <div class="flex flex-wrap items-center gap-space-sm">
+            <button class="btn btn-secondary" id="new-term" type="button"><span class="material-symbols-outlined text-[16px]">add_box</span>New term</button>
+            <button class="btn btn-secondary" id="new-session" type="button"><span class="material-symbols-outlined text-[16px]">add</span>Add session</button>
+            <button class="btn btn-primary" id="publish-programme" type="button"><span class="material-symbols-outlined text-[16px]">public</span>Publish to website</button>
           </div>
         </div>
-        <p class="hint" id="cd-meta"></p>
-        <textarea id="cd-draft" rows="10"></textarea>
-      </div>
-    </div>
-    <div class="dlg-foot">
-      <button class="btn-text danger" type="button" data-delete-cand>Delete candidate</button>
-      <span class="hint" id="cd-hint"></span>
-      <button class="btn btn-primary" type="submit">Save</button>
-    </div>
-  </form>
-</dialog>
+        <div class="flex flex-wrap items-center justify-between gap-space-sm">
+          <div class="flex flex-wrap items-center gap-1" id="status-chips" role="group" aria-label="Filter by status">
+            <button class="filter-chip is-on" data-status="all" type="button">All</button>
+            <button class="filter-chip" data-status="open" type="button">Open</button>
+            <button class="filter-chip" data-status="invited" type="button">Invited</button>
+            <button class="filter-chip" data-status="confirmed" type="button">Confirmed</button>
+            <button class="filter-chip" data-status="done" type="button">Done</button>
+            <button class="filter-chip" data-status="off" type="button">Declined / cancelled</button>
+          </div>
+          <div class="flex items-center gap-space-sm">
+            <span class="hint" id="publish-hint"></span>
+            <div class="relative"><span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-tertiary text-[16px]">search</span><input class="field pl-7 h-8 w-56" id="session-search" type="search" placeholder="Search speaker, title…" autocomplete="off" /></div>
+          </div>
+        </div>
+        <div class="overflow-x-auto rounded-lg shadow-sm bg-surface-container-lowest">
+          <table class="tbl w-full min-w-[1080px] text-left">
+            <thead><tr class="bg-surface-container-low">
+              <th class="w-36">Date &amp; time</th><th>Speaker &amp; talk</th><th class="w-28">Status</th><th class="w-20">Chair</th><th class="w-32">Invitation</th><th class="w-32">Promotion</th><th class="w-32">Audit</th><th class="w-12"></th>
+            </tr></thead>
+            <tbody class="divide-y divide-surface-container" id="sessions-body"></tbody>
+          </table>
+          <div class="p-space-xl flex flex-col items-center gap-space-sm text-center" id="sessions-empty" hidden>
+            <span class="material-symbols-outlined text-[32px] text-outline">event_busy</span>
+            <p class="font-body-md text-body-md text-on-surface-variant">No sessions match. Create a term or add a session.</p>
+            <button class="btn btn-secondary" id="seed-btn" type="button" hidden><span class="material-symbols-outlined text-[16px]">download</span>Import Fall 2026 starter data</button>
+          </div>
+        </div>
+        <p class="hint">Legend: promotion cells N = newsletter, L = LinkedIn, B = Bluesky, W = website. Click a cell to cycle to do → draft → scheduled → done. Click a row for the full session.</p>
+      </section>
 
-<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+      <!-- ===== SPEAKER RESPONSES ===== -->
+      <section class="view p-space-md lg:p-space-lg flex flex-col gap-space-md" id="v-responses" hidden>
+        <div class="flex flex-wrap items-end justify-between gap-space-md">
+          <div class="flex flex-col gap-space-xs">
+            <h2 class="font-headline-md text-headline-md tracking-tight">Speaker responses</h2>
+            <p class="font-body-sm text-body-sm text-on-surface-variant">Submitted through the speaker form. Assign a response to an open slot to fill the session with one click.</p>
+          </div>
+          <div class="flex items-center gap-space-sm">
+            <div class="flex items-center gap-1 px-2 py-1 rounded bg-surface-container font-code-sm text-code-sm"><span class="material-symbols-outlined text-[14px] text-tertiary">link</span><span id="form-link" class="mono"></span></div>
+            <button class="btn btn-secondary" id="copy-form-link" type="button"><span class="material-symbols-outlined text-[16px]">content_copy</span>Copy form link</button>
+          </div>
+        </div>
+        <div class="flex items-center gap-1" id="resp-chips" role="group">
+          <button class="filter-chip is-on" data-resp="new" type="button">New</button>
+          <button class="filter-chip" data-resp="handled" type="button">Handled</button>
+          <button class="filter-chip" data-resp="all" type="button">All</button>
+        </div>
+        <div class="flex flex-col gap-space-sm" id="resp-list"></div>
+        <div class="p-space-xl rounded-lg bg-surface-container-lowest shadow-sm flex flex-col items-center gap-space-sm text-center" id="resp-empty" hidden>
+          <span class="material-symbols-outlined text-[32px] text-outline">inbox</span>
+          <p class="font-body-md text-body-md text-on-surface-variant">Nothing here yet. Invitation e-mails should link to the speaker form above.</p>
+        </div>
+      </section>
+
+      <!-- ===== CANDIDATES ===== -->
+      <section class="view flex flex-col xl:flex-row min-h-[calc(100vh-3.5rem)]" id="v-candidates" hidden>
+        <div class="flex-1 min-w-0 p-space-md lg:p-space-lg flex flex-col gap-space-md">
+          <div class="flex flex-wrap items-end justify-between gap-space-md">
+            <div class="flex flex-col gap-space-xs">
+              <h2 class="font-headline-md text-headline-md tracking-tight">Candidates &amp; pipeline</h2>
+              <p class="font-body-sm text-body-sm text-on-surface-variant">Ideas, invitations and replies. Move a confirmed candidate into a session slot from the panel.</p>
+            </div>
+            <button class="btn btn-primary" id="new-candidate" type="button"><span class="material-symbols-outlined text-[16px]">person_add</span>New candidate</button>
+          </div>
+          <div class="flex flex-wrap items-center justify-between gap-space-sm">
+            <div class="flex flex-wrap items-center gap-1" id="cand-chips" role="group">
+              <button class="filter-chip is-on" data-cf="active" type="button">Active</button>
+              <button class="filter-chip" data-cf="all" type="button">All</button>
+              <button class="filter-chip" data-cf="idea" type="button">Ideas</button>
+              <button class="filter-chip" data-cf="invited" type="button">Invited</button>
+              <button class="filter-chip" data-cf="replied" type="button">Replied</button>
+              <button class="filter-chip" data-cf="confirmed" type="button">Confirmed</button>
+              <button class="filter-chip" data-cf="declined" type="button">Declined / waitlist</button>
+            </div>
+            <div class="relative"><span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-tertiary text-[16px]">search</span><input class="field pl-7 h-8 w-56" id="cand-search" type="search" placeholder="Search name, affiliation…" autocomplete="off" /></div>
+          </div>
+          <div class="overflow-x-auto rounded-lg shadow-sm bg-surface-container-lowest">
+            <table class="tbl w-full min-w-[720px] text-left">
+              <thead><tr class="bg-surface-container-low"><th>Candidate</th><th class="w-24">Proposed</th><th class="w-24">Owner</th><th class="w-28">Status</th><th class="w-36">Invitation</th><th class="w-32">Updated</th></tr></thead>
+              <tbody class="divide-y divide-surface-container" id="cand-body"></tbody>
+            </table>
+            <div class="p-space-xl flex flex-col items-center gap-space-sm text-center" id="cand-empty" hidden><span class="material-symbols-outlined text-[32px] text-outline">group_off</span><p class="font-body-md text-body-md text-on-surface-variant">No candidates in this view.</p></div>
+          </div>
+        </div>
+        <aside class="w-full xl:w-[420px] shrink-0 bg-surface-container-lowest shadow-[-1px_0_8px_rgba(11,28,48,0.04)] xl:h-[calc(100vh-3.5rem)] xl:sticky xl:top-14 flex flex-col">
+          <div class="flex-1 flex flex-col items-center justify-center gap-space-sm p-space-xl text-center" id="cand-none">
+            <span class="material-symbols-outlined text-[32px] text-outline">person_search</span>
+            <p class="font-body-md text-body-md text-on-surface-variant">Select a candidate, or create a new one.</p>
+          </div>
+          <form class="flex-1 flex flex-col min-h-0" id="cand-form" hidden novalidate>
+            <div class="h-14 shrink-0 flex items-center justify-between px-space-lg shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+              <div class="flex items-center gap-space-sm min-w-0"><div class="avatar w-8 h-8 bg-secondary text-on-secondary text-[11px]" id="cd-av">?</div><div class="flex flex-col min-w-0"><span class="font-code-sm text-code-sm text-tertiary uppercase">Candidate</span><h3 class="font-headline-sm text-headline-sm truncate" id="cd-title">New candidate</h3></div></div>
+              <button class="btn btn-ghost" type="button" id="cd-close" title="Close"><span class="material-symbols-outlined text-[18px]">close</span></button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-space-lg flex flex-col gap-space-md">
+              <div class="kv">
+                <div class="full"><label class="flabel" for="cd-name">Name<span class="req">*</span></label><input class="field" id="cd-name" required /></div>
+                <div class="full"><label class="flabel" for="cd-affiliation">Affiliation</label><input class="field" id="cd-affiliation" /></div>
+                <div><label class="flabel" for="cd-email">E-mail</label><input class="field" id="cd-email" type="email" /></div>
+                <div><label class="flabel" for="cd-url">Web page</label><input class="field" id="cd-url" type="url" placeholder="https://" /></div>
+                <div><label class="flabel" for="cd-proposedBy">Proposed by</label><select class="field" id="cd-proposedBy"></select></div>
+                <div><label class="flabel" for="cd-owner">Owner (sends the e-mail)</label><select class="field" id="cd-owner"></select></div>
+                <div><label class="flabel" for="cd-status">Status</label><select class="field" id="cd-status"><option value="idea">idea</option><option value="invited">invited</option><option value="replied">replied</option><option value="confirmed">confirmed</option><option value="declined">declined</option><option value="waitlist">waitlist</option></select></div>
+                <div><label class="flabel" for="cd-slot">Target slot</label><select class="field" id="cd-slot"></select></div>
+                <div class="full"><label class="flabel" for="cd-notes">Hook (why this person, which paper)</label><textarea class="field" id="cd-notes" rows="3" placeholder="One or two sentences; used in the invitation draft."></textarea></div>
+              </div>
+              <div class="block">
+                <div class="block-h"><h3>Invitation e-mail</h3><div class="flex items-center gap-1"><button class="btn btn-ghost" type="button" data-gen="cand-invitation" title="Generate draft"><span class="material-symbols-outlined text-[16px]">auto_awesome</span>Generate</button><button class="btn btn-ghost" type="button" data-copy="cd-draft" title="Copy"><span class="material-symbols-outlined text-[16px]">content_copy</span></button><button class="btn btn-ghost" type="button" data-mailto="cand-invitation" title="Open in e-mail"><span class="material-symbols-outlined text-[16px]">outgoing_mail</span></button></div></div>
+                <textarea class="field mono text-[12px] leading-[18px]" id="cd-draft" rows="12" placeholder="Click Generate, then edit."></textarea>
+                <div class="flex items-center justify-between"><span class="hint" id="cd-meta"></span><button class="btn btn-secondary" type="button" data-cand-sent><span class="material-symbols-outlined text-[16px]">mark_email_read</span>Mark as sent</button></div>
+              </div>
+              <p class="hint" id="cd-hint"></p>
+            </div>
+            <div class="h-16 shrink-0 flex items-center justify-between px-space-lg shadow-[0_-1px_8px_rgba(0,0,0,0.04)] bg-surface-container-lowest">
+              <button class="btn btn-danger" type="button" data-delete-cand hidden><span class="material-symbols-outlined text-[16px]">delete</span>Delete</button>
+              <span></span>
+              <button class="btn btn-primary" type="submit"><span class="material-symbols-outlined text-[16px]">save</span>Save</button>
+            </div>
+          </form>
+        </aside>
+      </section>
+
+      <!-- ===== MESSAGES ===== -->
+      <section class="view flex h-[calc(100vh-3.5rem)] overflow-hidden" id="v-messages" hidden>
+        <aside class="w-60 shrink-0 bg-surface-container-low flex-col hidden md:flex overflow-y-auto">
+          <div class="px-space-md pt-space-lg pb-space-xs flex items-center justify-between"><span class="font-code-sm text-code-sm text-outline uppercase tracking-wider">Channels</span></div>
+          <div class="px-space-sm flex flex-col gap-0.5" id="chan-list"></div>
+          <div class="px-space-md pt-space-lg pb-space-xs"><span class="font-code-sm text-code-sm text-outline uppercase tracking-wider">Direct messages</span></div>
+          <div class="px-space-sm flex flex-col gap-0.5 pb-space-lg" id="dm-list"></div>
+        </aside>
+        <div class="flex-1 flex flex-col min-w-0 bg-surface">
+          <div class="h-14 shrink-0 flex items-center justify-between px-space-md lg:px-space-lg shadow-[0_1px_8px_rgba(0,0,0,0.04)] bg-surface-container-lowest">
+            <div class="flex items-center gap-space-sm min-w-0">
+              <select class="field w-auto h-8 md:hidden" id="chan-select" aria-label="Channel"></select>
+              <div class="hidden md:flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm truncate" id="chan-title">#general</span><span class="font-body-sm text-body-sm text-on-surface-variant truncate" id="chan-desc"></span></div>
+            </div>
+            <div class="flex items-center gap-space-xs">
+              <button class="btn btn-ghost" id="pin-toggle" type="button" title="Pinned note"><span class="material-symbols-outlined text-[18px]">push_pin</span><span class="hidden sm:inline">Pinned</span></button>
+              <span class="hint hidden lg:inline" id="chan-count"></span>
+            </div>
+          </div>
+          <div class="shrink-0 bg-amber-bg px-space-md lg:px-space-lg py-space-sm flex items-start gap-space-sm" id="pin-bar" hidden>
+            <span class="material-symbols-outlined text-[18px] text-amber-ink mt-0.5">push_pin</span>
+            <div class="flex-1 min-w-0"><textarea class="field text-[13px]" id="pinned" rows="2" placeholder="Pinned note for the team: Zoom link, deadlines, who does what…"></textarea><div class="flex items-center justify-between mt-1"><span class="hint" id="pinned-hint"></span><button class="btn btn-secondary" id="pinned-save" type="button">Save pinned note</button></div></div>
+          </div>
+          <div class="flex-1 overflow-y-auto px-space-sm lg:px-space-md py-space-md" id="msg-list"></div>
+          <div class="shrink-0 px-space-sm lg:px-space-md pb-space-md relative">
+            <div class="mention-pop" id="mention-pop" hidden></div>
+            <form class="composer" id="msg-form">
+              <textarea id="msg-input" rows="1" placeholder="Message #general" aria-label="Message"></textarea>
+              <div class="bar"><span class="hint">Enter to send · Shift+Enter for a new line · @ to mention</span><button class="btn btn-primary" type="submit"><span class="material-symbols-outlined text-[16px]">send</span>Send</button></div>
+            </form>
+          </div>
+        </div>
+        <aside class="fixed xl:static right-0 top-14 bottom-0 z-40 w-full sm:w-96 xl:w-96 shrink-0 bg-surface-container-lowest shadow-[-1px_0_8px_rgba(11,28,48,0.06)] flex-col" id="thread" hidden>
+          <div class="h-14 shrink-0 flex items-center justify-between px-space-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col"><span class="font-headline-sm text-headline-sm">Thread</span><span class="font-body-sm text-body-sm text-on-surface-variant" id="thread-sub"></span></div><button class="btn btn-ghost" id="thread-close" type="button" title="Close"><span class="material-symbols-outlined text-[18px]">close</span></button></div>
+          <div class="flex-1 overflow-y-auto px-space-sm py-space-md" id="thread-list"></div>
+          <form class="composer m-space-sm" id="thread-form"><textarea id="thread-input" rows="1" placeholder="Reply in thread" aria-label="Reply"></textarea><div class="bar"><span class="hint">Enter to send</span><button class="btn btn-primary" type="submit"><span class="material-symbols-outlined text-[16px]">send</span>Reply</button></div></form>
+        </aside>
+      </section>
+
+      <!-- ===== PROFILE & SETTINGS ===== -->
+      <section class="view p-space-md lg:p-space-lg flex flex-col gap-space-md max-w-5xl" id="v-profile" hidden>
+        <div class="flex flex-col gap-space-xs"><h2 class="font-headline-md text-headline-md tracking-tight">Profile &amp; settings</h2><p class="font-body-sm text-body-sm text-on-surface-variant">Your name and initials appear in audit trails, chair assignments and e-mail drafts.</p></div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-space-md items-start">
+          <form class="block" id="profile-form">
+            <div class="block-h"><h3>Profile</h3></div>
+            <div class="kv">
+              <div class="full"><label class="flabel" for="pf-name">Display name</label><input class="field" id="pf-name" required /></div>
+              <div><label class="flabel" for="pf-username">Username (for @mentions)</label><input class="field" id="pf-username" placeholder="clint" /></div>
+              <div><label class="flabel" for="pf-initials">Initials (max 3)</label><input class="field mono uppercase" id="pf-initials" maxlength="3" /></div>
+              <div class="full"><label class="flabel" for="pf-intro">One-line intro used in invitation e-mails</label><input class="field" id="pf-intro" placeholder="a postdoctoral researcher at the University of Freiburg" /></div>
+            </div>
+            <div class="flex items-center justify-between"><span class="hint" id="pf-hint"></span><span class="hint err" id="pf-error"></span><button class="btn btn-primary" type="submit">Save profile</button></div>
+          </form>
+          <div class="block">
+            <div class="block-h"><h3>Team</h3><span class="hint" id="team-count"></span></div>
+            <ul class="flex flex-col divide-y divide-surface-container" id="member-list"></ul>
+            <div class="flex items-center justify-between gap-space-sm pt-space-xs"><span class="font-body-sm text-body-sm text-on-surface-variant">Speaker form</span><a class="font-code-sm text-code-sm text-primary hover:underline truncate" id="pf-form-link" href="../speak/" target="_blank" rel="noopener"></a></div>
+          </div>
+          <form class="block" id="email-form">
+            <div class="block-h"><h3>Sign-in e-mail</h3><span class="hint" id="cur-email"></span></div>
+            <div class="kv">
+              <div><label class="flabel" for="new-email">New e-mail</label><input class="field" id="new-email" type="email" autocomplete="off" /></div>
+              <div><label class="flabel" for="email-pw">Current password</label><input class="field" id="email-pw" type="password" autocomplete="current-password" /></div>
+            </div>
+            <div class="flex items-center justify-between gap-space-sm"><span class="hint" id="email-error"></span><button class="btn btn-secondary" type="submit">Send verification link</button></div>
+          </form>
+          <form class="block" id="pw-form">
+            <div class="block-h"><h3>Password</h3></div>
+            <div class="kv">
+              <div><label class="flabel" for="pw-old">Current password</label><input class="field" id="pw-old" type="password" autocomplete="current-password" /></div>
+              <div><label class="flabel" for="pw-new">New password (min. 8)</label><input class="field" id="pw-new" type="password" autocomplete="new-password" /></div>
+            </div>
+            <div class="flex items-center justify-between gap-space-sm"><span class="hint" id="pw-error"></span><button class="btn btn-secondary" type="submit">Change password</button></div>
+          </form>
+          <form class="block lg:col-span-2" id="allow-form">
+            <div class="block-h"><h3>Access allow-list</h3><span class="hint">Optional. If filled, only these e-mails can create a profile.</span></div>
+            <textarea class="field mono text-[12px]" id="allow-emails" rows="4" placeholder="one e-mail per line"></textarea>
+            <div class="flex items-center justify-between gap-space-sm"><span class="hint" id="allow-hint"></span><button class="btn btn-secondary" type="submit">Save allow-list</button></div>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ===== SESSION DRAWER ===== -->
+  <div class="fixed inset-0 bg-on-surface/40 z-[55]" id="drawer-backdrop" hidden></div>
+  <aside class="fixed top-0 right-0 h-screen w-full max-w-[680px] bg-surface z-[60] flex flex-col shadow-[-8px_0_24px_rgba(11,28,48,0.18)]" id="drawer" aria-label="Session detail">
+    <div class="h-14 shrink-0 flex items-center justify-between px-space-lg bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+      <div class="flex items-center gap-space-sm min-w-0"><div class="avatar w-9 h-9 bg-primary-container text-on-primary text-[12px]" id="sd-av">?</div><div class="flex flex-col min-w-0"><span class="font-code-sm text-code-sm text-tertiary uppercase">Session</span><h2 class="font-headline-sm text-headline-sm truncate" id="sd-title">Session</h2></div></div>
+      <div class="flex items-center gap-space-xs"><span class="hint hidden sm:inline" id="sd-hint"></span><button class="btn btn-ghost" type="button" id="drawer-close" title="Close"><span class="material-symbols-outlined text-[18px]">close</span></button></div>
+    </div>
+    <form class="flex-1 overflow-y-auto p-space-md lg:p-space-lg flex flex-col gap-space-md" id="session-form" novalidate>
+      <div class="block">
+        <div class="block-h"><h3>Speaker</h3></div>
+        <div class="kv">
+          <div><label class="flabel" for="sd-speaker">Name</label><input class="field" id="sd-speaker" placeholder="Leave empty for an open slot" /></div>
+          <div><label class="flabel" for="sd-affiliation">Affiliation</label><input class="field" id="sd-affiliation" /></div>
+          <div><label class="flabel" for="sd-email">E-mail</label><input class="field" id="sd-email" type="email" /></div>
+          <div><label class="flabel" for="sd-url">Web page</label><input class="field" id="sd-url" type="url" placeholder="https://" /></div>
+          <div><label class="flabel" for="sd-bsky">Bluesky handle</label><input class="field" id="sd-bsky" placeholder="@name.bsky.social" /></div>
+          <div><label class="flabel" for="sd-linkedin">LinkedIn</label><input class="field" id="sd-linkedin" type="url" /></div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="block-h"><h3>Schedule</h3></div>
+        <div class="kv">
+          <div><label class="flabel" for="sd-date">Date<span class="req">*</span></label><input class="field mono" id="sd-date" type="date" required /></div>
+          <div><label class="flabel" for="sd-time">Time (Berlin)</label><input class="field mono" id="sd-time" type="time" value="17:00" /></div>
+          <div><label class="flabel" for="sd-term">Term</label><input class="field" id="sd-term" placeholder="Fall 2026" /></div>
+          <div><label class="flabel" for="sd-status">Status</label><select class="field" id="sd-status"><option value="open">open</option><option value="invited">invited</option><option value="confirmed">confirmed</option><option value="declined">declined</option><option value="done">done</option><option value="cancelled">cancelled</option></select></div>
+          <div><label class="flabel" for="sd-chair">Chair</label><select class="field" id="sd-chair"></select></div>
+          <div><label class="flabel" for="sd-zoom">Zoom link</label><input class="field" id="sd-zoom" type="url" placeholder="https://…zoom.us/j/…" /></div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="block-h"><h3>Talk</h3></div>
+        <div class="kv">
+          <div class="full"><label class="flabel" for="sd-talktitle">Title</label><input class="field" id="sd-talktitle" /></div>
+          <div class="full"><label class="flabel" for="sd-abstract">Abstract</label><textarea class="field" id="sd-abstract" rows="5"></textarea></div>
+          <div><label class="flabel" for="sd-paper">Paper / preprint</label><input class="field" id="sd-paper" type="url" placeholder="https://" /></div>
+          <div><label class="flabel" for="sd-recording">Recording (consent / link)</label><input class="field" id="sd-recording" placeholder="public · unlisted · no, or the link" /></div>
+          <div class="full"><label class="flabel" for="sd-notes">Internal notes</label><textarea class="field" id="sd-notes" rows="2" placeholder="Hook for the invitation, time-zone wishes, co-presenters…"></textarea></div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="block-h"><h3>Invitation e-mail</h3><div class="flex items-center gap-1"><select class="pill-select" id="sd-inv-status" title="Invitation status"><option value="none">none</option><option value="draft">draft</option><option value="sent">sent</option><option value="replied">replied</option><option value="confirmed">confirmed</option><option value="declined">declined</option></select><button class="btn btn-ghost" type="button" data-gen="invitation" title="Generate draft"><span class="material-symbols-outlined text-[16px]">auto_awesome</span>Generate</button><button class="btn btn-ghost" type="button" data-copy="sd-inv-draft" title="Copy"><span class="material-symbols-outlined text-[16px]">content_copy</span></button><button class="btn btn-ghost" type="button" data-mailto="invitation" title="Open in e-mail"><span class="material-symbols-outlined text-[16px]">outgoing_mail</span></button></div></div>
+        <textarea class="field mono text-[12px] leading-[18px]" id="sd-inv-draft" rows="10" placeholder="Click Generate, then edit. The other organizers go in cc automatically when you open it in your e-mail program."></textarea>
+        <div class="flex items-center justify-between"><span class="hint" id="sd-inv-meta"></span><button class="btn btn-secondary" type="button" data-mark-sent><span class="material-symbols-outlined text-[16px]">mark_email_read</span>Mark as sent</button></div>
+      </div>
+      <div class="block">
+        <div class="block-h"><h3>Newsletter</h3><div class="flex items-center gap-1"><select class="pill-select" id="sd-p-newsletter"><option value="todo">to do</option><option value="draft">draft</option><option value="scheduled">scheduled</option><option value="done">done</option></select><button class="btn btn-ghost" type="button" data-gen="newsletter"><span class="material-symbols-outlined text-[16px]">auto_awesome</span>Generate</button><button class="btn btn-ghost" type="button" data-copy="sd-d-newsletter" title="Copy"><span class="material-symbols-outlined text-[16px]">content_copy</span></button><button class="btn btn-ghost" type="button" data-mailto="newsletter" title="Open in e-mail"><span class="material-symbols-outlined text-[16px]">outgoing_mail</span></button></div></div>
+        <textarea class="field mono text-[12px] leading-[18px]" id="sd-d-newsletter" rows="8"></textarea>
+      </div>
+      <div class="block">
+        <div class="block-h"><h3>LinkedIn</h3><div class="flex items-center gap-1"><select class="pill-select" id="sd-p-linkedin"><option value="todo">to do</option><option value="draft">draft</option><option value="scheduled">scheduled</option><option value="done">done</option></select><button class="btn btn-ghost" type="button" data-gen="linkedin"><span class="material-symbols-outlined text-[16px]">auto_awesome</span>Generate</button><button class="btn btn-ghost" type="button" data-copy="sd-d-linkedin" title="Copy"><span class="material-symbols-outlined text-[16px]">content_copy</span></button></div></div>
+        <textarea class="field mono text-[12px] leading-[18px]" id="sd-d-linkedin" rows="7"></textarea>
+      </div>
+      <div class="block">
+        <div class="block-h"><h3>Bluesky</h3><div class="flex items-center gap-1"><span class="hint count" id="bsky-count">0/300</span><select class="pill-select" id="sd-p-bluesky"><option value="todo">to do</option><option value="draft">draft</option><option value="scheduled">scheduled</option><option value="done">done</option></select><button class="btn btn-ghost" type="button" data-gen="bluesky"><span class="material-symbols-outlined text-[16px]">auto_awesome</span>Generate</button><button class="btn btn-ghost" type="button" data-copy="sd-d-bluesky" title="Copy"><span class="material-symbols-outlined text-[16px]">content_copy</span></button></div></div>
+        <textarea class="field mono text-[12px] leading-[18px]" id="sd-d-bluesky" rows="4"></textarea>
+      </div>
+      <div class="block">
+        <div class="block-h"><h3>Website</h3><select class="pill-select" id="sd-p-website"><option value="todo">to do</option><option value="done">done</option></select></div>
+        <p class="font-body-sm text-body-sm text-on-surface-variant">The public programme shows this speaker after you set the status to confirmed and click “Publish to website” in the Series view.</p>
+      </div>
+    </form>
+    <div class="h-16 shrink-0 flex items-center justify-between px-space-lg bg-surface-container-lowest shadow-[0_-1px_8px_rgba(0,0,0,0.04)]">
+      <button class="btn btn-danger" type="button" data-delete-session hidden><span class="material-symbols-outlined text-[16px]">delete</span>Delete</button>
+      <span class="hint sm:hidden" id="sd-hint2"></span>
+      <div class="flex items-center gap-space-sm"><button class="btn btn-secondary" type="button" id="drawer-cancel">Cancel</button><button class="btn btn-primary" type="submit" form="session-form"><span class="material-symbols-outlined text-[16px]">save</span>Save session</button></div>
+    </div>
+  </aside>
+
+  <!-- ===== DIALOGS ===== -->
+  <dialog id="term-dlg">
+    <form class="p-space-lg flex flex-col gap-space-md" method="dialog" id="term-form">
+      <div class="flex flex-col"><span class="font-code-sm text-code-sm text-primary uppercase tracking-wider">Term settings</span><h3 class="font-headline-md text-headline-md" id="td-title">Fall 2026</h3></div>
+      <div><label class="flabel" for="td-theme">Theme</label><input class="field" id="td-theme" placeholder="AI Tools for Social Scientists" /></div>
+      <div><label class="flabel" for="td-form">Speaker form link used in invitations</label><input class="field mono" id="td-form" placeholder="leave empty to use the built-in form" /></div>
+      <div class="flex items-center justify-end gap-space-sm"><button class="btn btn-secondary" type="button" data-close>Cancel</button><button class="btn btn-primary" type="submit" value="save">Save</button></div>
+    </form>
+  </dialog>
+  <dialog id="newterm-dlg">
+    <form class="p-space-lg flex flex-col gap-space-md" method="dialog" id="newterm-form">
+      <div class="flex flex-col"><span class="font-code-sm text-code-sm text-primary uppercase tracking-wider">New term</span><h3 class="font-headline-md text-headline-md">Create session slots</h3></div>
+      <div class="kv">
+        <div><label class="flabel" for="nt-name">Term name</label><input class="field" id="nt-name" placeholder="Spring 2027" required /></div>
+        <div><label class="flabel" for="nt-theme">Theme</label><input class="field" id="nt-theme" placeholder="optional" /></div>
+        <div><label class="flabel" for="nt-first">First Wednesday</label><input class="field mono" id="nt-first" type="date" /></div>
+        <div><label class="flabel" for="nt-count">Sessions · interval (weeks)</label><div class="flex gap-2"><input class="field mono" id="nt-count" type="number" min="1" max="20" value="6" /><input class="field mono" id="nt-every" type="number" min="1" max="8" value="2" /></div></div>
+        <div class="full"><label class="flabel" for="nt-dates">Dates (edit freely, one per line)</label><textarea class="field mono text-[12px]" id="nt-dates" rows="6" placeholder="2027-02-24"></textarea></div>
+      </div>
+      <div class="flex items-center justify-between gap-space-sm"><button class="btn btn-ghost" type="button" id="nt-fill"><span class="material-symbols-outlined text-[16px]">date_range</span>Fill dates</button><div class="flex gap-space-sm"><button class="btn btn-secondary" type="button" data-close>Cancel</button><button class="btn btn-primary" type="submit" value="create">Create term</button></div></div>
+    </form>
+  </dialog>
+</div>
+
+<div class="toast" id="toast" hidden></div>
 
 <script src="config.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-app-compat.js"></script>

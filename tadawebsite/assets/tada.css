@@ -1,0 +1,50 @@
+/* Shared base for all TaDa pages: self-hosted fonts, resets, a few utilities Tailwind can't express nicely. */
+@font-face{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url("fonts/inter.woff2") format("woff2");}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:100 800;font-display:swap;src:url("fonts/jetbrainsmono.woff2") format("woff2");}
+
+html, body { margin: 0; padding: 0; }
+body { overscroll-behavior: none; -webkit-font-smoothing: antialiased; }
+[hidden] { display: none !important; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: #c2c6d5; border-radius: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+.ms-fill { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+.tabular { font-variant-numeric: tabular-nums; }
+.line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+:focus-visible { outline: 2px solid #0167d4; outline-offset: 1px; }
+/* semantic status pills (DESIGN.md) */
+.pill { display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 8px; border-radius: 9999px; border: 1px solid; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 10px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+.pill-ok { background: #ecfdf5; border-color: #a7f3d0; color: #047857; }
+.pill-amber { background: #fffbeb; border-color: #fde68a; color: #b45309; }
+.pill-sky { background: #f0f9ff; border-color: #bae6fd; color: #0369a1; }
+.pill-slate { background: #f1f5f9; border-color: #cbd5e1; color: #475569; }
+.pill-rose { background: #fff1f2; border-color: #fecdd3; color: #be123c; }
+/* inline status select styled as a pill */
+select.pill-select { appearance: none; -webkit-appearance: none; height: 22px; padding: 0 22px 0 8px; border-radius: 9999px; border: 1px solid #cbd5e1; background: #ffffff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M2 3.5l3 3 3-3' fill='none' stroke='%23475569' stroke-width='1.4'/></svg>") no-repeat right 7px center; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 10px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: #475569; cursor: pointer; }
+select.pill-select.ok { background-color: #ecfdf5; border-color: #a7f3d0; color: #047857; }
+select.pill-select.amber { background-color: #fffbeb; border-color: #fde68a; color: #b45309; }
+select.pill-select.sky { background-color: #f0f9ff; border-color: #bae6fd; color: #0369a1; }
+select.pill-select.rose { background-color: #fff1f2; border-color: #fecdd3; color: #be123c; }
+/* form controls */
+.field { display: block; width: 100%; border: 1px solid #cbd5e1; border-radius: 4px; background: #fff; color: #0b1c30; font: 400 14px/22px "Inter", system-ui, sans-serif; padding: 6px 10px; }
+.field:focus { outline: none; border-color: #0167d4; box-shadow: 0 0 0 1px #0167d4; }
+.field::placeholder { color: #94a3b8; }
+textarea.field { resize: vertical; min-height: 44px; }
+.flabel { display: block; font: 500 13px/18px "Inter", system-ui, sans-serif; color: #0b1c30; margin-bottom: 4px; }
+.flabel .req { color: #ba1a1a; margin-left: 2px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 4px; font: 500 13px/18px "Inter", system-ui, sans-serif; cursor: pointer; border: 1px solid transparent; white-space: nowrap; transition: background .15s, color .15s, border-color .15s; }
+.btn-primary { background: #0167d4; color: #fff; border-color: #015bbd; }
+.btn-primary:hover { background: #0256b0; }
+.btn-secondary { background: #fff; color: #0f172a; border-color: #cbd5e1; }
+.btn-secondary:hover { background: #f1f5f9; border-color: #94a3b8; }
+.btn-ghost { background: transparent; color: #475569; }
+.btn-ghost:hover { background: #e0f2fe; color: #0167d4; }
+.btn-danger { background: transparent; color: #be123c; }
+.btn-danger:hover { background: #fff1f2; }
+.btn-lg { height: 40px; padding: 0 18px; font-size: 14px; }
+.btn[disabled] { opacity: .5; cursor: not-allowed; }
+.avatar { display: inline-flex; align-items: center; justify-content: center; border-radius: 9999px; font-family: "JetBrains Mono", ui-monospace, monospace; font-weight: 700; letter-spacing: .04em; }
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #0b1c30; color: #f8f9ff; font: 500 12px/16px "JetBrains Mono", ui-monospace, monospace; padding: 10px 16px; border-radius: 9999px; z-index: 500; box-shadow: 0 20px 25px -5px rgba(15,23,42,.1); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }

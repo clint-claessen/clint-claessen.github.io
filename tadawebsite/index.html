@@ -1,173 +1,289 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TaDa — Text-as-Data Speaker Series</title>
-  <meta name="description" content="TaDa is an online speaker series and reading group on text-as-data, NLP and machine learning in the social sciences. Every second Wednesday, 17:00 Berlin time, on Zoom. Free and open to all." />
-  <meta name="robots" content="noindex" />
-  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
-  <meta name="theme-color" content="#0167d4" />
-  <link rel="preload" href="assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="assets/fonts/jetbrainsmono.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TaDa — Text-as-Data Speaker Series</title>
+<meta name="description" content="TaDa is a free online speaker series on text-as-data, NLP and machine learning in the social sciences. Biweekly on Wednesdays, 17:00 Berlin time, on Zoom." />
+<meta name="robots" content="noindex" />
+<link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png" />
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+<meta name="theme-color" content="#0167d4" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet" />
+<link rel="preload" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="assets/fonts/jetbrainsmono.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="assets/tada.css" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="assets/tw-config.js"></script>
 </head>
-<body>
+<body class="bg-background font-body-md text-body-md text-on-surface antialiased">
 
-<a class="skip" href="#programme">Skip to programme</a>
-
-<header class="topbar">
-  <div class="bar-inner container">
-    <a class="brand" href="#top" aria-label="TaDa — home">
-      <img class="brand-mark" src="assets/tada-logo.png" alt="" width="36" height="36" />
-      <span class="brand-name">TaDa</span>
-      <span class="brand-tag">text-as-data</span>
+<header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/90 backdrop-blur-md shadow-[0_1px_8px_rgba(11,28,48,0.04)]">
+  <div class="h-16 max-w-[1440px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin flex items-center justify-between gap-gutter">
+    <a class="flex items-center gap-space-md group" href="#top">
+      <img src="assets/tada-logo.png" alt="" width="36" height="36" class="w-9 h-9 rounded-full bg-white shadow-sm" />
+      <span class="flex flex-col">
+        <span class="font-headline-sm text-headline-sm text-on-surface tracking-tight leading-none group-hover:text-primary transition-colors">TaDa</span>
+        <span class="font-code-sm text-code-sm text-on-surface-variant uppercase tracking-wider leading-none mt-1">Text as Data Speaker Series</span>
+      </span>
     </a>
-    <nav class="nav" id="sitenav" aria-label="Site">
-      <a href="#programme">Programme</a>
-      <a href="#join">Join</a>
-      <a href="#archive">Archive</a>
-      <a href="#team">Team</a>
-      <a href="#contact">Contact</a>
-      <a class="nav-cta" href="#join">Get the Zoom link</a>
+    <nav class="hidden lg:flex items-center gap-space-xl" aria-label="Site">
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors py-space-xs" href="#programme">Programme</a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors py-space-xs" href="#subscribe">Join</a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors py-space-xs" href="#archive">Archive</a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors py-space-xs" href="#team">Team</a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors py-space-xs" href="#contact">Contact</a>
     </nav>
-    <button class="nav-burger" aria-label="Menu" aria-expanded="false" aria-controls="sitenav"><span></span></button>
+    <div class="flex items-center gap-space-md">
+      <a class="hidden sm:inline-flex items-center justify-center px-space-md py-space-xs h-9 bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md rounded transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.06)] whitespace-nowrap" href="#subscribe" data-join>Get the Zoom link</a>
+      <a class="hidden sm:flex w-8 h-8 rounded-full bg-surface-container-high hover:bg-primary hover:text-on-primary text-on-surface-variant items-center justify-center shrink-0 transition-colors" href="committee/" title="Organizer login" aria-label="Organizer login"><span class="material-symbols-outlined text-[18px]">person</span></a>
+      <button class="lg:hidden w-9 h-9 rounded flex items-center justify-center text-on-surface hover:bg-surface-container" id="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav"><span class="material-symbols-outlined">menu</span></button>
+    </div>
   </div>
+  <nav class="lg:hidden bg-surface-container-lowest shadow-md" id="mobile-nav" hidden aria-label="Site (mobile)">
+    <div class="max-w-[1440px] mx-auto px-margin-mobile py-space-sm flex flex-col">
+      <a class="py-2.5 font-label-md text-label-md text-on-surface" href="#programme">Programme</a>
+      <a class="py-2.5 font-label-md text-label-md text-on-surface" href="#subscribe">Join</a>
+      <a class="py-2.5 font-label-md text-label-md text-on-surface" href="#archive">Archive</a>
+      <a class="py-2.5 font-label-md text-label-md text-on-surface" href="#team">Team</a>
+      <a class="py-2.5 font-label-md text-label-md text-on-surface" href="#contact">Contact</a>
+      <a class="py-2.5 font-label-md text-label-md text-on-surface-variant" href="committee/">Organizer login</a>
+    </div>
+  </nav>
 </header>
 
-<main id="top">
+<main class="w-full pt-16 min-h-screen bg-background" id="top">
+<div class="flex flex-col w-full">
 
-  <!-- ============ HERO ============ -->
-  <section class="hero">
-    <canvas class="tokens" id="tokens" aria-hidden="true"></canvas>
-    <div class="container hero-grid">
-      <div class="hero-copy">
-        <p class="eyebrow" data-reveal>Online speaker series · since 2021</p>
-        <h1 data-reveal data-delay="1">Where <mark data-tag="METHOD">text‑as‑data</mark> meets the <mark data-tag="FIELD">social sciences</mark>.</h1>
-        <p class="lead" data-reveal data-delay="2">
-          TaDa is a community of researchers working with natural language processing, machine learning and text-as-data methods. Every second Wednesday we host a 60-minute online talk and discussion with a guest from the field, open to everyone.
-        </p>
-        <div class="cta" data-reveal data-delay="3">
-          <a class="btn btn-primary" href="#join" data-join>Subscribe for Zoom links <span class="arrow">→</span></a>
-          <a class="btn btn-ghost" href="#programme">See the programme</a>
+<!-- HERO -->
+<section class="w-full bg-surface py-space-xl lg:py-16">
+  <div class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter lg:gap-space-xl items-start">
+      <div class="lg:col-span-7 flex flex-col gap-space-lg">
+        <div class="flex items-center gap-space-xs">
+          <span class="inline-flex items-center gap-1.5 px-space-sm py-0.5 rounded-full bg-surface-container-highest text-primary font-code-sm text-code-sm tracking-wider uppercase">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+            Online speaker series · since 2021
+          </span>
         </div>
-        <ul class="facts" data-reveal data-delay="4" aria-label="Key facts">
-          <li><b>Wed · 17:00</b><span>Berlin time, biweekly</span></li>
-          <li><b>60 min</b><span>20–30 min talk + discussion</span></li>
-          <li><b id="fact-count">75</b><span>sessions since 2021</span></li>
-          <li><b>Free</b><span>on Zoom, open to all</span></li>
-        </ul>
-      </div>
-
-      <aside class="next-card" id="next-card" data-reveal data-delay="2" aria-live="polite">
-        <p class="card-label">Next session</p>
-        <p class="card-date"><span class="d">—</span></p>
-        <p class="card-speaker">Loading…</p>
-        <p class="card-title"></p>
-        <div class="card-actions"></div>
-      </aside>
-    </div>
-  </section>
-
-  <!-- ============ PROGRAMME ============ -->
-  <section class="section" id="programme">
-    <div class="container">
-      <div class="section-head" data-reveal>
-        <p class="eyebrow" id="programme-eyebrow">Fall 2026 · AI Tools for Social Scientists</p>
-        <h2>The programme</h2>
-        <p class="section-lead">Five sessions this term. Speakers are announced about two weeks ahead; subscribers receive the Zoom link on the morning of each session.</p>
-      </div>
-      <ol class="programme" id="programme-list" data-reveal data-delay="1"></ol>
-      <p class="tz-note" data-reveal data-delay="2">All times are Berlin time (CET/CEST). <span id="tz-hint"></span></p>
-    </div>
-  </section>
-
-  <!-- ============ JOIN ============ -->
-  <section class="section band-dark" id="join">
-    <div class="container join-grid">
-      <div data-reveal>
-        <p class="eyebrow">Join</p>
-        <h2>Get the Zoom link, every time.</h2>
-        <p class="section-lead">One email a week at most: the announcement and the link. No registration, no cost. Unsubscribe with one click.</p>
-        <a class="btn btn-light" href="#" data-join>Subscribe <span class="arrow">→</span></a>
-      </div>
-      <div class="join-cards">
-        <div class="join-card" data-reveal data-delay="1">
-          <p class="card-label">Give a talk</p>
-          <p>Working on a method, tool or dataset for text-as-data research? We are always looking for speakers, especially early-career researchers.</p>
-          <a class="link-arrow" href="#" data-propose>Propose a session →</a>
+        <div class="flex flex-col gap-space-sm">
+          <h1 class="font-headline-xl text-headline-xl-mobile md:text-headline-xl text-on-surface tracking-tight">Where text-as-data meets the social sciences</h1>
+          <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">A free online speaker series for researchers who apply NLP, machine learning and computational text analysis to political science, sociology, communication and neighbouring fields. Every second Wednesday at 17:00 Berlin time: a 20–30-minute talk, then discussion.</p>
         </div>
-        <div class="join-card" data-reveal data-delay="2">
-          <p class="card-label">Follow</p>
-          <p>Session announcements and recordings also go out on Bluesky and LinkedIn.</p>
-          <p class="follow-links"><a href="#" data-bluesky>Bluesky</a> <span aria-hidden="true">·</span> <a href="#" data-linkedin>LinkedIn</a></p>
+        <div class="flex flex-wrap items-center gap-space-md pt-space-xs">
+          <a class="inline-flex items-center justify-center h-10 px-space-lg rounded bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md transition-colors shadow-sm gap-2" href="#subscribe" data-join><span class="material-symbols-outlined text-[18px]">mail</span>Subscribe for Zoom links</a>
+          <a class="inline-flex items-center justify-center h-10 px-space-lg rounded bg-surface-container-lowest hover:bg-surface-container-low text-on-surface font-label-md text-label-md transition-colors shadow-sm gap-2" href="#programme"><span class="material-symbols-outlined text-[18px]">calendar_month</span>See the programme</a>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-space-sm pt-space-md">
+          <div class="flex flex-col p-space-sm rounded bg-surface-container-lowest shadow-sm"><span class="font-code-sm text-code-sm text-tertiary uppercase">Schedule</span><span class="font-headline-sm text-headline-sm text-on-surface mt-0.5">Wed 17:00</span><span class="font-body-sm text-body-sm text-on-surface-variant">Berlin time, biweekly</span></div>
+          <div class="flex flex-col p-space-sm rounded bg-surface-container-lowest shadow-sm"><span class="font-code-sm text-code-sm text-tertiary uppercase">Format</span><span class="font-headline-sm text-headline-sm text-on-surface mt-0.5">60 min</span><span class="font-body-sm text-body-sm text-on-surface-variant">Talk + open Q&amp;A</span></div>
+          <div class="flex flex-col p-space-sm rounded bg-surface-container-lowest shadow-sm"><span class="font-code-sm text-code-sm text-tertiary uppercase">Track record</span><span class="font-headline-sm text-headline-sm text-on-surface mt-0.5"><span id="fact-count">74</span> sessions</span><span class="font-body-sm text-body-sm text-on-surface-variant">Since spring 2021</span></div>
+          <div class="flex flex-col p-space-sm rounded bg-surface-container-lowest shadow-sm"><span class="font-code-sm text-code-sm text-tertiary uppercase">Access</span><span class="font-headline-sm text-headline-sm text-on-surface mt-0.5">Free &amp; open</span><span class="font-body-sm text-body-sm text-on-surface-variant">On Zoom, worldwide</span></div>
+        </div>
+      </div>
+      <div class="lg:col-span-5 flex flex-col">
+        <div class="rounded-xl bg-surface-container-lowest p-space-lg shadow-md relative overflow-hidden" id="next-card" aria-live="polite">
+          <div class="flex items-center justify-between gap-space-sm pb-space-md"><div class="flex items-center gap-space-xs"><span class="w-2.5 h-2.5 rounded-full bg-secondary"></span><span class="font-code-sm text-code-sm text-secondary uppercase font-semibold tracking-wider">Next session</span></div></div>
+          <div class="font-code-md text-code-md text-on-surface-variant">Loading…</div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ============ ARCHIVE ============ -->
-  <section class="section" id="archive">
-    <div class="container">
-      <div class="section-head" data-reveal>
-        <p class="eyebrow">Archive</p>
-        <h2><span id="archive-count">75</span> sessions and counting.</h2>
-        <p class="section-lead">Everything we have hosted since the reading group started in April 2021: guest talks, paper discussions and hands-on sessions.</p>
+<!-- PROGRAMME -->
+<section class="w-full py-space-xl bg-surface-container-lowest" id="programme">
+  <div class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin flex flex-col gap-space-lg">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-space-sm pb-space-sm">
+      <div class="flex flex-col gap-space-xs">
+        <span class="font-code-sm text-code-sm text-primary uppercase tracking-wider font-semibold" id="programme-eyebrow">Fall 2026 · AI Tools for Social Scientists</span>
+        <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight">Upcoming term schedule</h2>
       </div>
-      <div class="archive-controls" data-reveal data-delay="1">
-        <div class="chips" id="year-chips" role="group" aria-label="Filter by year"></div>
-        <div class="chips" id="type-chips" role="group" aria-label="Filter by session type">
-          <button class="chip is-on" data-type="all" type="button">All</button>
-          <button class="chip" data-type="Speaker Series" type="button">Speaker series</button>
-          <button class="chip" data-type="Reading Group" type="button">Reading group</button>
+      <div class="flex items-center gap-space-xs">
+        <span class="font-body-sm text-body-sm text-tertiary">All sessions 17:00 Berlin time</span>
+        <span class="font-code-sm text-code-sm text-outline-variant">•</span>
+        <span class="font-body-sm text-body-sm text-tertiary" id="tz-hint">Zoom link goes to subscribers on the day</span>
+      </div>
+    </div>
+    <div class="w-full overflow-x-auto rounded-lg shadow-sm">
+      <table class="w-full text-left bg-surface-container-lowest min-w-[760px]">
+        <thead>
+          <tr class="bg-surface-container-low h-10">
+            <th class="py-space-xs px-space-md font-label-sm text-label-sm text-tertiary uppercase tracking-wider w-48" scope="col">Date &amp; time</th>
+            <th class="py-space-xs px-space-md font-label-sm text-label-sm text-tertiary uppercase tracking-wider w-64" scope="col">Speaker &amp; affiliation</th>
+            <th class="py-space-xs px-space-md font-label-sm text-label-sm text-tertiary uppercase tracking-wider" scope="col">Talk title</th>
+            <th class="py-space-xs px-space-md font-label-sm text-label-sm text-tertiary uppercase tracking-wider text-right w-36" scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-surface-container" id="programme-body"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- JOIN -->
+<section class="w-full bg-on-surface text-surface py-space-xl lg:py-20" id="subscribe">
+  <div class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin flex flex-col gap-space-xl">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter lg:gap-space-xl items-center">
+      <div class="lg:col-span-6 flex flex-col gap-space-xs">
+        <span class="font-code-sm text-code-sm text-secondary-fixed-dim uppercase tracking-wider">Mailing list</span>
+        <h2 class="font-headline-xl text-headline-xl-mobile md:text-headline-xl text-surface tracking-tight">Get the Zoom link, every time</h2>
+        <p class="font-body-lg text-body-lg text-surface-variant max-w-lg mt-space-xs">One e-mail per session: the announcement and, on the day, the Zoom link. No registration, no cost, one-click unsubscribe.</p>
+      </div>
+      <div class="lg:col-span-6">
+        <form class="flex flex-col sm:flex-row gap-space-sm p-space-sm rounded-lg bg-surface/10" id="subscribe-form">
+          <div class="relative flex-1">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-surface-variant text-[20px]">alternate_email</span>
+            <label class="sr-only" for="sub-email">Your e-mail</label>
+            <input class="w-full h-11 pl-10 pr-space-md rounded bg-surface text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-secondary-fixed-dim" id="sub-email" placeholder="name@university.edu" required type="email" />
+          </div>
+          <button class="h-11 px-space-lg rounded bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md transition-colors flex items-center justify-center gap-2 shrink-0" type="submit"><span>Subscribe</span><span class="material-symbols-outlined text-[18px]">arrow_forward</span></button>
+        </form>
+        <div class="flex flex-wrap items-center gap-space-md mt-space-xs px-space-sm">
+          <span class="font-code-sm text-code-sm text-surface-variant">✓ One mail per session</span>
+          <span class="font-code-sm text-code-sm text-surface-variant">✓ One-click unsubscribe</span>
+          <span class="font-code-sm text-code-sm text-surface-variant">✓ Address never shared</span>
         </div>
-        <label class="search"><span class="sr-only">Search speakers and titles</span><input id="archive-search" type="search" placeholder="Search speakers, titles…" autocomplete="off" /></label>
       </div>
-      <div class="archive" id="archive-list" data-reveal data-delay="2"></div>
     </div>
-  </section>
-
-  <!-- ============ TEAM ============ -->
-  <section class="section" id="team">
-    <div class="container">
-      <div class="section-head" data-reveal>
-        <p class="eyebrow">Team</p>
-        <h2>Organized by four researchers at four institutions.</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+      <div class="p-space-lg rounded-xl bg-surface/5 flex flex-col justify-between gap-space-md hover:bg-surface/10 transition-colors">
+        <div class="flex flex-col gap-space-xs">
+          <div class="flex items-center justify-between"><span class="font-code-sm text-code-sm text-secondary-fixed-dim uppercase tracking-wider">Call for talks</span><span class="material-symbols-outlined text-secondary-fixed-dim">campaign</span></div>
+          <h3 class="font-headline-md text-headline-md text-surface tracking-tight mt-space-xs">Give a talk</h3>
+          <p class="font-body-md text-body-md text-surface-variant mt-1">Working on a method, tool or dataset for text-as-data research? We welcome working papers and new software from PhD researchers, postdocs and faculty alike.</p>
+        </div>
+        <a class="inline-flex items-center gap-2 text-secondary-fixed font-label-md text-label-md hover:underline" href="#" data-propose><span>Propose a session</span><span class="material-symbols-outlined text-[16px]">arrow_outward</span></a>
       </div>
-      <ul class="team" data-reveal data-delay="1">
-        <li class="member"><span class="mono-badge">NB</span><h3>Nicolai Berk</h3><p>Postdoc · ETH Zurich</p><a href="https://nicolaiberk.com" rel="noopener">nicolaiberk.com</a></li>
-        <li class="member"><span class="mono-badge">CK</span><h3>Christopher Klamm</h3><p>PhD candidate · University of Mannheim</p><a href="http://klamm.info" rel="noopener">klamm.info</a></li>
-        <li class="member"><span class="mono-badge">VK</span><h3>Verena Kunz</h3><p>Postdoc · GESIS</p><a href="https://verenakunz.github.io" rel="noopener">verenakunz.github.io</a></li>
-        <li class="member"><span class="mono-badge">CC</span><h3>Clint Claessen</h3><p>Postdoc · University of Freiburg</p><a href="https://www.clintclaessen.com/" rel="noopener">clintclaessen.com</a></li>
-      </ul>
+      <div class="p-space-lg rounded-xl bg-surface/5 flex flex-col justify-between gap-space-md hover:bg-surface/10 transition-colors">
+        <div class="flex flex-col gap-space-xs">
+          <div class="flex items-center justify-between"><span class="font-code-sm text-code-sm text-secondary-fixed-dim uppercase tracking-wider">Follow</span><span class="material-symbols-outlined text-secondary-fixed-dim">hub</span></div>
+          <h3 class="font-headline-md text-headline-md text-surface tracking-tight mt-space-xs">Announcements and recordings</h3>
+          <p class="font-body-md text-body-md text-surface-variant mt-1">Session announcements, slides and recordings (when the speaker agrees) also go out on Bluesky and LinkedIn.</p>
+        </div>
+        <div class="flex items-center gap-space-md">
+          <a class="inline-flex items-center gap-1.5 px-space-md py-space-xs rounded bg-surface/10 hover:bg-surface/20 text-surface font-label-md text-label-md transition-colors" href="#" data-bluesky rel="noopener" target="_blank"><span class="material-symbols-outlined text-[16px]">flutter_dash</span><span>Bluesky</span></a>
+          <a class="inline-flex items-center gap-1.5 px-space-md py-space-xs rounded bg-surface/10 hover:bg-surface/20 text-surface font-label-md text-label-md transition-colors" href="#" data-linkedin rel="noopener" target="_blank"><span class="material-symbols-outlined text-[16px]">work</span><span>LinkedIn</span></a>
+        </div>
+      </div>
     </div>
-  </section>
+  </div>
+</section>
 
+<!-- ARCHIVE -->
+<section class="w-full py-space-xl bg-surface" id="archive">
+  <div class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin flex flex-col gap-space-lg">
+    <div class="flex flex-col gap-space-md">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-space-sm">
+        <div>
+          <span class="font-code-sm text-code-sm text-primary uppercase tracking-wider font-semibold">Archive</span>
+          <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight"><span id="archive-count">74</span> sessions and counting</h2>
+        </div>
+        <div class="font-body-sm text-body-sm text-tertiary">Guest talks and paper discussions since April 2021</div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-space-sm items-center bg-surface-container-lowest p-space-sm rounded-lg shadow-sm">
+        <div class="md:col-span-5 relative">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-tertiary text-[18px]">search</span>
+          <label class="sr-only" for="archive-search">Search talks and speakers</label>
+          <input class="w-full h-9 pl-9 pr-3 rounded bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:ring-1 focus:ring-primary" id="archive-search" placeholder="Search talks, speakers, institutions…" type="search" autocomplete="off" />
+        </div>
+        <div class="md:col-span-4 flex items-center gap-1 overflow-x-auto py-1" id="year-chips" role="group" aria-label="Filter by year"></div>
+        <div class="md:col-span-3 flex items-center justify-start md:justify-end gap-1" id="type-chips" role="group" aria-label="Filter by type">
+          <button class="type-chip px-2.5 py-1 rounded text-label-sm font-label-sm bg-primary text-on-primary" data-type="all" type="button">All</button>
+          <button class="type-chip px-2.5 py-1 rounded text-label-sm font-label-sm bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high" data-type="Speaker Series" type="button">Speaker series</button>
+          <button class="type-chip px-2.5 py-1 rounded text-label-sm font-label-sm bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high" data-type="Reading Group" type="button">Reading group</button>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col gap-space-xs" id="archive-list"></div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="w-full py-space-xl bg-surface-container-lowest" id="team">
+  <div class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin flex flex-col gap-space-lg">
+    <div class="flex flex-col gap-space-xs">
+      <span class="font-code-sm text-code-sm text-primary uppercase tracking-wider font-semibold">Organizing committee</span>
+      <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight">Organizers</h2>
+      <p class="font-body-md text-body-md text-on-surface-variant max-w-xl">Four researchers at four institutions, volunteering their time to keep the series free and open.</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+      <div class="p-space-lg rounded-xl bg-surface shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between gap-space-md">
+        <div class="flex flex-col gap-space-sm">
+          <div class="w-12 h-12 rounded bg-primary-container text-on-primary flex items-center justify-center font-headline-sm text-headline-sm select-none">NB</div>
+          <div class="flex flex-col"><h3 class="font-headline-md text-headline-md text-on-surface">Nicolai Berk</h3><span class="font-code-sm text-code-sm text-primary uppercase tracking-wider mt-0.5">Computational social science</span><span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Postdoc · ETH Zurich</span></div>
+          <p class="font-body-sm text-body-sm text-tertiary">Public Policy Group and Immigration Policy Lab; media, migration and text-as-data.</p>
+        </div>
+        <a class="inline-flex items-center gap-1 text-primary hover:text-on-surface font-label-sm text-label-sm transition-colors pt-space-xs" href="https://nicolaiberk.com" rel="noopener" target="_blank"><span>Personal website</span><span class="material-symbols-outlined text-[14px]">arrow_forward</span></a>
+      </div>
+      <div class="p-space-lg rounded-xl bg-surface shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between gap-space-md">
+        <div class="flex flex-col gap-space-sm">
+          <div class="w-12 h-12 rounded bg-secondary text-on-secondary flex items-center justify-center font-headline-sm text-headline-sm select-none">CK</div>
+          <div class="flex flex-col"><h3 class="font-headline-md text-headline-md text-on-surface">Christopher Klamm</h3><span class="font-code-sm text-code-sm text-primary uppercase tracking-wider mt-0.5">NLP &amp; political text</span><span class="font-body-sm text-body-sm text-on-surface-variant mt-1">PhD candidate · University of Mannheim</span></div>
+          <p class="font-body-sm text-body-sm text-tertiary">Data and Web Science Group; language models for political communication.</p>
+        </div>
+        <a class="inline-flex items-center gap-1 text-primary hover:text-on-surface font-label-sm text-label-sm transition-colors pt-space-xs" href="http://klamm.info" rel="noopener" target="_blank"><span>Personal website</span><span class="material-symbols-outlined text-[14px]">arrow_forward</span></a>
+      </div>
+      <div class="p-space-lg rounded-xl bg-surface shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between gap-space-md">
+        <div class="flex flex-col gap-space-sm">
+          <div class="w-12 h-12 rounded bg-tertiary-container text-on-tertiary-container flex items-center justify-center font-headline-sm text-headline-sm select-none">VK</div>
+          <div class="flex flex-col"><h3 class="font-headline-md text-headline-md text-on-surface">Verena Kunz</h3><span class="font-code-sm text-code-sm text-primary uppercase tracking-wider mt-0.5">Computational social science</span><span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Postdoc · GESIS</span></div>
+          <p class="font-body-sm text-body-sm text-tertiary">Leibniz Institute for the Social Sciences, Mannheim.</p>
+        </div>
+        <a class="inline-flex items-center gap-1 text-primary hover:text-on-surface font-label-sm text-label-sm transition-colors pt-space-xs" href="https://verenakunz.github.io" rel="noopener" target="_blank"><span>Personal website</span><span class="material-symbols-outlined text-[14px]">arrow_forward</span></a>
+      </div>
+      <div class="p-space-lg rounded-xl bg-surface shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between gap-space-md">
+        <div class="flex flex-col gap-space-sm">
+          <div class="w-12 h-12 rounded bg-primary text-on-primary flex items-center justify-center font-headline-sm text-headline-sm select-none">CC</div>
+          <div class="flex flex-col"><h3 class="font-headline-md text-headline-md text-on-surface">Clint Claessen</h3><span class="font-code-sm text-code-sm text-primary uppercase tracking-wider mt-0.5">Legislative studies &amp; text-as-data</span><span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Postdoc · University of Freiburg</span></div>
+          <p class="font-body-sm text-body-sm text-tertiary">Political representation, parliamentary speech and machine learning.</p>
+        </div>
+        <a class="inline-flex items-center gap-1 text-primary hover:text-on-surface font-label-sm text-label-sm transition-colors pt-space-xs" href="https://www.clintclaessen.com/" rel="noopener" target="_blank"><span>Personal website</span><span class="material-symbols-outlined text-[14px]">arrow_forward</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
 </main>
 
-<footer class="footer" id="contact">
-  <div class="container footer-grid">
-    <div>
-      <p class="brand-name">TaDa <span class="brand-tag">text-as-data</span></p>
-      <p class="footer-blurb">A community of machine learning, text-as-data and NLP enthusiasts in the social sciences, and friends from all related fields.</p>
+<footer class="w-full bg-surface-container-low mt-space-xl pb-16 lg:pb-0" id="contact">
+  <div class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin py-space-xl">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-start">
+      <div class="md:col-span-6 flex flex-col gap-space-xs">
+        <div class="flex items-center gap-space-sm"><span class="font-headline-sm text-headline-sm text-on-surface">TaDa</span><span class="font-code-sm text-code-sm text-on-surface-variant uppercase tracking-wider">Text as Data Speaker Series</span></div>
+        <p class="font-body-sm text-body-sm text-on-surface-variant max-w-lg mt-space-xs">A community of machine learning, text-as-data and NLP enthusiasts in the social sciences, and friends from all related fields. Sessions are recorded only with the speaker's consent.</p>
+        <div class="flex items-center gap-space-md mt-space-sm">
+          <a class="font-code-sm text-code-sm uppercase text-secondary hover:text-on-surface-variant transition-colors" href="#" data-bluesky rel="noopener" target="_blank">Bluesky</a><span class="font-code-sm text-code-sm text-outline-variant">•</span>
+          <a class="font-code-sm text-code-sm uppercase text-secondary hover:text-on-surface-variant transition-colors" href="#" data-linkedin rel="noopener" target="_blank">LinkedIn</a><span class="font-code-sm text-code-sm text-outline-variant">•</span>
+          <a class="font-code-sm text-code-sm uppercase text-secondary hover:text-on-surface-variant transition-colors" href="https://tada.cool">tada.cool</a>
+        </div>
+      </div>
+      <div class="md:col-span-3 flex flex-col gap-space-xs">
+        <span class="font-code-sm text-code-sm text-on-surface-variant uppercase tracking-wider">Contact</span>
+        <p class="font-body-sm text-body-sm text-on-surface">Nicolai Berk — <span class="email" data-email="nicolai.berk|gess.ethz.ch"></span></p>
+        <p class="font-body-sm text-body-sm text-on-surface">Christopher Klamm — <span class="email" data-email="klamm|uni-mannheim.de"></span></p>
+      </div>
+      <div class="md:col-span-3 flex flex-col md:items-end justify-between self-stretch gap-space-md">
+        <div class="flex flex-col md:items-end">
+          <span class="font-code-sm text-code-sm text-on-surface-variant uppercase tracking-wider">Access</span>
+          <a class="mt-space-xs inline-flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-sm text-label-sm transition-colors" href="committee/"><span class="material-symbols-outlined text-[16px] text-tertiary">lock</span>Organizer login</a>
+        </div>
+        <span class="font-code-sm text-code-sm text-tertiary">© <span id="yr"></span> TaDa Speaker Series</span>
+      </div>
     </div>
-    <div>
-      <p class="card-label">Contact</p>
-      <p>Nicolai Berk — <span class="email" data-email="nicolai.berk|gess.ethz.ch"></span></p>
-      <p>Christopher Klamm — <span class="email" data-email="klamm|uni-mannheim.de"></span></p>
-    </div>
-    <div>
-      <p class="card-label">Elsewhere</p>
-      <p><a href="#" data-bluesky>Bluesky</a> · <a href="#" data-linkedin>LinkedIn</a> · <a href="https://tada.cool">tada.cool</a></p>
-      <p class="footer-small"><a href="committee/">Organizer login</a></p>
-    </div>
-  </div>
-  <div class="container footer-bottom">
-    <p>© <span id="yr"></span> TaDa. Sessions are recorded only with the speaker's consent.</p>
   </div>
 </footer>
+
+<!-- Mobile bottom navigation -->
+<nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-container-lowest/95 backdrop-blur-md shadow-[0_-1px_8px_rgba(11,28,48,0.06)] grid grid-cols-4" aria-label="Sections">
+  <a class="flex flex-col items-center gap-0.5 py-2 font-label-sm text-label-sm text-primary" href="#programme"><span class="material-symbols-outlined text-[20px]">calendar_month</span>Programme</a>
+  <a class="flex flex-col items-center gap-0.5 py-2 font-label-sm text-label-sm text-on-surface-variant" href="#subscribe"><span class="material-symbols-outlined text-[20px]">mail</span>Join</a>
+  <a class="flex flex-col items-center gap-0.5 py-2 font-label-sm text-label-sm text-on-surface-variant" href="#archive"><span class="material-symbols-outlined text-[20px]">inventory_2</span>Archive</a>
+  <a class="flex flex-col items-center gap-0.5 py-2 font-label-sm text-label-sm text-on-surface-variant" href="#team"><span class="material-symbols-outlined text-[20px]">groups</span>Team</a>
+</nav>
 
 <script src="committee/config.js"></script>
 <script src="app.js"></script>

@@ -17,6 +17,8 @@ service cloud.firestore {
       return !exists(path) || (request.auth.token.email.lower() in get(path).data.emails);
     }
 
+    function str(f, max) { return f is string && f.size() <= max; }
+
     match /members/{uid} {
       allow read: if isMember() || (signedIn() && request.auth.uid == uid);
       allow create: if signedIn() && request.auth.uid == uid && allowlisted();
@@ -28,9 +30,35 @@ service cloud.firestore {
     match /candidates/{id} { allow read, write: if isMember(); }
     match /settings/{id}   { allow read, write: if isMember(); }
 
+    // Team chat: channels, threads (parentId) and reactions. Anyone on the team may add or
+    // remove their own reaction on any message; only the author may edit the text or delete.
     match /messages/{id} {
-      allow read, create: if isMember();
-      allow update, delete: if isMember() && resource.data.uid == request.auth.uid;
+      allow read: if isMember();
+      allow create: if isMember() && request.resource.data.uid == request.auth.uid && str(request.resource.data.text, 8000);
+      allow update: if isMember() && (
+        resource.data.uid == request.auth.uid ||
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reactions'])
+      );
+      allow delete: if isMember() && resource.data.uid == request.auth.uid;
+    }
+
+    // Speaker form (../speak/): anyone may submit one response with bounded string fields;
+    // only members can read, update (mark handled) or delete responses.
+    match /responses/{id} {
+      allow create: if str(request.resource.data.name, 200)
+        && str(request.resource.data.email, 200)
+        && str(request.resource.data.affiliation, 300)
+        && str(request.resource.data.title, 500)
+        && str(request.resource.data.abstract, 4000)
+        && str(request.resource.data.notes, 2000)
+        && str(request.resource.data.url, 500)
+        && str(request.resource.data.paper, 500)
+        && str(request.resource.data.bluesky, 200)
+        && str(request.resource.data.linkedin, 500)
+        && str(request.resource.data.recording, 20)
+        && request.resource.data.dates is list && request.resource.data.dates.size() <= 20
+        && request.resource.data.handled == false;
+      allow read, update, delete: if isMember();
     }
 
     // The public website reads /public/programme; only members can write it.
