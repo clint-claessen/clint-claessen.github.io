@@ -1,0 +1,42 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+
+    // A "member" is a signed-in user who has a document in /members keyed by their uid.
+    function isMember() {
+      return signedIn() && exists(/databases/$(database)/documents/members/$(request.auth.uid));
+    }
+
+    // Optional allow-list of organizer e-mails (lower-case) in /settings/allowlist { emails: [...] }.
+    // If the document does not exist, any signed-in account may create its member profile
+    // (safe only while sign-up is disabled in Authentication → Settings → User actions).
+    function allowlisted() {
+      let path = /databases/$(database)/documents/settings/allowlist;
+      return !exists(path) || (request.auth.token.email.lower() in get(path).data.emails);
+    }
+
+    match /members/{uid} {
+      allow read: if isMember() || (signedIn() && request.auth.uid == uid);
+      allow create: if signedIn() && request.auth.uid == uid && allowlisted();
+      allow update: if signedIn() && request.auth.uid == uid;
+      allow delete: if false;
+    }
+
+    match /sessions/{id}   { allow read, write: if isMember(); }
+    match /candidates/{id} { allow read, write: if isMember(); }
+    match /settings/{id}   { allow read, write: if isMember(); }
+
+    match /messages/{id} {
+      allow read, create: if isMember();
+      allow update, delete: if isMember() && resource.data.uid == request.auth.uid;
+    }
+
+    // The public website reads /public/programme; only members can write it.
+    match /public/{id} {
+      allow read: if true;
+      allow write: if isMember();
+    }
+  }
+}

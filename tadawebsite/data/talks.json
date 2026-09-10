@@ -1,0 +1,681 @@
+[
+ {
+  "date": "2021-04-20",
+  "speaker": "Nicolai Berk and Hauke Licht",
+  "affiliation": "",
+  "title": "Embedding Regression: Models for Context-Specific Description and Inference in Political Science",
+  "type": "Reading Group",
+  "url": "",
+  "paper": "https://github.com/prodriguezsosa/EmbeddingRegression/blob/main/Paper/RodriguezSpirlingStewart\\_EmbedRegression.pdf"
+ },
+ {
+  "date": "2021-05-04",
+  "speaker": "Christopher Klamm and Ben Guinaudeau",
+  "affiliation": "",
+  "title": "SemAxis: A Lightweight Framework to Characterize Domain-Specific Word Semantics Beyond Sentiment",
+  "type": "Reading Group",
+  "url": "",
+  "paper": "https://arxiv.org/pdf/1806.05521.pdf"
+ },
+ {
+  "date": "2021-05-18",
+  "speaker": "Ronja Sczepanski",
+  "affiliation": "",
+  "title": "The Geometry of Culture: Analyzing the Meanings of Class through Word Embeddings",
+  "type": "Reading Group",
+  "url": "",
+  "paper": "https://journals.sagepub.com/doi/full/10.1177/0003122419877135"
+ },
+ {
+  "date": "2021-06-01",
+  "speaker": "Christopher Klamm",
+  "affiliation": "",
+  "title": "Swimming with the Tide? Positional Claim Detection across Political Text Types",
+  "type": "Reading Group",
+  "url": "",
+  "paper": "https://www.aclweb.org/anthology/2020.nlpcss-1.3/"
+ },
+ {
+  "date": "2021-06-15",
+  "speaker": "Clint Claessen",
+  "affiliation": "",
+  "title": "Measuring Polarization with Text Analysis: Evidence from the UK House of Commons, 1811–2015",
+  "type": "Reading Group",
+  "url": "",
+  "paper": "https://www.cambridge.org/core/journals/political-analysis/article/abs/measuring-polarization-with-text-analysis-evidence-from-the-uk-house-of-commons-18112015/C590F249EB2CC25D09434A61017FF5A3"
+ },
+ {
+  "date": "2021-06-29",
+  "speaker": "Nicolai Berk",
+  "affiliation": "",
+  "title": "What drives media slant?",
+  "type": "Reading Group",
+  "url": "",
+  "paper": "https://web.stanford.edu/\\~gentzkow/research/biasmeas.pdf"
+ },
+ {
+  "date": "2021-09-28",
+  "speaker": "Musashi Harukawa",
+  "affiliation": "",
+  "title": "Causal Inference with Latent/Text Treatments (2 papers)",
+  "type": "Reading Group",
+  "url": "",
+  "paper": "https://www.dropbox.com/s/hebu10a3vze585c/dexp\\_public.pdf?dl=0, https://arxiv.org/abs/2010.12919"
+ },
+ {
+  "date": "2021-10-12",
+  "speaker": "Nicolai Berk",
+  "affiliation": "",
+  "title": "Top2Vec: Distributed Representations of Topics",
+  "type": "Reading Group",
+  "url": "",
+  "paper": "https://arxiv.org/abs/2008.09470"
+ },
+ {
+  "date": "2021-10-26",
+  "speaker": "Christopher Klamm",
+  "affiliation": "",
+  "title": "Modeling Framing in Immigration Discourse on Social Media",
+  "type": "Reading Group",
+  "url": "",
+  "paper": "https://aclanthology.org/2021.naacl-main.179.pdf"
+ },
+ {
+  "date": "2021-11-09",
+  "speaker": "Musashi Harukawa",
+  "affiliation": "",
+  "title": "Causal Inference with Latent/Text Treatments (2 papers)",
+  "type": "Reading Group",
+  "url": "",
+  "paper": "https://www.dropbox.com/s/hebu10a3vze585c/dexp\\_public.pdf?dl=0, https://arxiv.org/abs/2010.12919"
+ },
+ {
+  "date": "2021-11-23",
+  "speaker": "Clint Claessen",
+  "affiliation": "",
+  "title": "Measuring Group Differences in High-dimensional choices",
+  "type": "Reading Group",
+  "url": "",
+  "paper": "https://onlinelibrary.wiley.com/doi/pdf/10.3982/ECTA16566?casa\\_token=Es4J9Rimwi8AAAAA:kfzkcyCIEHxvlY3dl0w5OqTurKtc8IWuRl1bhA\\_eGswKXmzl4w7cHP9hvT0mFzASPYgTWOqaDkvz0uMU"
+ },
+ {
+  "date": "2021-12-07",
+  "speaker": "Christopher Klamm",
+  "affiliation": "",
+  "title": "Transformer Models",
+  "type": "Reading Group",
+  "url": "",
+  "paper": "https://github.com/chkla/NLP2CSS-Tutorial"
+ },
+ {
+  "date": "2022-04-12",
+  "speaker": "Maiken Røed",
+  "affiliation": "Lund University",
+  "title": "When do political parties listen to interest groups?",
+  "type": "Speaker Series",
+  "url": ""
+ },
+ {
+  "date": "2022-04-26",
+  "speaker": "Fabienne Lind",
+  "affiliation": "University of Vienna",
+  "title": "Multilingual Topic Models",
+  "type": "Speaker Series",
+  "url": ""
+ },
+ {
+  "date": "2022-05-10",
+  "speaker": "Christian Pipal",
+  "affiliation": "University of Amsterdam",
+  "title": "Three Gaps in Computational Text Analysis Methods for Social Sciences: A Research Agenda",
+  "type": "Speaker Series",
+  "url": ""
+ },
+ {
+  "date": "2022-05-24",
+  "speaker": "Roman Senninger",
+  "affiliation": "Aarhus University",
+  "title": "How Simple Messages Affect Voters' Knowledge and Their Perceptions of Politicians: Evidence from a Large-Scale Survey Experiment",
+  "type": "Speaker Series",
+  "url": "https://romansenninger.github.io"
+ },
+ {
+  "date": "2022-06-07",
+  "speaker": "Connor Jerzak",
+  "affiliation": "University of Texas at Austin",
+  "title": "Linking Datasets on Organizations Using Half a Billion Open Collaborated Records",
+  "type": "Speaker Series",
+  "url": "https://connorjerzak.com"
+ },
+ {
+  "date": "2022-06-21",
+  "speaker": "Erin Rossiter",
+  "affiliation": "University of Notre Dame",
+  "title": "Measuring Agenda Setting in Interactive Political Communication",
+  "type": "Speaker Series",
+  "url": "http://erossiter.com"
+ },
+ {
+  "date": "2022-07-05",
+  "speaker": "Johannes Gruber",
+  "affiliation": "European University Viadrina",
+  "title": "Troublemakers in the streets? A framing analysis of newspaper coverage of protest in the UK 1992-2017",
+  "type": "Speaker Series",
+  "url": "https://www.johannesbgruber.eu"
+ },
+ {
+  "date": "2022-07-19",
+  "speaker": "Federico Bianchi",
+  "affiliation": "Stanford University",
+  "title": "Twitter-Demographer: A Flow-based Tool to Enrich Twitter Data",
+  "type": "Speaker Series",
+  "url": "https://federicobianchi.io"
+ },
+ {
+  "date": "2022-09-20",
+  "speaker": "Kohei Watanabe",
+  "affiliation": "Lazard Asset Management",
+  "title": "Sequential Seeded LDA: A Topic Model for Theory-driven Classification of Sentences",
+  "type": "Speaker Series",
+  "url": "https://blog.koheiw.net/"
+ },
+ {
+  "date": "2022-09-27",
+  "speaker": "Clint Claessen",
+  "affiliation": "",
+  "title": "Grimmer, Roberts and Stewart. (2022). Text as Data. Introduction and Conclusion.",
+  "type": "Reading Group",
+  "url": "",
+  "paper": "https://press.princeton.edu/books/ebook/9780691207995/text-as-data"
+ },
+ {
+  "date": "2022-10-04",
+  "speaker": "Delia Zollinger",
+  "affiliation": "University of Zurich",
+  "title": "Perceptions of Changing Status Hierarchies: An Analysis of Open-ended Survey Responses",
+  "type": "Speaker Series",
+  "url": "http://deliazollinger.ch/"
+ },
+ {
+  "date": "2022-10-11",
+  "speaker": "Allison & Clint Claessen",
+  "affiliation": "",
+  "title": "Grimmer, Roberts and Stewart. (2022). Text as Data. Measurement.",
+  "type": "Reading Group",
+  "url": "",
+  "paper": "https://press.princeton.edu/books/ebook/9780691207995/text-as-data"
+ },
+ {
+  "date": "2022-10-18",
+  "speaker": "Ludovic Rheault",
+  "affiliation": "University of Toronto",
+  "title": "Word Embeddings for the Analysis of Ideological Placement in Parliamentary Corpora",
+  "type": "Speaker Series",
+  "url": "https://politics.utoronto.ca/faculty/profile/332/",
+  "paper": "https://www.cambridge.org/core/journals/political-analysis/article/word-embeddings-for-the-analysis-of-ideological-placement-in-parliamentary-corpora/017F0CEA9B3DB6E1B94AC36A509A8A7B"
+ },
+ {
+  "date": "2022-10-25",
+  "speaker": "Christopher Klamm",
+  "affiliation": "",
+  "title": "Pipeline Standardization for Transparency & Accountability",
+  "type": "Reading Group",
+  "url": ""
+ },
+ {
+  "date": "2022-11-08",
+  "speaker": "Clint Claessen",
+  "affiliation": "",
+  "title": "Grimmer, Roberts and Stewart. (2022). Text as Data. Inference.",
+  "type": "Reading Group",
+  "url": "",
+  "paper": "https://press.princeton.edu/books/ebook/9780691207995/text-as-data"
+ },
+ {
+  "date": "2022-11-15",
+  "speaker": "Anne Lauscher",
+  "affiliation": "Bocconi University",
+  "title": "Fairness and Inclusion in Natural Language Processing: Challenges and Opportunities",
+  "type": "Speaker Series",
+  "url": "https://anne-lauscher.de/"
+ },
+ {
+  "date": "2022-11-22",
+  "speaker": "Johannes Gruber",
+  "affiliation": "",
+  "title": "Grimmer, Roberts and Stewart. (2022). Text as Data. Discovery.",
+  "type": "Reading Group",
+  "url": "",
+  "paper": "https://press.princeton.edu/books/ebook/9780691207995/text-as-data"
+ },
+ {
+  "date": "2022-11-29",
+  "speaker": "Jana Bernhard",
+  "affiliation": "University of Vienna",
+  "title": "Validating Topic Models: Does it matter how we do it?",
+  "type": "Speaker Series",
+  "url": "https://publizistik.univie.ac.at/institut/mitarbeiterinnen-mitarbeiter/praedocs/bernhard-jana/"
+ },
+ {
+  "date": "2022-12-06",
+  "speaker": "Christopher Klamm",
+  "affiliation": "",
+  "title": "Hosting and Sharing ML Models with Streamlit & Huggingface's Spaces",
+  "type": "Reading Group",
+  "url": ""
+ },
+ {
+  "date": "2022-12-13",
+  "speaker": "Hauke Licht",
+  "affiliation": "University of Cologne",
+  "title": "Who Are They Talking To? Automated Measurement of Group Appeals in Political Texts",
+  "type": "Speaker Series",
+  "url": "https://haukelicht.github.io/"
+ },
+ {
+  "date": "2023-03-08",
+  "speaker": "Ashrakat Elshehawy",
+  "affiliation": "University of Oxford",
+  "title": "Named-Entity Recognition with Application to Foreign Leader Mentions in Congressional Speeches",
+  "type": "Speaker Series",
+  "url": "https://www.ashrakatelshehawy.com/"
+ },
+ {
+  "date": "2023-03-22",
+  "speaker": "Joris Frese & Daniel Triana",
+  "affiliation": "European University Institute",
+  "title": "Battle of Words: Dynamics of Echo Chambers among European Elites",
+  "type": "Speaker Series",
+  "url": "https://www.eui.eu/people?id=joris-frese"
+ },
+ {
+  "date": "2023-04-19",
+  "speaker": "Tobias Widmann",
+  "affiliation": "Aarhus University",
+  "title": "The Politics of Right and Wrong: Moral Appeals in Political Communication across Time, Space, Ideology, and Topics",
+  "type": "Speaker Series",
+  "url": "https://tobiaswidmann.eu/"
+ },
+ {
+  "date": "2023-05-03",
+  "speaker": "Léo Picard",
+  "affiliation": "University of Basel",
+  "title": "Political Metaphors in U.S. Governor Speeches",
+  "type": "Speaker Series",
+  "url": "https://leopicard.net/"
+ },
+ {
+  "date": "2023-05-17",
+  "speaker": "Gloria Gennaro",
+  "affiliation": "University College London",
+  "title": "Immigration and Social Distance: Evidence from Newspapers during the Age of Mass Migration",
+  "type": "Speaker Series",
+  "url": "http://gloriagennaro.rbind.io/"
+ },
+ {
+  "date": "2023-05-31",
+  "speaker": "Erik Bucy",
+  "affiliation": "Texas Tech University",
+  "title": "Visuals within Multimodal Studies",
+  "type": "Speaker Series",
+  "url": "https://www.depts.ttu.edu/comc/faculty/faculty/ebucy.php"
+ },
+ {
+  "date": "2023-10-18",
+  "speaker": "Philine Widmer",
+  "affiliation": "ETH Zurich",
+  "title": "Is Propaganda Front-Page News?",
+  "type": "Speaker Series",
+  "url": "https://philinew.github.io/"
+ },
+ {
+  "date": "2023-11-01",
+  "speaker": "Indira Sen",
+  "affiliation": "GESIS",
+  "title": "Measuring Social Constructs with NLP: Two Case Studies of Workplace Depression and Sexist Language",
+  "type": "Speaker Series",
+  "url": "https://indiiigo.github.io/",
+  "abstract": "Digital traces like social media and web data represent a new source of data for investigating social science phenomena ranging from sexist attitudes to mental health behaviors. While NLP and ML methods help scale up traditional content analysis techniques for this type of data, there are several threats to the validity of these methods and the inferences drawn from them. In this talk, I discuss one of the potential issues with such approaches: ad hoc and misspecified methods that fail to capture social phenomena holistically. Taking inspiration from traditional social sciences and survey methods, I suggest ways of mitigating this issue by incorporating social theory into NLP models. The two papers I will discuss explore the applications of machine learning and NLP into social contexts"
+ },
+ {
+  "date": "2023-11-15",
+  "speaker": "Alejandro Beltran",
+  "affiliation": "The Alan Turing Institute",
+  "title": "Paying the Piper: Government advertising and media bias",
+  "type": "Speaker Series",
+  "url": "https://www.beltranalejandro.com/",
+  "abstract": "Media capture is ubiquitous and prevalent, even in the most democratic regimes. The media is a leading channel through which the public sources information and shapes its political preferences. Given the pivotal role that they play in attitude formation, governments have strong incentives to control or influence its narrative. While most of the empirical literature on media capture focus on censorship and coverage of political scandals, it is less clear what circumstances affect media tone and sentiment, and the channels through which governments can shape them. We fill this gap by analysing a large corpus of opinion columns from Mexico, a country with a semi-democratic culture where outright censorship is unfeasible, and yet there is journalistic evidence on governments \\`sponsoring' the media to communicate less critical messages about it. We use a sentiment analyser to estimate the tone of 222,556 opinion pieces from Mexico's 9 most prominent newspapers. In addition, we use data on government publicity expenditure to identify sums directly paid to news outlets that is combined with the outlet’s average daily circulation of newspapers to create a novel score of media capture that measures the over-targeting of government spending relative to the size of the news outlet. We find a distinctive difference in the sentiment conveyed by captured media vs non-favoured outlets. Specifically, captured media are less negative about the incumbent and more negative in writing about the incumbent’s main challenger. The findings suggest media organizations are sensitive to government publicity spending and may adjust their message accordingly"
+ },
+ {
+  "date": "2023-11-29",
+  "speaker": "Moritz Laurer",
+  "affiliation": "VU Amsterdam",
+  "title": "Analysing Political Texts with Less Data and Deep Transfer Learning",
+  "type": "Speaker Series",
+  "url": "https://www.ceps.eu/ceps-staff/moritz-laurer/"
+ },
+ {
+  "date": "2023-12-13",
+  "speaker": "Michael Jacobs",
+  "affiliation": "University College London",
+  "title": "How Effective are (Disruptive) Protests at Shifting Public Discourse in Activists’ Preferred Direction?",
+  "type": "Speaker Series",
+  "url": "https://www.ucl.ac.uk/political-science/people/mphil-phd-students/michael-jacobs",
+  "abstract": "A large literature recognises that shaping public discourse is a key outcome of protest and that disruptive tactics may help amplify protesters’ claims through the media. Yet, by elevating the salience of their issue, protests might not only amplify their own claims, but also boost attention given to rival claims. Previous research has tended to focus on issue salience as the key discursive outcome of protest, rarely distinguishing between claims that are aligned with or opposed to the protesters. Do protests succeed at amplifying protesters’ own claims relative to their opponents’ claims? Does this depend on protesters’ choice of disruptive versus non-disruptive tactics? To answer these questions, I develop a new method for measuring the discursive success of protests that can be scaled for a large-N study. Using text data (tweets) published by protest/advocacy groups engaged in a given policy area, I identify a set of ‘canonical claims’ in the discourse by clustering and then labelling the sentence embeddings of the tweets. I then measure the agreement/disagreement between active protest groups and each claim based on the group’s own language. Finally, I identify new instances of each claim in a corpus of news articles using cosine similarity and a supervised classifier, providing a scalable approach to measuring the visibility of claims – each associated more or less with each group - over time. This paper presents the results of a pilot study, applying this method to a sample of environmental protests in the UK between 2017 and 2019. The results provide an early indication of the validity of the method and provides important insights into how protest can shape public discourse, of relevance to scholars of social movements and contentious politics."
+ },
+ {
+  "date": "2024-01-10",
+  "speaker": "Rebecca Kittel",
+  "affiliation": "European University Institute",
+  "title": "Language Complexity in Parliament: Use and Effect of Simple Language Among Populist and Non-Populist Actors in Parliamentary Debates",
+  "type": "Speaker Series",
+  "url": "https://www.eui.eu/people?id=rebecca-caroline-kittel"
+ },
+ {
+  "date": "2024-01-24",
+  "speaker": "Musashi Hinck",
+  "affiliation": "Princeton University",
+  "title": "Using Imperfect Surrogates for Downstream Inference: Design-based Supervised Learning for Social Science Applications of Large Language Models",
+  "type": "Speaker Series",
+  "url": "https://ddss.princeton.edu/people/musashi-hinck-phd",
+  "abstract": "In computational social science (CSS), researchers analyze documents to explain social and political phenomena. In most scenarios, CSS researchers first obtain labels for documents and then explain labels using interpretable regression analyses in the second step. One increasingly common way to annotate documents cheaply at scale is through large language models (LLMs). However, like other scalable ways of producing annotations, such surrogate labels are often imperfect and biased. We present a new algorithm for using imperfect annotation surrogates for downstream statistical analyses while guaranteeing statistical properties -- like asymptotic unbiasedness and proper uncertainty quantification -- which are fundamental to CSS research. We show that direct use of surrogate labels in downstream statistical analyses leads to substantial bias and invalid confidence intervals, even with high surrogate accuracy of 80--90\\\\%. To address this, we build on debiased machine learning to propose the design-based supervised learning (DSL) estimator. DSL employs a doubly-robust procedure to combine surrogate labels with a smaller number of high-quality, gold-standard labels. Our approach guarantees valid inference for downstream statistical analyses, even when surrogates are arbitrarily biased and without requiring stringent assumptions, by controlling the probability of sampling documents for gold-standard labeling. Both our theoretical analysis and experimental results show that DSL provides valid statistical inference while achieving root mean squared errors comparable to existing alternatives that focus only on prediction without inferential guarantees."
+ },
+ {
+  "date": "2024-02-07",
+  "speaker": "Gabriella Lapesa",
+  "affiliation": "GESIS & Heinrich Heine University Düsseldorf",
+  "title": "NLP-supported (e-)Deliberation: Interdisciplinary Challenges and Real-World Applications",
+  "type": "Speaker Series",
+  "url": "https://www.gesis.org/en/institute/staff/person/Gabriella.Lapesa"
+ },
+ {
+  "date": "2024-02-21",
+  "speaker": "Dirk Wulff",
+  "affiliation": "Max Planck Institute for Human Development",
+  "title": "Mapping the mind with free associations",
+  "type": "Speaker Series",
+  "url": "https://www.dirkwulff.org/"
+ },
+ {
+  "date": "2024-04-10",
+  "speaker": "Sarah Masud",
+  "affiliation": "IIIT Delhi",
+  "title": "Probing Critical Learning Dynamics of PLMs for Hate Speech Detection",
+  "type": "Speaker Series",
+  "url": "https://sara-02.github.io/",
+  "abstract": "Despite the widespread adoption, there is a lack of research into how various critical aspects of pretrained language models (PLMs) affect their performance in hate speech detection. Through five research questions, our findings and recommendations lay the groundwork for empirically investigating different aspects of PLMs' use in hate speech detection. We deep dive into comparing different pretrained models, evaluating their seed robustness, finetuning settings, and the impact of pretraining data collection time. Our analysis reveals early peaks for downstream tasks during pretraining, the limited benefit of employing a more recent pretraining corpus, and the significance of specific layers during finetuning. We further call into question the use of domain-specific models and highlight the need for dynamic datasets for benchmarking hate speech detection."
+ },
+ {
+  "date": "2024-04-24",
+  "speaker": "Paulina Garcia Corral & Hannah Béchara",
+  "affiliation": "Hertie School",
+  "title": "PolitiCause: Causality in Political Texts",
+  "type": "Speaker Series",
+  "url": "https://www.hertie-school.org/en/research/faculty-and-researchers/profile/person/corral",
+  "abstract": "In this paper, we present PolitiCAUSE, a new corpus of political texts annotated for causality. We focus on causal structures in political language, where identifying causal relationships is crucial for policy argumentation and political fact-checking. The expressions used in this context are entrenched in a rich tradition of political rhetoric that is known for its persuasive objective, differing from correlational or causal scientific attributions. For example, we wish to identify arguments about potential effects of policy interventions, or counterfactual of previous policy decisions. We provide a detailed and robust annotation scheme, and statistics of the corpus. Additionally, we benchmark the dataset using transformer-based classification models. The models achieve a moderate performance on the dataset, with a MCC score of 0.62. Our results show that PolitiCAUSE is a valuable resource for studying causality in texts, especially in the domain of political discourse."
+ },
+ {
+  "date": "2024-05-08",
+  "speaker": "Andreas Küpfer",
+  "affiliation": "TU Darmstadt",
+  "title": "How Alignment Helps Make the Most of Multimodal Data",
+  "type": "Speaker Series",
+  "url": "https://andreaskuepfer.github.io/",
+  "abstract": "When studying political communication, combining the information from text, audio, and video signals promises to reflect the richness of human communication more comprehensively than confining it to individual modalities alone. However, when modeling such multimodal data, its heterogeneity, connectedness, and interaction are challenging to address. We argue that aligning the respective modalities can be an essential step in entirely using the potential of multimodal data because it informs the model with human understanding. Exploring aligned modalities unlocks promising analytical leverage. First, it allows us to make the most of information in the data, which inter alia opens the door to better quality predictions. Second, it is possible to answer research questions that span multiple modalities with cross-modal queries. Finally, alignment addresses concerns about model interpretability. We illustrate the utility of this approach by analyzing how German MPs address members of the far-right AfD in their speeches, and predicting the tone of video advertising in the context of the 2020 US presidential race. Our paper offers important insights to all keen to analyze multimodal data effectively."
+ },
+ {
+  "date": "2024-05-22",
+  "speaker": "Jana Lipps",
+  "affiliation": "ETH Zurich",
+  "title": "Liberal Mimicry and Revisionist Powers in the UN General Assembly",
+  "type": "Speaker Series",
+  "url": "https://eup.ethz.ch/people/jana-lipps.html",
+  "abstract": "Our paper investigates how political leaders have rhetorically accommodated the growing tensions between different conceptions of international order, especially the individual-oriented LIO and its primary contender, the state-oriented sovereign territorial order (STO). Europe has been among the main profiteers of economic and political liberalism, and political authority beyond the nation state is thoroughly institutionalised. A wholesale rhetorical departure from the LIO is thus unlikely and we expect the emergence of intermediary conceptions of order that combine either an individual-oriented outlook with national-level political authority (\"embedded liberalism\") or a state-oriented view of international relations with EU-level authority (\"sovereign internationalism\"). We test our expectation by means of an analysis of 8,481 speeches given in the UN General Debates between 1970 and 2020. Using latent semantic scaling and semantic role parsing, we classify speeches along the two dimensions of liberal v. sovereign principles and national v. international authority. We find that, after a heyday of liberal internationalism in the 1990s, leaders' rhetoric has shifted back toward \"embedded liberalism\" since around the year 2000. As the LIO came under pressure, European leaders held on to their liberalism while relaxing their internationalism. Both conceptually and empirically, our paper adds to studies on the contemporary nature of the crisis of the international order."
+ },
+ {
+  "date": "2024-06-05",
+  "speaker": "Jens Wäckerle",
+  "affiliation": "University of Cologne",
+  "title": "Undermining the Parliamentary Patriarchy: Women, Political Speech, and Power around the World",
+  "type": "Speaker Series",
+  "url": "https://www.jenswaeckerle.com/",
+  "abstract": "Research on gendered legislative behavior is advancing our understanding of the importance of women getting elected to powerful political positions. Women politicians speak differently than men, work on different issues, and employ different political strategies. Additionally, research has shown that women who progress to higher positions in a hierarchy typically dominated by men tend to adopt more stereotypical masculine traits and become less distinctive from men the longer they stay in office. While acquiring power in a legislature is key in changing the gendered workplace environment of a parliament, we know very little about the interplay of power and femininity in politics. We study this relationship based on two data sources: a collection of 3.5 million parliamentary speeches from twelve democracies of Europe (East and West), North America, and Oceania between 1987 and 2020, and an original dataset of individual committee assignments in these countries. We investigate the relationship between discourse genderedness and the legislative power that politicians acquire, measuring ”power” based on prestigious assignments, such as committee memberships and chairwomanships, party leadership, and cabinet positions. This research helps us understand the individual incentives that shape how women politicians represent women in parliament and the institutional structures that influence this relationship."
+ },
+ {
+  "date": "2024-10-16",
+  "speaker": "Mike Burnham",
+  "affiliation": "Princeton University",
+  "title": "Efficient Zero-Shot and Few-Shot Classifiers for Political Text",
+  "type": "Speaker Series",
+  "url": "http://www.mlburnham.com/publications/"
+ },
+ {
+  "date": "2024-10-30",
+  "speaker": "Alexis Palmer",
+  "affiliation": "New York University",
+  "title": "Masked Language Models for Narrative Classification",
+  "type": "Speaker Series",
+  "url": "https://www.colorado.edu/linguistics/alexis-palmer"
+ },
+ {
+  "date": "2024-11-13",
+  "speaker": "Humeyra Biricik",
+  "affiliation": "University of Oxford",
+  "title": "Political Speech as a Forecasting Tool for Democratic Backsliding",
+  "type": "Speaker Series",
+  "url": "https://www.politics.ox.ac.uk/person/humeyra-biricik"
+ },
+ {
+  "date": "2024-11-27",
+  "speaker": "Caterina Chiopris",
+  "affiliation": "Harvard University",
+  "title": "Diffusion of Ideas",
+  "type": "Speaker Series",
+  "url": "https://www.caterinachiopris.com/"
+ },
+ {
+  "date": "2024-12-12",
+  "speaker": "Tobias Hofmann",
+  "affiliation": "FU Berlin",
+  "title": "Flipflopping in the European Parliament: Electoral and Intra-party Politics of MEPs' Migration Speeches",
+  "type": "Speaker Series",
+  "url": ""
+ },
+ {
+  "date": "2025-03-19",
+  "speaker": "Prashant Garg",
+  "affiliation": "Imperial College London",
+  "title": "Causal Claims in Economics",
+  "type": "Speaker Series",
+  "url": "",
+  "abstract": "We analyze over 44,000 NBER and CEPR working papers from 1980 to 2023 using a custom language model to construct knowledge graphs that map economic concepts and their relationships. We distinguish between general claims and those documented via causal inference methods (e.g., DiD, IV, RDD, RCTs). We document a substantial rise in the share of causal claims-from roughly 4% in 1990 to nearly 28% in 2020-reflecting the growing influence of the \"credibility revolution.\" We find that causal narrative complexity (e.g., the depth of causal chains) strongly predicts both publication in top-5 journals and higher citation counts, whereas non-causal complexity tends to be uncorrelated or negatively associated with these outcomes. Novelty is also pivotal for top-5 publication, but only when grounded in credible causal methods: introducing genuinely new causal edges or paths markedly increases both the likelihood of acceptance at leading outlets and long-run citations, while non-causal novelty exhibits weak or even negative effects. Papers engaging with central, widely recognized concepts tend to attract more citations, highlighting a divergence between factors driving publication success and long-term academic impact. Finally, bridging underexplored concept pairs is rewarded primarily when grounded in causal methods, yet such gap filling exhibits no consistent link with future citations. Overall, our findings suggest that methodological rigor and causal innovation are key drivers of academic recognition, but sustained impact may require balancing novel contributions with conceptual integration into established economic discourse."
+ },
+ {
+  "date": "2025-04-02",
+  "speaker": "Miriam Schirmer",
+  "affiliation": "Northwestern University",
+  "title": "Sharenting and Child Exposure on TikTok: Risks, Trends, and Protective Measures",
+  "type": "Speaker Series",
+  "url": "https://miriamschirmer.github.io/",
+  "abstract": "Sharenting—the practice of parents sharing content about their children on social media—has become increasingly common, raising concerns about children's privacy, autonomy, and safety online. This study examines how children are presented and discussed on TikTok, focusing on the content of videos and the nature of user interactions. Analyzing over 400,000 comments on 6,000 videos, we explore patterns of engagement and the types of responses these videos attract. Our findings point to significant risks, including inappropriate comments and unsolicited contact offers, including a significant presence of appearance-based remarks. These results highlight broader questions about children’s visibility in digital spaces, the role of platform algorithms in amplifying certain content, and the need for stronger safeguards to protect minors from unwanted attention and potential exploitation."
+ },
+ {
+  "date": "2025-04-16",
+  "speaker": "Christoffer Dausgaard",
+  "affiliation": "University of Copenhagen",
+  "title": "Group Appeals and the Running Tally of Party Reputations",
+  "type": "Speaker Series",
+  "url": "https://chdausgaard.github.io/",
+  "abstract": "Parties' linkages to social groups are key to electoral competition. While traditionally explained in terms of long-standing social cleavages, newer theories assign some role to parties in shaping group linkages. We argue that party elites have even more influence over group linkages than afforded in existing accounts: citizens keep \\`running tallies' of group linkages and continuously update them in response to group appeals in elite rhetoric. To test this theory, we develop a novel automated approach that uses language models to measure group appeals observationally. Using data from the UK, we connect citizens' perceived group linkages in surveys to group appeals in parliamentary speech spanning three decades. We find that group linkages robustly track party elites' rhetoric. Auxiliary analyses test heterogeneity across group types and the moderating role of policy information. Our findings imply that party elites have considerable power to shape group linkages, even in the short run."
+ },
+ {
+  "date": "2025-04-30",
+  "speaker": "Tanise Ceron",
+  "affiliation": "Bocconi University",
+  "title": "Facilitating Information Access Through Language Models",
+  "type": "Speaker Series",
+  "url": "https://tceron.github.io/"
+ },
+ {
+  "date": "2025-05-13",
+  "speaker": "Lukas Hetzer & Jan Schwalbach",
+  "affiliation": "CCCP Cologne & GESIS",
+  "title": "ParlLawSpeech",
+  "type": "Speaker Series",
+  "url": "https://cccp.uni-koeln.de/de/team/doctoral-researchers/lukas-hetzer"
+ },
+ {
+  "date": "2025-05-28",
+  "speaker": "Catarina Pereira",
+  "affiliation": "University of Zurich",
+  "title": "Gender Bias Measurement in Political Language",
+  "type": "Speaker Series",
+  "url": "",
+  "abstract": "We introduce and assess the use of (quasi) unsupervised learning in biased gendered norms classification. In this approach, gendered biased spoken terms are calculated in normative political speech and used as labeled source corpus. A supervised learning then extrapolates the biased gendered terms. Gender bias is taken as substantive gender bias, according to the subject of the sentence analysed, or descriptive gender bias, according to the gender of the speaker. The ability to calculate significantly gendered biased terms and use them as existing training data makes this method significantly more efficient than commonly used supervised learning methods. It also has three advantages over supervised topic models: the method can explore better research questions on representation, and the resulting terms are easier to validate and interpret. We demonstrate the method using the case of House of Representative speeches (source corpus). In addition to the standard binary gender bias classification, we further validate the substantive and descriptive bias as well as cross-time trends in the target-corpus documents."
+ },
+ {
+  "date": "2025-10-15",
+  "speaker": "Francisco Tomás-Valiente Jordá",
+  "affiliation": "ETH Zurich",
+  "title": "Uncertain Performance: How to Quantify Uncertainty and Draw Test Sets When Evaluating Classifiers",
+  "type": "Speaker Series",
+  "url": "https://pp.ethz.ch/people/francisco-tomas-valiente-jorda.html",
+  "abstract": "Text-as-data methods have become increasingly popular in social science research, often employing classifiers to measure political constructs of interest. Although evaluating classifiers on a test set is critical for establishing measurement validity, guidance on how to conduct such evaluation is limited. In particular, researchers have paid insufficient attention to the variance of performance metrics estimated on test sets. This project demonstrates that typically-sized test sets yield highly noisy and often uninformative estimates of classifier performance, particularly for imbalanced tasks—common in social science applications like identifying hateful or emotional speech—where one outcome class is rare. To address this issue, the paper introduces simple methods to quantify uncertainty in performance estimates, based on their sampling distribution and validated with simulations. It also introduces a design-based approach in political science to enhance statistical precision in evaluation tasks through efficient stratified sampling based on the outcome's predicted probability. Simulations show that this strategy meaningfully improves the precision of performance estimates, especially in imbalanced tasks. Finally, the paper illustrates how to calculate the test set size required to achieve a desired level of statistical precision. The accompanying testsampleR package enables researchers to easily implement all of these methods, and the presentation will showcase its usage with a practical demonstration."
+ },
+ {
+  "date": "2025-10-29",
+  "speaker": "Alexis Palmer",
+  "affiliation": "Tulane University",
+  "title": "Replication for Language Models: Problems, Principles, and Best Practices for Political Science",
+  "type": "Speaker Series",
+  "url": "https://lexipalmer13.github.io/",
+  "abstract": "Large Language Models (LMs) are exciting tools: they require minimal researcher input and but make it possible to annotate and generate large quantities of data. Yet there has been almost no systematic research into the reproducibility of research using LMs. This is a potential problem for scientific integrity. We give a theoretical framework for replication in the discipline and show that LM work is perhaps uniquely problematic. We demonstrate the problem empirically using a rolling iterated replication design in which we compare crowdsourcing and LMs on multiple repeated tasks, over many months. We find that LMs can be accurate, but the observed variance in performance is often unacceptably high. Strict “temperature” control does not resolve these issues. This affects downstream results. In many cases the LM findings cannot be re-run, let alone replicated. We conclude with recommendations for best practice, including the use of locally versioned ‘open’ LMs."
+ },
+ {
+  "date": "2025-11-12",
+  "speaker": "Joachim Baumann",
+  "affiliation": "Bocconi University",
+  "title": "Large Language Model Hacking: Quantifying the Hidden Risks of Using LLMs for Text Annotation",
+  "type": "Speaker Series",
+  "url": ""
+ },
+ {
+  "date": "2025-11-26",
+  "speaker": "Khaoula Chehbouni",
+  "affiliation": "McGill University",
+  "title": "Beyond the Safety Bundle: Auditing the Helpful and Harmless Dataset",
+  "type": "Speaker Series",
+  "url": ""
+ },
+ {
+  "date": "2025-12-10",
+  "speaker": "Ju Yeon (Julia) Park",
+  "affiliation": "",
+  "title": "Toward a framework for creating trustworthy measures with supervised machine learning for text",
+  "type": "Speaker Series",
+  "url": "http://www.juyeonpark.com/"
+ },
+ {
+  "date": "2026-03-18",
+  "speaker": "Max M. Lang",
+  "affiliation": "University of Oxford",
+  "title": "Telephone Surveys Meet Conversational AI: Evaluating a LLM-Based Telephone Survey System at Scale",
+  "type": "Speaker Series",
+  "url": "https://maxmlang.github.io/"
+ },
+ {
+  "date": "2026-04-01",
+  "speaker": "Alexander Wuttke & Christopher Klamm",
+  "affiliation": "LMU Munich",
+  "title": "Multimodal Conversational AI",
+  "type": "Speaker Series",
+  "url": "https://www.gsi.uni-muenchen.de/personen/professoren/wuttke/index.html"
+ },
+ {
+  "date": "2026-04-15",
+  "speaker": "Jana Jung",
+  "affiliation": "University of Mannheim",
+  "title": "Do Psychometric Tests Work for Large Language Models? Evaluation of Tests on Sexism, Racism, and Morality",
+  "type": "Speaker Series",
+  "url": "https://jasoju.github.io/",
+  "abstract": "Psychometric tests are increasingly used to assess psychological constructs in large language models (LLMs). However, it remains unclear whether these tests -- originally developed for humans -- yield meaningful results when applied to LLMs. In this study, we systematically evaluate the reliability and validity of human psychometric tests on 17 LLMs for three constructs: sexism, racism, and morality. We find moderate reliability across multiple item and prompt variations. Validity is evaluated through both convergent (i.e., testing theory-based inter-test correlations) and ecological approaches (i.e., testing the alignment between tests scores and behavior in real-world downstream tasks). Crucially, we find that psychometric test scores do not align, and in some cases even negatively correlate with, model behavior in downstream tasks, indicating low ecological validity. Our results highlight that systematic evaluations of psychometric tests on LLMs are essential before interpreting their scores. Our findings also suggest that psychometric tests designed for humans cannot be applied directly to LLMs without adaptation.",
+  "paper": "https://arxiv.org/abs/2510.11254"
+ },
+ {
+  "date": "2026-04-30",
+  "speaker": "Nicole Schwitter",
+  "affiliation": "MZES, University of Mannheim",
+  "title": "Using Artificial Intelligence to Generate Visual Vignettes in Factorial Survey Experiments",
+  "type": "Speaker Series",
+  "url": "https://nschwitter.github.io"
+ },
+ {
+  "date": "2026-05-13",
+  "speaker": "Sean J. Westwood",
+  "affiliation": "Dartmouth College",
+  "title": "The potential existential threat of large language models to online survey research",
+  "type": "Speaker Series",
+  "url": "https://faculty-directory.dartmouth.edu/sean-j-westwood",
+  "abstract": "The advancement of large language models poses a severe, potentially existential threat to online survey research, a fundamental tool for data collection across the sciences. This work demonstrates that the foundational assumption of survey research—that a coherent response is a human response—is no longer tenable. I designed and tested an autonomous synthetic respondent capable of producing survey data that possesses the coherence and plausibility of human responses. This agent successfully evades a comprehensive suite of data quality checks, including instruction-following tasks, logic puzzles, and “reverse shibboleth” questions designed to detect nonhuman actors, achieving a 99.8% pass rate on 6,000 trials of standard attention checks. The synthetic respondent generates internally consistent responses by maintaining a coherent demographic persona and a memory of its prior answers, producing plausible data on psychometric scales, vignette comprehension tasks, and complex socioeconomic trade-offs. Furthermore, its open-ended text responses are linguistically sophisticated and stylistically calibrated to the level of education of its assigned persona. Critically, the agent can be instructed to maliciously alter polling outcomes, demonstrating an overt vector for information warfare. More subtly, it can also infer a researcher’s latent hypotheses and produce data that artificially confirms them. These findings reveal a critical vulnerability in our data infrastructure, rendering most current detection methods obsolete and posing a potential existential threat to unsupervised online research. The scientific community must urgently develop new data validation standards and reconsider its reliance on nonprobability, low-barrier online data collection methods.",
+  "paper": "https://www.pnas.org/doi/10.1073/pnas.2518075122"
+ },
+ {
+  "date": "2026-05-27",
+  "speaker": "Simone Zhang",
+  "affiliation": "New York University",
+  "title": "Generative AI Meets Open-Ended Survey Responses: Research Participant Use of AI and Homogenization",
+  "type": "Speaker Series",
+  "url": "https://simonezhang.com/"
+ },
+ {
+  "date": "2026-09-30",
+  "speaker": "",
+  "affiliation": "",
+  "title": "",
+  "type": "Speaker Series",
+  "url": "",
+  "term": "Fall 2026",
+  "time": "17:00"
+ },
+ {
+  "date": "2026-10-14",
+  "speaker": "",
+  "affiliation": "",
+  "title": "",
+  "type": "Speaker Series",
+  "url": "",
+  "term": "Fall 2026",
+  "time": "17:00"
+ },
+ {
+  "date": "2026-10-28",
+  "speaker": "",
+  "affiliation": "",
+  "title": "",
+  "type": "Speaker Series",
+  "url": "",
+  "term": "Fall 2026",
+  "time": "17:00"
+ },
+ {
+  "date": "2026-11-11",
+  "speaker": "Andreu Casas",
+  "affiliation": "Royal Holloway, University of London",
+  "title": "Large Language Models as Lab Agents: Transfer Learning for Building Generalizable Automatic In-House Annotators",
+  "type": "Speaker Series",
+  "url": "https://andreucasas.com/",
+  "abstract": "Automatic data annotation is a common task in social science research, such as labeling social media posts for the presence of hate speech, or new articles for their ideological leaning. When fine-tuned with some manually annotated examples, Large Language Models (LLMs) consistently outperform traditional machine learning models. However, researchers often fine-tune a pre-trained LLM from scratch for each new task at hand. Building on the notion of transfer learning, in this paper we leverage several datasets annotated in the same research lab, for different tasks and projects, to develop a Lab Agent that gradually performs better at zero-shot and few-shot classification on new unseen tasks. We explore the performance of several options in the development of such Lab Agents, with the goal of facilitating and speeding up accurate data annotation for social science research.",
+  "term": "Fall 2026",
+  "time": "17:00"
+ },
+ {
+  "date": "2026-11-25",
+  "speaker": "",
+  "affiliation": "",
+  "title": "",
+  "type": "Speaker Series",
+  "url": "",
+  "term": "Fall 2026",
+  "time": "17:00"
+ }
+]

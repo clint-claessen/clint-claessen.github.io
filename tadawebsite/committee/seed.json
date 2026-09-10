@@ -1,0 +1,19 @@
+{
+  "term": "Fall 2026",
+  "theme": "AI Tools for Social Scientists",
+  "sessions": [
+    { "date": "2026-09-30", "time": "17:00", "speaker": "", "affiliation": "", "url": "", "title": "", "status": "open", "chair": "", "notes": "Three weeks out: consider an organizer-run kickoff session instead of a cold invitation." },
+    { "date": "2026-10-14", "time": "17:00", "speaker": "", "affiliation": "", "url": "", "title": "", "status": "open", "chair": "", "notes": "Chair availability: CK, VK" },
+    { "date": "2026-10-28", "time": "17:00", "speaker": "", "affiliation": "", "url": "", "title": "", "status": "open", "chair": "", "notes": "Chair availability: CK, VK" },
+    { "date": "2026-11-11", "time": "17:00", "speaker": "Andreu Casas", "affiliation": "Royal Holloway, University of London", "url": "https://andreucasas.com/", "title": "Large Language Models as Lab Agents: Transfer Learning for Building Generalizable Automatic In-House Annotators", "abstract": "Automatic data annotation is a common task in social science research, such as labeling social media posts for the presence of hate speech, or new articles for their ideological leaning. When fine-tuned with some manually annotated examples, Large Language Models (LLMs) consistently outperform traditional machine learning models. However, researchers often fine-tune a pre-trained LLM from scratch for each new task at hand. Building on the notion of transfer learning, in this paper we leverage several datasets annotated in the same research lab, for different tasks and projects, to develop a Lab Agent that gradually performs better at zero-shot and few-shot classification on new unseen tasks. We explore the performance of several options in the development of such Lab Agents, with the goal of facilitating and speeding up accurate data annotation for social science research.", "status": "confirmed", "chair": "VK", "notes": "Confirmed via the Google Form." },
+    { "date": "2026-11-25", "time": "17:00", "speaker": "", "affiliation": "", "url": "", "title": "", "status": "open", "chair": "", "notes": "Chair availability: (VK)" }
+  ],
+  "candidates": [
+    { "name": "Molly Roberts", "affiliation": "UC San Diego", "url": "", "proposedBy": "NB", "owner": "NB", "status": "idea", "notes": "LLM biases and media control in China. Nico saw her present on political bias and propaganda in language models at ETH and EPSS." },
+    { "name": "Christopher Barrie", "affiliation": "New York University", "url": "", "proposedBy": "", "owner": "", "status": "idea", "notes": "Replicability of LLM research (Alexis Palmer presented the replication paper in Oct 2025, so pitch a different angle)." },
+    { "name": "Fabienne Lind and colleagues", "affiliation": "University of Vienna", "url": "", "proposedBy": "", "owner": "", "status": "idea", "notes": "Project on evaluating language and country context sensitivity in prompting (CSS workshop Mannheim)." },
+    { "name": "Johannes Breuer", "affiliation": "GESIS", "url": "", "proposedBy": "", "owner": "VK", "status": "idea", "notes": "Warm intro via Verena (GESIS)." },
+    { "name": "Valentin Hofmann", "affiliation": "Allen Institute for AI / University of Washington", "url": "https://valentinhofmann.github.io", "proposedBy": "", "owner": "", "status": "idea", "notes": "Dialect prejudice and political bias in LLMs. Pacific time: 17:00 CET = 08:00 PT." },
+    { "name": "Leah von der Heyde", "affiliation": "LMU Munich", "url": "", "proposedBy": "", "owner": "", "status": "idea", "notes": "LLMs as synthetic survey respondents. Spelling to verify (sheet says 'Leah van der Heyde')." }
+  ]
+}

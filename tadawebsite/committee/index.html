@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TaDa Executive Committee</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
+  <meta name="theme-color" content="#1e6a86" />
+  <link rel="preload" href="../assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="../assets/fonts/jetbrainsmono.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="committee.css" />
+</head>
+<body class="committee">
+
+<!-- ============ LOGIN ============ -->
+<section class="auth" id="view-login" hidden>
+  <div class="auth-card">
+    <a class="brand" href="../" aria-label="TaDa — public site">
+      <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="currentColor"/><path d="M32 10l3.6 12.4L48 26l-12.4 3.6L32 42l-3.6-12.4L16 26l12.4-3.6z" fill="#f6e9a8"/><path d="M47 40l1.6 5.4L54 47l-5.4 1.6L47 54l-1.6-5.4L40 47l5.4-1.6z" fill="#dbe4ea"/></svg>
+      <span class="brand-name">TaDa</span>
+      <span class="brand-tag">executive committee</span>
+    </a>
+    <h1>Organizer login</h1>
+    <p class="auth-lead">Accounts exist only for the four organizers. Sign in with the e-mail your account was created with.</p>
+    <form id="login-form" novalidate>
+      <label>E-mail<input type="email" id="login-email" autocomplete="username" required /></label>
+      <label>Password<input type="password" id="login-password" autocomplete="current-password" required /></label>
+      <p class="form-error" id="login-error" role="alert"></p>
+      <div class="form-row">
+        <button class="btn btn-primary" type="submit">Sign in <span class="arrow">→</span></button>
+        <button class="btn-text" type="button" id="login-reset">Forgot password?</button>
+      </div>
+    </form>
+    <div class="setup-help" id="setup-help" hidden>
+      <p class="card-label">Not connected yet</p>
+      <p>The committee app needs a Firebase project. Open <code>committee/SETUP.md</code> in the repository for the ten-minute setup, then paste the web config into <code>committee/config.js</code>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ APP ============ -->
+<div id="view-app" hidden>
+  <header class="topbar app-bar">
+    <div class="bar-inner container">
+      <a class="brand" href="../" aria-label="TaDa — public site">
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="currentColor"/><path d="M32 10l3.6 12.4L48 26l-12.4 3.6L32 42l-3.6-12.4L16 26l12.4-3.6z" fill="#f6e9a8"/><path d="M47 40l1.6 5.4L54 47l-5.4 1.6L47 54l-1.6-5.4L40 47l5.4-1.6z" fill="#dbe4ea"/></svg>
+        <span class="brand-name">TaDa</span>
+        <span class="brand-tag">executive committee</span>
+      </a>
+      <nav class="tabs" aria-label="Sections">
+        <button class="tab is-on" data-tab="series" type="button">Series</button>
+        <button class="tab" data-tab="candidates" type="button">Candidates</button>
+        <button class="tab" data-tab="messages" type="button">Messages <span class="badge" id="msg-badge" hidden></span></button>
+        <button class="tab" data-tab="profile" type="button">Profile</button>
+      </nav>
+      <div class="user-chip" id="user-chip" title="Signed in">
+        <span class="mono-badge" id="user-initials">–</span>
+        <button class="btn-text" type="button" id="sign-out">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app container">
+
+    <!-- ---------- SERIES ---------- -->
+    <section class="panel" id="tab-series">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Speaker series</p>
+          <h2 id="series-title">Fall 2026</h2>
+          <p class="panel-lead" id="series-theme"></p>
+        </div>
+        <div class="panel-actions">
+          <label class="select-wrap"><span class="sr-only">Term</span><select id="term-select"></select></label>
+          <button class="btn btn-ghost btn-small" type="button" id="new-term">New term</button>
+          <button class="btn btn-ghost btn-small" type="button" id="new-session">Add session</button>
+          <button class="btn btn-primary btn-small" type="button" id="publish-programme" title="Write the programme of this term to the public website">Publish to website</button>
+        </div>
+      </div>
+      <p class="hint" id="publish-hint"></p>
+      <div class="table-wrap">
+        <table class="grid" id="sessions-table">
+          <thead>
+            <tr>
+              <th>Date</th><th>Speaker &amp; title</th><th>Status</th><th>Chair</th>
+              <th>Invitation</th><th>Newsletter</th><th>LinkedIn</th><th>Bluesky</th><th>Website</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="sessions-body"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="sessions-empty" hidden>
+        <p>No sessions in this term yet.</p>
+        <button class="btn btn-primary btn-small" type="button" id="seed-btn">Import Fall 2026 (5 slots + 6 candidates)</button>
+      </div>
+      <p class="legend">Status colours: <span class="st st-open">open</span> <span class="st st-invited">invited</span> <span class="st st-confirmed">confirmed</span> <span class="st st-declined">declined</span> <span class="st st-done">done</span>. Click a row to edit details, drafts and promotion.</p>
+    </section>
+
+    <!-- ---------- CANDIDATES ---------- -->
+    <section class="panel" id="tab-candidates" hidden>
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Pipeline</p>
+          <h2>Candidate speakers</h2>
+          <p class="panel-lead">Ideas → invited → confirmed. Confirmed candidates move into a session slot.</p>
+        </div>
+        <div class="panel-actions">
+          <label class="select-wrap"><span class="sr-only">Filter</span><select id="cand-filter"><option value="active">Active</option><option value="all">All</option><option value="idea">Ideas</option><option value="invited">Invited</option><option value="confirmed">Confirmed</option><option value="declined">Declined / waitlist</option></select></label>
+          <button class="btn btn-primary btn-small" type="button" id="new-candidate">Add candidate</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="grid" id="cand-table">
+          <thead><tr><th>Name</th><th>Affiliation</th><th>Proposed by</th><th>Owner</th><th>Status</th><th>Invitation</th><th>Updated</th></tr></thead>
+          <tbody id="cand-body"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="cand-empty" hidden><p>No candidates yet.</p></div>
+    </section>
+
+    <!-- ---------- MESSAGES ---------- -->
+    <section class="panel" id="tab-messages" hidden>
+      <div class="msg-layout">
+        <div class="msg-main">
+          <div class="panel-head">
+            <div><p class="eyebrow">Team</p><h2>Messages</h2><p class="panel-lead">Kept forever, unlike Slack. Decisions still go into the session notes.</p></div>
+          </div>
+          <div class="msg-list" id="msg-list" aria-live="polite"></div>
+          <form class="msg-form" id="msg-form">
+            <label class="sr-only" for="msg-input">Message</label>
+            <textarea id="msg-input" rows="2" placeholder="Write to the team… (Enter to send, Shift+Enter for a new line)"></textarea>
+            <button class="btn btn-primary btn-small" type="submit">Send</button>
+          </form>
+        </div>
+        <aside class="msg-side">
+          <p class="card-label">Pinned</p>
+          <textarea id="pinned" rows="12" placeholder="Zoom link, WhatsApp rules, who does what this term…"></textarea>
+          <button class="btn btn-ghost btn-small" type="button" id="pinned-save">Save pinned</button>
+          <p class="hint" id="pinned-hint"></p>
+          <p class="card-label" style="margin-top:28px">Team</p>
+          <ul class="member-list" id="member-list"></ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ---------- PROFILE ---------- -->
+    <section class="panel" id="tab-profile" hidden>
+      <div class="panel-head"><div><p class="eyebrow">You</p><h2>Profile &amp; account</h2></div></div>
+      <div class="profile-grid">
+        <form class="card" id="profile-form">
+          <p class="card-label">Profile</p>
+          <label>Display name<input type="text" id="pf-name" autocomplete="name" /></label>
+          <label>Username<input type="text" id="pf-username" placeholder="e.g. nico" /></label>
+          <label>Initials (used as chair / owner)<input type="text" id="pf-initials" maxlength="3" placeholder="NB" /></label>
+          <label>How you introduce yourself in invitations<textarea id="pf-intro" rows="2" placeholder="a Postdoc at Dominik Hangartner's group at ETH Zurich"></textarea></label>
+          <p class="hint">Used by “Generate draft”: “My name is {name}, I am {intro}, as well as one of the co-organizers…”</p>
+          <p class="form-error" id="pf-error" role="alert"></p>
+          <button class="btn btn-primary btn-small" type="submit">Save profile</button>
+          <span class="hint" id="pf-hint"></span>
+        </form>
+
+        <form class="card" id="email-form">
+          <p class="card-label">Login e-mail</p>
+          <p>Current: <b id="cur-email"></b></p>
+          <label>New e-mail<input type="email" id="new-email" autocomplete="email" /></label>
+          <label>Current password (to confirm it is you)<input type="password" id="email-pw" autocomplete="current-password" /></label>
+          <p class="form-error" id="email-error" role="alert"></p>
+          <button class="btn btn-ghost btn-small" type="submit">Send verification link</button>
+          <p class="hint">A link goes to the new address; the change takes effect once you click it. The allow-list is updated automatically.</p>
+        </form>
+
+        <form class="card" id="pw-form">
+          <p class="card-label">Password</p>
+          <label>Current password<input type="password" id="pw-old" autocomplete="current-password" /></label>
+          <label>New password (min. 8 characters)<input type="password" id="pw-new" autocomplete="new-password" minlength="8" /></label>
+          <p class="form-error" id="pw-error" role="alert"></p>
+          <button class="btn btn-ghost btn-small" type="submit">Change password</button>
+        </form>
+
+        <form class="card" id="allow-form">
+          <p class="card-label">Who may create an organizer profile</p>
+          <p class="hint">One e-mail per line (lower-case). Accounts are still created only in the Firebase console; this list is a second lock.</p>
+          <textarea id="allow-emails" rows="5"></textarea>
+          <button class="btn btn-ghost btn-small" type="submit">Save allow-list</button>
+          <span class="hint" id="allow-hint"></span>
+        </form>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ============ SESSION DIALOG ============ -->
+<dialog class="dlg" id="session-dlg">
+  <form method="dialog" class="dlg-form" id="session-form">
+    <div class="dlg-head">
+      <div><p class="eyebrow">Session</p><h3 id="sd-title">Edit session</h3></div>
+      <button class="btn-text" type="button" data-close>Close</button>
+    </div>
+    <div class="dlg-body">
+      <div class="fields two">
+        <label>Date<input type="date" id="sd-date" required /></label>
+        <label>Time (Berlin)<input type="time" id="sd-time" value="17:00" /></label>
+        <label>Term<input type="text" id="sd-term" /></label>
+        <label>Status<select id="sd-status"><option value="open">open</option><option value="invited">invited</option><option value="confirmed">confirmed</option><option value="declined">declined</option><option value="done">done</option><option value="cancelled">cancelled</option></select></label>
+        <label>Speaker<input type="text" id="sd-speaker" /></label>
+        <label>Affiliation<input type="text" id="sd-affiliation" /></label>
+        <label>Speaker e-mail<input type="email" id="sd-email" /></label>
+        <label>Speaker page URL<input type="url" id="sd-url" /></label>
+        <label>Chair (initials)<input type="text" id="sd-chair" maxlength="3" /></label>
+        <label>Speaker Bluesky handle<input type="text" id="sd-bsky" placeholder="@name.bsky.social" /></label>
+      </div>
+      <label>Title<input type="text" id="sd-talktitle" /></label>
+      <label>Abstract<textarea id="sd-abstract" rows="4"></textarea></label>
+      <div class="fields two">
+        <label>Paper / project link<input type="url" id="sd-paper" /></label>
+        <label>Zoom link<input type="url" id="sd-zoom" /></label>
+        <label>Recording link<input type="url" id="sd-recording" /></label>
+        <label>Notes (decisions, logistics)<input type="text" id="sd-notes" /></label>
+      </div>
+
+      <div class="block">
+        <div class="block-head"><p class="card-label">Invitation e-mail</p>
+          <div class="block-actions">
+            <select id="sd-inv-status"><option value="none">not sent</option><option value="draft">draft</option><option value="sent">sent</option><option value="replied">replied</option><option value="confirmed">confirmed</option><option value="declined">declined</option></select>
+            <button class="btn btn-ghost btn-small" type="button" data-gen="invitation">Generate draft</button>
+            <button class="btn btn-ghost btn-small" type="button" data-copy="sd-inv-draft">Copy</button>
+            <button class="btn btn-ghost btn-small" type="button" data-mailto="invitation">Open in e-mail</button>
+            <button class="btn btn-primary btn-small" type="button" data-mark-sent>Mark sent by me</button>
+          </div>
+        </div>
+        <p class="hint" id="sd-inv-meta"></p>
+        <textarea id="sd-inv-draft" rows="10" placeholder="Generate a draft or paste your own."></textarea>
+      </div>
+
+      <div class="block">
+        <div class="block-head"><p class="card-label">Promotion</p><p class="hint">Statuses: todo → draft → scheduled → done</p></div>
+        <div class="promo">
+          <div class="promo-row">
+            <div class="promo-label">Newsletter<select id="sd-p-newsletter"><option>todo</option><option>draft</option><option>scheduled</option><option>done</option></select></div>
+            <div class="promo-actions"><button class="btn btn-ghost btn-small" type="button" data-gen="newsletter">Generate</button><button class="btn btn-ghost btn-small" type="button" data-copy="sd-d-newsletter">Copy</button><button class="btn btn-ghost btn-small" type="button" data-mailto="newsletter">Open in e-mail</button></div>
+            <textarea id="sd-d-newsletter" rows="7"></textarea>
+          </div>
+          <div class="promo-row">
+            <div class="promo-label">LinkedIn<select id="sd-p-linkedin"><option>todo</option><option>draft</option><option>scheduled</option><option>done</option></select></div>
+            <div class="promo-actions"><button class="btn btn-ghost btn-small" type="button" data-gen="linkedin">Generate</button><button class="btn btn-ghost btn-small" type="button" data-copy="sd-d-linkedin">Copy</button></div>
+            <textarea id="sd-d-linkedin" rows="7"></textarea>
+          </div>
+          <div class="promo-row">
+            <div class="promo-label">Bluesky <span class="count" id="bsky-count">0/300</span><select id="sd-p-bluesky"><option>todo</option><option>draft</option><option>scheduled</option><option>done</option></select></div>
+            <div class="promo-actions"><button class="btn btn-ghost btn-small" type="button" data-gen="bluesky">Generate</button><button class="btn btn-ghost btn-small" type="button" data-copy="sd-d-bluesky">Copy</button></div>
+            <textarea id="sd-d-bluesky" rows="4"></textarea>
+          </div>
+          <div class="promo-row">
+            <div class="promo-label">Website<select id="sd-p-website"><option>todo</option><option>done</option></select></div>
+            <p class="hint">“Publish to website” on the Series tab updates the public programme for the whole term.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dlg-foot">
+      <button class="btn-text danger" type="button" data-delete-session>Delete session</button>
+      <span class="hint" id="sd-hint"></span>
+      <button class="btn btn-primary" type="submit">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- ============ CANDIDATE DIALOG ============ -->
+<dialog class="dlg" id="cand-dlg">
+  <form method="dialog" class="dlg-form" id="cand-form">
+    <div class="dlg-head">
+      <div><p class="eyebrow">Candidate</p><h3 id="cd-title">Edit candidate</h3></div>
+      <button class="btn-text" type="button" data-close>Close</button>
+    </div>
+    <div class="dlg-body">
+      <div class="fields two">
+        <label>Name<input type="text" id="cd-name" required /></label>
+        <label>Affiliation<input type="text" id="cd-affiliation" /></label>
+        <label>E-mail<input type="email" id="cd-email" /></label>
+        <label>Page URL<input type="url" id="cd-url" /></label>
+        <label>Proposed by (initials)<input type="text" id="cd-proposedBy" maxlength="3" /></label>
+        <label>Owner (who invites)<input type="text" id="cd-owner" maxlength="3" /></label>
+        <label>Status<select id="cd-status"><option value="idea">idea</option><option value="invited">invited</option><option value="replied">replied</option><option value="confirmed">confirmed</option><option value="declined">declined</option><option value="waitlist">waitlist (next term)</option></select></label>
+        <label>Move into session slot<select id="cd-slot"><option value="">— keep in pipeline —</option></select></label>
+      </div>
+      <label>Why they fit / hook for the e-mail<textarea id="cd-notes" rows="3"></textarea></label>
+      <div class="block">
+        <div class="block-head"><p class="card-label">Invitation e-mail</p>
+          <div class="block-actions">
+            <button class="btn btn-ghost btn-small" type="button" data-gen="cand-invitation">Generate draft</button>
+            <button class="btn btn-ghost btn-small" type="button" data-copy="cd-draft">Copy</button>
+            <button class="btn btn-ghost btn-small" type="button" data-mailto="cand-invitation">Open in e-mail</button>
+            <button class="btn btn-primary btn-small" type="button" data-cand-sent>Mark invited by me</button>
+          </div>
+        </div>
+        <p class="hint" id="cd-meta"></p>
+        <textarea id="cd-draft" rows="10"></textarea>
+      </div>
+    </div>
+    <div class="dlg-foot">
+      <button class="btn-text danger" type="button" data-delete-cand>Delete candidate</button>
+      <span class="hint" id="cd-hint"></span>
+      <button class="btn btn-primary" type="submit">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore-compat.js"></script>
+<script src="committee.js"></script>
+</body>
+</html>

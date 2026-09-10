@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TaDa — Text-as-Data Speaker Series</title>
+  <meta name="description" content="TaDa is an online speaker series and reading group on text-as-data, NLP and machine learning in the social sciences. Every second Wednesday, 17:00 Berlin time, on Zoom. Free and open to all." />
+  <meta name="robots" content="noindex" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <meta name="theme-color" content="#1e6a86" />
+  <link rel="preload" href="assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/jetbrainsmono.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<a class="skip" href="#programme">Skip to programme</a>
+
+<header class="topbar">
+  <div class="bar-inner container">
+    <a class="brand" href="#top" aria-label="TaDa — home">
+      <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="currentColor"/><path d="M32 10l3.6 12.4L48 26l-12.4 3.6L32 42l-3.6-12.4L16 26l12.4-3.6z" fill="#f6e9a8"/><path d="M47 40l1.6 5.4L54 47l-5.4 1.6L47 54l-1.6-5.4L40 47l5.4-1.6z" fill="#dbe4ea"/></svg>
+      <span class="brand-name">TaDa</span>
+      <span class="brand-tag">text-as-data</span>
+    </a>
+    <nav class="nav" id="sitenav" aria-label="Site">
+      <a href="#programme">Programme</a>
+      <a href="#join">Join</a>
+      <a href="#archive">Archive</a>
+      <a href="#team">Team</a>
+      <a href="#contact">Contact</a>
+      <a class="nav-cta" href="#join">Get the Zoom link</a>
+    </nav>
+    <button class="nav-burger" aria-label="Menu" aria-expanded="false" aria-controls="sitenav"><span></span></button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <canvas class="tokens" id="tokens" aria-hidden="true"></canvas>
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow" data-reveal>Online speaker series · since 2021</p>
+        <h1 data-reveal data-delay="1">Where <mark data-tag="METHOD">text‑as‑data</mark> meets the <mark data-tag="FIELD">social sciences</mark>.</h1>
+        <p class="lead" data-reveal data-delay="2">
+          TaDa is a community of researchers working with natural language processing, machine learning and text-as-data methods. Every second Wednesday we host a 60-minute online talk and discussion with a guest from the field, open to everyone.
+        </p>
+        <div class="cta" data-reveal data-delay="3">
+          <a class="btn btn-primary" href="#join" data-join>Subscribe for Zoom links <span class="arrow">→</span></a>
+          <a class="btn btn-ghost" href="#programme">See the programme</a>
+        </div>
+        <ul class="facts" data-reveal data-delay="4" aria-label="Key facts">
+          <li><b>Wed · 17:00</b><span>Berlin time, biweekly</span></li>
+          <li><b>60 min</b><span>20–30 min talk + discussion</span></li>
+          <li><b id="fact-count">75</b><span>sessions since 2021</span></li>
+          <li><b>Free</b><span>on Zoom, open to all</span></li>
+        </ul>
+      </div>
+
+      <aside class="next-card" id="next-card" data-reveal data-delay="2" aria-live="polite">
+        <p class="card-label">Next session</p>
+        <p class="card-date"><span class="d">—</span></p>
+        <p class="card-speaker">Loading…</p>
+        <p class="card-title"></p>
+        <div class="card-actions"></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ============ PROGRAMME ============ -->
+  <section class="section" id="programme">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow" id="programme-eyebrow">Fall 2026 · AI Tools for Social Scientists</p>
+        <h2>The programme</h2>
+        <p class="section-lead">Five sessions this term. Speakers are announced about two weeks ahead; subscribers receive the Zoom link on the morning of each session.</p>
+      </div>
+      <ol class="programme" id="programme-list" data-reveal data-delay="1"></ol>
+      <p class="tz-note" data-reveal data-delay="2">All times are Berlin time (CET/CEST). <span id="tz-hint"></span></p>
+    </div>
+  </section>
+
+  <!-- ============ JOIN ============ -->
+  <section class="section band-dark" id="join">
+    <div class="container join-grid">
+      <div data-reveal>
+        <p class="eyebrow">Join</p>
+        <h2>Get the Zoom link, every time.</h2>
+        <p class="section-lead">One email a week at most: the announcement and the link. No registration, no cost. Unsubscribe with one click.</p>
+        <a class="btn btn-light" href="#" data-join>Subscribe <span class="arrow">→</span></a>
+      </div>
+      <div class="join-cards">
+        <div class="join-card" data-reveal data-delay="1">
+          <p class="card-label">Give a talk</p>
+          <p>Working on a method, tool or dataset for text-as-data research? We are always looking for speakers, especially early-career researchers.</p>
+          <a class="link-arrow" href="#" data-propose>Propose a session →</a>
+        </div>
+        <div class="join-card" data-reveal data-delay="2">
+          <p class="card-label">Follow</p>
+          <p>Session announcements and recordings also go out on Bluesky and LinkedIn.</p>
+          <p class="follow-links"><a href="#" data-bluesky>Bluesky</a> <span aria-hidden="true">·</span> <a href="#" data-linkedin>LinkedIn</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ARCHIVE ============ -->
+  <section class="section" id="archive">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">Archive</p>
+        <h2><span id="archive-count">75</span> sessions and counting.</h2>
+        <p class="section-lead">Everything we have hosted since the reading group started in April 2021: guest talks, paper discussions and hands-on sessions.</p>
+      </div>
+      <div class="archive-controls" data-reveal data-delay="1">
+        <div class="chips" id="year-chips" role="group" aria-label="Filter by year"></div>
+        <div class="chips" id="type-chips" role="group" aria-label="Filter by session type">
+          <button class="chip is-on" data-type="all" type="button">All</button>
+          <button class="chip" data-type="Speaker Series" type="button">Speaker series</button>
+          <button class="chip" data-type="Reading Group" type="button">Reading group</button>
+        </div>
+        <label class="search"><span class="sr-only">Search speakers and titles</span><input id="archive-search" type="search" placeholder="Search speakers, titles…" autocomplete="off" /></label>
+      </div>
+      <div class="archive" id="archive-list" data-reveal data-delay="2"></div>
+    </div>
+  </section>
+
+  <!-- ============ TEAM ============ -->
+  <section class="section" id="team">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">Team</p>
+        <h2>Organized by four researchers at four institutions.</h2>
+      </div>
+      <ul class="team" data-reveal data-delay="1">
+        <li class="member"><span class="mono-badge">NB</span><h3>Nicolai Berk</h3><p>Postdoc · ETH Zurich</p><a href="https://nicolaiberk.com" rel="noopener">nicolaiberk.com</a></li>
+        <li class="member"><span class="mono-badge">CK</span><h3>Christopher Klamm</h3><p>PhD candidate · University of Mannheim</p><a href="http://klamm.info" rel="noopener">klamm.info</a></li>
+        <li class="member"><span class="mono-badge">VK</span><h3>Verena Kunz</h3><p>Postdoc · GESIS</p><a href="https://verenakunz.github.io" rel="noopener">verenakunz.github.io</a></li>
+        <li class="member"><span class="mono-badge">CC</span><h3>Clint Claessen</h3><p>Postdoc · University of Freiburg</p><a href="https://www.clintclaessen.com/" rel="noopener">clintclaessen.com</a></li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer" id="contact">
+  <div class="container footer-grid">
+    <div>
+      <p class="brand-name">TaDa <span class="brand-tag">text-as-data</span></p>
+      <p class="footer-blurb">A community of machine learning, text-as-data and NLP enthusiasts in the social sciences, and friends from all related fields.</p>
+    </div>
+    <div>
+      <p class="card-label">Contact</p>
+      <p>Nicolai Berk — <span class="email" data-email="nicolai.berk|gess.ethz.ch"></span></p>
+      <p>Christopher Klamm — <span class="email" data-email="klamm|uni-mannheim.de"></span></p>
+    </div>
+    <div>
+      <p class="card-label">Elsewhere</p>
+      <p><a href="#" data-bluesky>Bluesky</a> · <a href="#" data-linkedin>LinkedIn</a> · <a href="https://tada.cool">tada.cool</a></p>
+      <p class="footer-small"><a href="committee/">Organizer login</a></p>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <p>© <span id="yr"></span> TaDa. Sessions are recorded only with the speaker's consent.</p>
+  </div>
+</footer>
+
+<script src="committee/config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
