@@ -25,10 +25,10 @@
   --on-dark:   #dbe4ea;
   --on-dark-2: #8fa4b3;
 
-  --accent:    #1e6a86;
-  --accent-h:  #174f65;
-  --accent-soft:#7fb7cf;
-  --glow:      rgba(30,106,134,.22);
+  --accent:    #0167d4;
+  --accent-h:  #0453a9;
+  --accent-soft:#7fb5ea;
+  --glow:      rgba(1,103,212,.22);
 
   --mark:      #f6e9a8;
   --mark-ink:  #5a4d12;
@@ -47,7 +47,7 @@
     --bg:#0f171d; --bg-2:#141e26; --surface:#182430;
     --ink:#e2e9ee; --ink-2:#b7c4cd; --muted:#93a4b0; --line:#26343f; --line-2:#33434f;
     --dark:#0a1015; --dark-2:#121c24; --on-dark:#dbe4ea; --on-dark-2:#8fa4b3;
-    --accent:#6fb3cc; --accent-h:#8fc6da; --accent-soft:#4f8ea6; --glow:rgba(111,179,204,.2);
+    --accent:#5fa8f0; --accent-h:#8cc3f7; --accent-soft:#3d7fc4; --glow:rgba(95,168,240,.2);
     --mark:#4d4420; --mark-ink:#f1e3a0;
     --ok:#7fd0a6; --ok-bg:#1d3a2d; --tba:#9aabb7; --tba-bg:#223039;
   }
@@ -56,7 +56,7 @@
   --bg:#0f171d; --bg-2:#141e26; --surface:#182430;
   --ink:#e2e9ee; --ink-2:#b7c4cd; --muted:#93a4b0; --line:#26343f; --line-2:#33434f;
   --dark:#0a1015; --dark-2:#121c24; --on-dark:#dbe4ea; --on-dark-2:#8fa4b3;
-  --accent:#6fb3cc; --accent-h:#8fc6da; --accent-soft:#4f8ea6; --glow:rgba(111,179,204,.2);
+  --accent:#5fa8f0; --accent-h:#8cc3f7; --accent-soft:#3d7fc4; --glow:rgba(95,168,240,.2);
   --mark:#4d4420; --mark-ink:#f1e3a0;
   --ok:#7fd0a6; --ok-bg:#1d3a2d; --tba:#9aabb7; --tba-bg:#223039;
 }
@@ -115,7 +115,7 @@ button { font: inherit; }
 .bar-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 72px; }
 .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); }
 .brand:hover { color: var(--ink); }
-.brand-mark { width: 30px; height: 30px; color: var(--accent); border-radius: 8px; }
+.brand-mark { width: 36px; height: 36px; border-radius: 50%; background: #fff; }
 .brand-name { font-family: var(--serif); font-weight: 600; font-size: 1.45rem; letter-spacing: -0.02em; line-height: 1; }
 .brand-tag { font-family: var(--mono); font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-left: 4px; padding-top: 3px; }
 .nav { display: flex; align-items: center; gap: 26px; }
