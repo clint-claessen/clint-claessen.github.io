@@ -55,6 +55,7 @@ service cloud.firestore {
         && str(request.resource.data.paper, 500)
         && str(request.resource.data.bluesky, 200)
         && str(request.resource.data.linkedin, 500)
+        && (!('photo' in request.resource.data) || str(request.resource.data.photo, 500))
         && str(request.resource.data.recording, 20)
         && request.resource.data.dates is list && request.resource.data.dates.size() <= 20
         && request.resource.data.handled == false;

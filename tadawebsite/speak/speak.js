@@ -42,7 +42,7 @@
     e.preventDefault(); $("#error").hidden = true;
     var dates = Array.prototype.map.call(document.querySelectorAll('input[name="dates"]:checked'), function (cb) { return cb.value; });
     var none = $("#none").checked;
-    var v = { name: $("#name").value.trim(), email: $("#email").value.trim(), affiliation: $("#affiliation").value.trim(), url: $("#url").value.trim(), bluesky: $("#bluesky").value.trim(), linkedin: $("#linkedin").value.trim(), title: $("#title").value.trim(), abstract: $("#abstract").value.trim(), paper: $("#paper").value.trim(), dates: dates, noneOfThese: none, recording: (document.querySelector('input[name="rec"]:checked') || {}).value || "public", notes: $("#notes").value.trim() };
+    var v = { name: $("#name").value.trim(), email: $("#email").value.trim(), affiliation: $("#affiliation").value.trim(), url: $("#url").value.trim(), bluesky: $("#bluesky").value.trim(), linkedin: $("#linkedin").value.trim(), photo: $("#photo").value.trim(), title: $("#title").value.trim(), abstract: $("#abstract").value.trim(), paper: $("#paper").value.trim(), dates: dates, noneOfThese: none, recording: (document.querySelector('input[name="rec"]:checked') || {}).value || "public", notes: $("#notes").value.trim() };
     if (!v.name || !v.email || !v.affiliation || !v.title || !v.abstract) return showError("Please fill in name, e-mail, affiliation, title and abstract.");
     if (!dates.length && !none) return showError("Please tick at least one date, or 'none of these work for me'.");
     if (!db) return showError("The form is not connected yet. Please e-mail your details to nicolai.berk@gess.ethz.ch.");

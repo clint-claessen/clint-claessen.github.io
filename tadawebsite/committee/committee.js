@@ -40,6 +40,9 @@
   }
   var AV_COLORS = ["bg-primary-container text-on-primary", "bg-secondary text-on-secondary", "bg-tertiary-container text-on-tertiary-container", "bg-primary text-on-primary", "bg-secondary-container text-on-secondary-container"];
   function avColor(uid) { var h = 0; for (var i = 0; i < (uid || "").length; i++) h = (h * 31 + uid.charCodeAt(i)) >>> 0; return AV_COLORS[h % AV_COLORS.length]; }
+  /* Photo links are stored as entered; site-relative paths (assets/...) are resolved from the site root, one level up from committee/. */
+  function photoSrc(p) { return /^(https?:|\/|data:|\.\.\/)/i.test(p) ? p : "../" + p.replace(/^\.\//, ""); }
+  document.addEventListener("error", function (e) { var img = e.target; if (!img || img.tagName !== "IMG" || !img.hasAttribute("data-initials")) return; var sp = document.createElement("span"); sp.textContent = img.getAttribute("data-initials"); img.replaceWith(sp); }, true);
   function pillClass(kind, v) {
     var M = { session: { open: "slate", invited: "amber", confirmed: "ok", declined: "rose", done: "sky", cancelled: "rose" }, inv: { none: "slate", draft: "amber", sent: "sky", replied: "amber", confirmed: "ok", declined: "rose" }, promo: { todo: "slate", draft: "amber", scheduled: "sky", done: "ok" }, cand: { idea: "slate", invited: "sky", replied: "amber", confirmed: "ok", declined: "rose", waitlist: "amber" } };
     return (M[kind] || {})[v] || "slate";
@@ -251,7 +254,7 @@
   $("#publish-programme").addEventListener("click", function () {
     if (!currentTerm) { toast("No term selected"); return; }
     var ts = termSettings[currentTerm] || {};
-    var pub = sessionsOfTerm().filter(function (s) { return s.status !== "cancelled"; }).map(function (s) { var show = s.status === "confirmed" || s.status === "done"; return { date: s.date, time: s.time || "17:00", term: currentTerm, speaker: show ? (s.speaker || "") : "", affiliation: show ? (s.affiliation || "") : "", url: show ? (s.url || "") : "", title: show ? (s.title || "") : "", paper: show ? (s.paper || "") : "", abstract: show ? (s.abstract || "") : "" }; });
+    var pub = sessionsOfTerm().filter(function (s) { return s.status !== "cancelled"; }).map(function (s) { var show = s.status === "confirmed" || s.status === "done"; return { date: s.date, time: s.time || "17:00", term: currentTerm, speaker: show ? (s.speaker || "") : "", affiliation: show ? (s.affiliation || "") : "", url: show ? (s.url || "") : "", photo: show ? (s.photo || "") : "", title: show ? (s.title || "") : "", paper: show ? (s.paper || "") : "", abstract: show ? (s.abstract || "") : "" }; });
     if (!confirm("Publish " + pub.length + " session(s) of " + currentTerm + " to the public website?\nSpeakers are shown only when their status is confirmed or done; other slots appear as open.")) return;
     var label = nowLabel();
     db.collection("public").doc("programme").set({ term: currentTerm, theme: ts.theme || CFG.termTheme || "", sessions: pub, updatedAt: TS(), updatedBy: me.initials, updatedAtLabel: label })
@@ -262,7 +265,7 @@
 
   /* ---------- session drawer ---------- */
   var drawer = $("#drawer"), sform = $("#session-form");
-  var F = ["date", "time", "term", "status", "speaker", "affiliation", "email", "url", "chair", "bsky", "linkedin", "talktitle", "abstract", "paper", "zoom", "recording", "notes"];
+  var F = ["date", "time", "term", "status", "speaker", "affiliation", "email", "url", "photo", "chair", "bsky", "linkedin", "talktitle", "abstract", "paper", "zoom", "recording", "notes"];
   function sd(k) { return $("#sd-" + k); }
   function openDrawer() { drawer.classList.add("open"); $("#drawer-backdrop").hidden = false; document.body.style.overflow = "hidden"; }
   function closeDrawer() { drawer.classList.remove("open"); $("#drawer-backdrop").hidden = true; document.body.style.overflow = ""; editing = null; }
@@ -271,7 +274,7 @@
   function openSession(s) {
     editing = s; fillPeopleSelects();
     $("#sd-title").textContent = s ? (s.speaker || "Open slot") + " · " + fmtShort(s.date) + " " + s.date.slice(0, 4) : "New session";
-    $("#sd-av").textContent = s && s.speaker ? initialsOf(s.speaker).slice(0, 2) : "+";
+    $("#sd-av").innerHTML = s && s.photo ? '<img class="w-9 h-9 rounded-pill object-cover" src="' + esc(photoSrc(s.photo)) + '" alt="" data-initials="' + esc(initialsOf(s.speaker || "").slice(0, 2)) + '" />' : esc(s && s.speaker ? initialsOf(s.speaker).slice(0, 2) : "+");
     F.forEach(function (k) { var key = k === "talktitle" ? "title" : k; sd(k).value = s ? (s[key] || (k === "time" ? "17:00" : "")) : (k === "time" ? "17:00" : k === "term" ? (currentTerm || "") : k === "status" ? "open" : ""); });
     var inv = (s && s.invitation) || {}, pr = (s && s.promo) || {};
     $("#sd-inv-status").value = inv.status || "none"; $("#sd-inv-draft").value = inv.draft || "";
@@ -395,7 +398,7 @@
     if (e.target.closest("[data-assign]")) {
       var slot = $("select[data-slot]", art).value; if (!slot) { toast("Choose a slot first"); return; }
       var s = sessionById(slot); if (!confirm("Put " + r.name + " into the slot on " + fmtShort(slot) + " " + slot.slice(0, 4) + " as confirmed?")) return;
-      db.collection("sessions").doc(slot).set({ speaker: r.name, affiliation: r.affiliation || "", email: r.email || "", url: r.url || "", bsky: r.bluesky || "", linkedin: r.linkedin || "", title: r.title || "", abstract: r.abstract || "", paper: r.paper || "", recording: r.recording || "", notes: ((s && s.notes) ? s.notes + "\n" : "") + (r.notes || ""), status: "confirmed", invitation: Object.assign({}, (s && s.invitation) || {}, { status: "confirmed" }), updatedAt: TS(), updatedBy: me.initials, updatedAtLabel: nowLabel() }, { merge: true })
+      db.collection("sessions").doc(slot).set({ speaker: r.name, affiliation: r.affiliation || "", email: r.email || "", url: r.url || "", photo: r.photo || "", bsky: r.bluesky || "", linkedin: r.linkedin || "", title: r.title || "", abstract: r.abstract || "", paper: r.paper || "", recording: r.recording || "", notes: ((s && s.notes) ? s.notes + "\n" : "") + (r.notes || ""), status: "confirmed", invitation: Object.assign({}, (s && s.invitation) || {}, { status: "confirmed" }), updatedAt: TS(), updatedBy: me.initials, updatedAtLabel: nowLabel() }, { merge: true })
         .then(function () { return db.collection("responses").doc(r.id).update({ handled: true, handledBy: me.initials, handledAt: nowLabel(), sessionDate: slot }); })
         .then(function () { var c = candidates.filter(function (x) { return (x.email && r.email && x.email.toLowerCase() === r.email.toLowerCase()) || x.name === r.name; })[0]; if (c) return db.collection("candidates").doc(c.id).update({ status: "confirmed", sessionDate: slot, updatedAt: TS(), updatedBy: me.initials, updatedAtLabel: nowLabel() }); })
         .then(function () { toast("Assigned to " + fmtShort(slot) + ". Now publish the website."); }, function (err) { toast(friendly(err)); });

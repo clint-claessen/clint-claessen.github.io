@@ -70,6 +70,22 @@
   function isUpcoming(s) { return s.date >= TODAY; }
   function byDate(a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; }
   function initials(n) { return (n || "").split(/[\s&,]+/).filter(Boolean).slice(0, 2).map(function (w) { return w[0]; }).join("").toUpperCase(); }
+  /* Speaker portrait (from the original site or the committee app) with an initials fallback. */
+  function avatar(s, tba, size, quiet) {
+    if (s.photo) return '<img class="' + size + ' rounded-pill object-cover shrink-0 bg-surface-container-high shadow-sm" src="' + esc(s.photo) + '" alt="" loading="lazy" data-initials="' + esc(initials(s.speaker)) + '" />';
+    return '<span class="' + size + ' rounded-pill shrink-0 inline-flex items-center justify-center select-none ' + (quiet ? "bg-surface-container-high text-on-surface-variant font-code-sm text-code-sm" : "bg-primary-container text-on-primary font-headline-sm text-headline-sm") + '">' + (tba ? "?" : esc(initials(s.speaker))) + '</span>';
+  }
+  /* A portrait that fails to load falls back to the initials badge. */
+  document.addEventListener("error", function (e) {
+    var img = e.target; if (!img || img.tagName !== "IMG" || !img.hasAttribute("data-initials")) return;
+    var sp = document.createElement("span"); sp.className = img.className.replace("object-cover", "") + " inline-flex items-center justify-center bg-surface-container-high text-on-surface-variant font-code-sm text-code-sm"; sp.textContent = img.getAttribute("data-initials"); img.replaceWith(sp);
+  }, true);
+  function photoFor(live, statics) {
+    var key = function (n) { return (n || "").toLowerCase().replace(/[^a-z]/g, ""); }, byDate = {}, byName = {};
+    statics.forEach(function (r) { if (r.photo) { byDate[r.date] = r; byName[key(r.speaker)] = r.photo; } });
+    var same = byDate[live.date] && key(byDate[live.date].speaker) === key(live.speaker) ? byDate[live.date].photo : "";
+    return live.photo || same || byName[key(live.speaker)] || "";
+  }
 
   function renderNext(list) {
     var card = $("#next-card"); if (!card) return;
@@ -82,7 +98,7 @@
       (s.term ? '<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-code-sm text-code-sm">' + esc(s.term) + '</span>' : '') + '</div>' +
       '<div class="flex flex-col gap-space-xs"><div class="font-code-md text-code-md text-on-surface-variant">' + esc(fmtDate(s.date, true)) + ' · ' + esc(s.time || "17:00") + ' Berlin time</div>' + (hint ? '<div class="font-body-sm text-body-sm text-tertiary">' + esc(hint) + '</div>' : '') + '</div>' +
       '<div class="my-space-md p-space-md rounded bg-surface-container-low flex flex-col gap-space-xs">' +
-      '<div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-headline-sm text-headline-sm select-none">' + (tba ? "?" : esc(initials(s.speaker))) + '</div><div class="flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm text-on-surface truncate">' + (tba ? "Speaker to be announced" : esc(s.speaker)) + '</span>' + (s.affiliation ? '<span class="font-code-sm text-code-sm text-tertiary truncate">' + esc(s.affiliation) + '</span>' : '') + '</div></div>' +
+      '<div class="flex items-center gap-space-sm">' + avatar(s, tba, "w-14 h-14") + '<div class="flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm text-on-surface truncate">' + (tba ? "Speaker to be announced" : esc(s.speaker)) + '</span>' + (s.affiliation ? '<span class="font-code-sm text-code-sm text-tertiary truncate">' + esc(s.affiliation) + '</span>' : '') + '</div></div>' +
       (s.title ? '<h2 class="font-headline-md text-headline-md text-on-surface mt-space-xs tracking-tight">“' + esc(s.title) + '”</h2>' : (tba ? '<h2 class="font-headline-md text-headline-md text-on-surface mt-space-xs tracking-tight">' + esc(CFG.termTheme || "AI Tools for Social Scientists") + '</h2>' : '')) +
       (s.abstract ? '<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-3 mt-space-xs">' + esc(s.abstract) + '</p>' : '') + '</div>' +
       '<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-space-sm">' +
@@ -102,7 +118,7 @@
       return '<tr class="hover:bg-surface-container-low transition-colors">' +
         '<td class="py-space-md px-space-md align-top"><div class="font-headline-sm text-headline-sm text-on-surface">' + esc(fmtDate(s.date, true)) + '</div><div class="font-code-sm text-code-sm text-tertiary mt-0.5">' + esc((s.time || "17:00") + " " + tzLabel(s.date)) + '</div></td>' +
         '<td class="py-space-md px-space-md align-top">' + (tba ? '<div class="font-headline-sm text-headline-sm text-tertiary italic">To be announced</div><div class="font-body-sm text-body-sm text-outline-variant mt-0.5">Invitations out</div>' :
-          '<div class="font-headline-sm text-headline-sm text-on-surface">' + (s.url ? '<a class="hover:text-primary" href="' + esc(s.url) + '" rel="noopener">' + esc(s.speaker) + '</a>' : esc(s.speaker)) + '</div>' + (s.affiliation ? '<div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">' + esc(s.affiliation) + '</div>' : '')) + '</td>' +
+          '<div class="flex items-start gap-space-sm">' + avatar(s, false, "w-11 h-11") + '<div class="min-w-0"><div class="font-headline-sm text-headline-sm text-on-surface">' + (s.url ? '<a class="hover:text-primary" href="' + esc(s.url) + '" rel="noopener">' + esc(s.speaker) + '</a>' : esc(s.speaker)) + '</div>' + (s.affiliation ? '<div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">' + esc(s.affiliation) + '</div>' : '') + '</div></div>') + '</td>' +
         '<td class="py-space-md px-space-md align-top">' + (s.title ? '<div class="font-body-lg text-body-lg text-on-surface font-medium">' + (s.paper ? '<a class="hover:text-primary" href="' + esc(s.paper) + '" rel="noopener">“' + esc(s.title) + '”</a>' : '“' + esc(s.title) + '”') + '</div>' : '<div class="font-body-lg text-body-lg text-tertiary italic">' + (tba ? "To be announced" : "Title to follow") + '</div>') + '</td>' +
         '<td class="py-space-md px-space-md align-top text-right"><span class="pill ' + (tba ? "pill-slate" : "pill-ok") + '">' + (tba ? "Open slot" : "Confirmed") + '</span></td></tr>';
     }).join("");
@@ -127,8 +143,8 @@
     box.innerHTML = rows.map(function (s) {
       var rg = s.type === "Reading Group";
       return '<div class="p-space-md rounded bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow flex flex-col md:flex-row md:items-center justify-between gap-space-sm">' +
-        '<div class="flex flex-col md:flex-row md:items-center gap-space-sm md:gap-space-md min-w-0"><span class="font-code-md text-code-md text-tertiary w-32 shrink-0 tabular">' + esc(fmtDate(s.date, true)) + '</span>' +
-        '<div class="flex flex-col min-w-0"><div class="flex items-center gap-space-xs flex-wrap"><span class="font-headline-sm text-headline-sm text-on-surface">' + (s.url ? '<a class="hover:text-primary" href="' + esc(s.url) + '" rel="noopener">' + esc(s.speaker) + '</a>' : esc(s.speaker)) + '</span>' + (s.affiliation ? '<span class="font-body-sm text-body-sm text-on-surface-variant">· ' + esc(s.affiliation) + '</span>' : '') + '</div>' +
+        '<div class="flex items-center gap-space-sm md:gap-space-md min-w-0"><span class="hidden md:inline font-code-md text-code-md text-tertiary w-32 shrink-0 tabular">' + esc(fmtDate(s.date, true)) + '</span>' + avatar(s, false, "w-10 h-10", true) +
+        '<div class="flex flex-col min-w-0"><span class="md:hidden font-code-sm text-code-sm text-tertiary tabular">' + esc(fmtDate(s.date, true)) + '</span><div class="flex items-center gap-space-xs flex-wrap"><span class="font-headline-sm text-headline-sm text-on-surface">' + (s.url ? '<a class="hover:text-primary" href="' + esc(s.url) + '" rel="noopener">' + esc(s.speaker) + '</a>' : esc(s.speaker)) + '</span>' + (s.affiliation ? '<span class="font-body-sm text-body-sm text-on-surface-variant">· ' + esc(s.affiliation) + '</span>' : '') + '</div>' +
         (s.title ? '<div class="font-body-md text-body-md text-primary italic mt-0.5">' + (s.paper ? '<a class="hover:underline" href="' + esc(s.paper) + '" rel="noopener">“' + esc(s.title) + '”</a>' : '“' + esc(s.title) + '”') + '</div>' : '') + '</div></div>' +
         '<div class="flex items-center gap-space-sm shrink-0"><span class="px-2 py-0.5 rounded-full ' + (rg ? "bg-secondary-fixed text-on-secondary-fixed" : "bg-surface-container-high text-on-surface") + ' font-code-sm text-code-sm uppercase">' + (rg ? "Reading group" : "Speaker series") + '</span>' + (s.paper ? '<a class="p-1 text-tertiary hover:text-primary transition-colors" href="' + esc(s.paper) + '" rel="noopener" title="Paper"><span class="material-symbols-outlined text-[18px]">description</span></a>' : '') + '</div></div>';
     }).join("");
@@ -152,7 +168,8 @@
       .then(function (doc) {
         if (!doc.exists) return; var d = doc.data() || {}; var live = (d.sessions || []).filter(function (s) { return s && s.date; }); if (!live.length) return;
         var dates = {}; live.forEach(function (s) { dates[s.date] = true; });
-        TALKS = TALKS.filter(function (s) { return !isUpcoming(s) && !dates[s.date]; }).concat(live.map(function (s) { return { date: s.date, time: s.time || "17:00", speaker: s.speaker || "", affiliation: s.affiliation || "", url: s.url || "", title: s.title || "", abstract: s.abstract || "", paper: s.paper || "", type: "Speaker Series", term: s.term || d.term || "" }; }));
+        var statics = TALKS;
+        TALKS = TALKS.filter(function (s) { return !isUpcoming(s) && !dates[s.date]; }).concat(live.map(function (s) { return { date: s.date, time: s.time || "17:00", speaker: s.speaker || "", affiliation: s.affiliation || "", url: s.url || "", title: s.title || "", abstract: s.abstract || "", paper: s.paper || "", photo: photoFor(s, statics), type: "Speaker Series", term: s.term || d.term || "" }; }));
         if (d.theme) CFG.termTheme = d.theme; renderAll();
       }).catch(function () { });
   }
