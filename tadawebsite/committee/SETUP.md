@@ -50,6 +50,20 @@ allow reactions on other people's messages.
   cells; the row opens the full session with newsletter, LinkedIn and Bluesky drafts.
 - **Messages**: channels #general, #speakers, #promo, #random, direct messages, threads,
   reactions, @mentions, a pinned note. History is kept for good.
+- **Reminders** (Series view): exports an .ics with one calendar reminder per session and duty,
+  Berlin time: the chair e-mails the speaker one week before (10:00), the announcement posts go
+  out six days before (10:00), the reminder post + Zoom link on the day (09:00), plus the session
+  itself with a 30-minute alert. Import the file once into Google Calendar (Settings → Import &
+  export), Outlook or Apple Calendar; re-export after the programme changes (same UIDs, so a
+  re-import updates rather than duplicates in most calendars). The session drawer offers the same
+  four reminders as prefilled Google Calendar links. Nothing runs on a server: the reminders live in
+  each organizer's own calendar, which is also what rings on the phone.
+- **Social card** (session drawer, or `/tadawebsite/card/`): renders the announcement image for
+  LinkedIn and Bluesky (photo on the blue panel, date badge, name, title; red badge when the session
+  is not on a Wednesday) and downloads it as PNG, square or landscape. Uses the portrait stored in
+  `assets/speakers/` (photos from other websites cannot be exported by the browser; upload them or
+  add them to the repo, named `YYYY-MM-DD-first-last.jpg`, square, about 800 px).
+- **Post drafts** (LinkedIn, Bluesky) follow the wording of the spring 2026 posts; attach the social card.
 
 ## What lives where
 | Data | Firestore collection | Who can read | Who can write |

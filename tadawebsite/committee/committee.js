@@ -282,7 +282,7 @@
     ["newsletter", "linkedin", "bluesky"].forEach(function (k) { $("#sd-p-" + k).value = (pr[k] || {}).status || "todo"; $("#sd-d-" + k).value = (pr[k] || {}).draft || ""; });
     $("#sd-p-website").value = (pr.website || {}).status || "todo";
     $("#sd-hint").textContent = $("#sd-hint2").textContent = s && s.updatedBy ? "Last change " + s.updatedBy + " · " + (s.updatedAtLabel || "") : "";
-    $("[data-delete-session]").hidden = !s; bskyCount(); recolorPills(); openDrawer(); sform.scrollTop = 0;
+    $("[data-delete-session]").hidden = !s; bskyCount(); recolorPills(); paintReminders(s); openDrawer(); sform.scrollTop = 0;
   }
   function recolorPills() { $$("select.pill-select", drawer).forEach(function (s) { var kind = s.id === "sd-inv-status" ? "inv" : "promo"; s.className = "pill-select " + pillClass(kind, s.value); }); }
   drawer.addEventListener("change", function (e) { if (e.target.matches("select.pill-select")) recolorPills(); });
@@ -336,14 +336,19 @@
       (s.speaker || "[speaker]") + (s.affiliation ? " (" + s.affiliation + ")" : "") + "\n“" + (s.title || "[title]") + "”\n" + fmtLong(s.date) + ", " + (s.time || "17:00") + " " + tz(s.date) + " (Berlin time), online on Zoom\n\n" + (s.abstract ? s.abstract + "\n\n" : "") +
       "Zoom: " + (s.zoom || "the link follows in the reminder on the morning of the session") + "\n" + (s.paper ? "Paper: " + s.paper + "\n" : "") + "\nWe hope to see many of you there!\n" + firstName(me.name) + " & the TaDa team\ntada.cool";
   }
+  /* Post templates follow the wording of the team's earlier posts (spring 2026). Attach the social card (button in the drawer) as the image. */
+  function termWord() { var t = T().term || ""; return /spring/i.test(t) ? "Spring " : /fall|autumn/i.test(t) ? "Fall " : ""; }
   function linkedinText(s) {
-    var p = dparts(s.date);
-    return "🥁 We're excited to announce the next session in our TADA Speaker Series 🌱 ⬇️\n\nWe're delighted to welcome " + (s.speaker || "[speaker]") + (s.affiliation ? " (" + s.affiliation + ")" : "") + " for a talk on:\n“" + (s.title || "[title]") + "”\n" + (s.paper ? "🔗 " + s.paper + "\n" : "") +
-      "\n📅 When? " + DAYS_LONG[p.dow] + ", " + MONTHS_LONG[p.m - 1] + " " + p.d + ", " + (s.time || "17:00") + " (Berlin time)\n📍 Where? Zoom\n\n👉 Want to join? Subscribe at tada.cool to receive the Zoom link.\n\nWe're looking forward to a great discussion and hope to see many of you there!\n\n#TextAsData #CompSocSci #NLP";
+    var p = dparts(s.date), wd = DAYS_LONG[p.dow], unusual = p.dow !== 3;
+    return "We're excited that " + (s.speaker || "[speaker]") + (s.affiliation ? " (" + s.affiliation + ")" : "") + " will join us for the next session of the TaDa " + termWord() + "Speaker Series to present " + (s.title ? "“" + s.title + "”" : "[talk title]") + ".\n\n" +
+      "When? " + (unusual ? wd.toUpperCase() + " (note the unusual day!)" : wd) + ", " + MONTHS_LONG[p.m - 1] + " " + p.d + ", " + (s.time || "17:00") + " (Berlin time)\n\n" +
+      "Sign up for our newsletter at tada.cool for the Zoom link! Alternatively, you can also join the #reading-group channel on our Slack: https://lnkd.in/dY-r7pHP.";
   }
   function blueskyText(s) {
-    var p = dparts(s.date), who = (s.speaker || "[speaker]") + (s.bsky ? " (" + s.bsky + ")" : "") + (s.affiliation ? ", " + s.affiliation : "");
-    var base = "🌱 Next in the TaDa Speaker Series: " + who + " on “{T}” — " + DAYS[p.dow] + " " + p.d + " " + MONTHS[p.m - 1] + ", " + (s.time || "17:00") + " Berlin time, on Zoom. Subscribe for the link: tada.cool #TextAsData #CompSocSci";
+    var p = dparts(s.date), n = daysUntil(s.date), wd = DAYS_LONG[p.dow];
+    var when = (n === 0 ? "today" : n > 0 && n <= 7 ? "next " + wd : "on " + wd) + " (" + MONTHS[p.m - 1] + " " + p.d + ", " + timeLabel(s.time) + " Berlin time)";
+    var who = (s.speaker || "[speaker]") + (s.bsky ? " " + (s.bsky.charAt(0) === "@" ? s.bsky : "@" + s.bsky) : "");
+    var base = "🥁 Join us " + when + " for an exciting talk by " + who + " on “{T}”. Join our newsletter 🗞️ or send me a DM for more details: tada.cool";
     var title = s.title || "[title]", room = 300 - (base.length - 3); if (title.length > room) title = title.slice(0, Math.max(room - 1, 10)).replace(/\s+\S*$/, "") + "…";
     return base.replace("{T}", title);
   }
@@ -364,6 +369,64 @@
     if (url.length > 7000) { copyText(body); toast("Text copied (too long for a mail link): paste it into your e-mail"); }
     window.location.href = url;
   }
+
+  /* ---------- reminders (calendar) & social card ----------
+     Duties per session, Berlin time: the chair e-mails the speaker one week before (10:00), the announcement posts go out six days
+     before (10:00, the Thursday for a Wednesday session), the reminder post + Zoom link on the day (09:00), plus the session itself. */
+  function addDays(iso, n) { var p = iso.split("-"); return isoOf(new Date(+p[0], +p[1] - 1, +p[2] + n)); }
+  function timeLabel(t) { var p = (t || "17:00").split(":"), h = +p[0], m = +p[1] || 0; return (h % 12 || 12) + (m ? ":" + pad(m) : "") + (h >= 12 ? "pm" : "am"); }
+  function daysUntil(iso) { var a = iso.split("-"), b = todayISO().split("-"); return Math.round((Date.UTC(+a[0], +a[1] - 1, +a[2]) - Date.UTC(+b[0], +b[1] - 1, +b[2])) / 864e5); }
+  function chairName(s) { var m = memberList().filter(function (x) { return x.initials === s.chair; })[0]; return m ? m.name : (s.chair || "unassigned"); }
+  function siteRoot() { return location.origin + location.pathname.replace(/committee\/[^/]*$/, ""); }
+  function cardUrl(s) { return siteRoot() + "card/?" + ["date", "time", "speaker", "affiliation", "title", "photo"].filter(function (k) { return s[k]; }).map(function (k) { return k + "=" + encodeURIComponent(s[k]); }).join("&"); }
+  var REM_LABEL = { chair: "Chair e-mails the speaker (1 week before)", promo: "Announcement posts (6 days before)", day: "Session-day reminder post + Zoom link", session: "The session itself" };
+  function remindersFor(s) {
+    var who = s.speaker || "open slot", chair = chairName(s), app = location.origin + location.pathname, out = [];
+    var when = fmtLong(s.date) + ", " + (s.time || "17:00") + " " + tz(s.date) + " (Berlin time)";
+    if (s.speaker) {
+      out.push({ kind: "chair", date: addDays(s.date, -7), time: "10:00", dur: 30, title: "TaDa chair (" + (s.chair || "?") + "): e-mail " + who + " – session " + fmtShort(s.date),
+        desc: "One week before the session, the chair (" + chair + ") writes to " + who + (s.email ? " <" + s.email + ">" : "") + ": confirm date and time (" + when + "), the format (60 minutes, 20–30-minute talk then discussion), ask for the final title and abstract, a portrait photo and links, mention the recording question, and send the Zoom link" + (s.zoom ? ": " + s.zoom : " once it exists") + ".\nCommittee app: " + app });
+      out.push({ kind: "promo", date: addDays(s.date, -6), time: "10:00", dur: 30, title: "TaDa promo: announce " + who + " (LinkedIn, Bluesky, newsletter)",
+        desc: "Post the announcement for " + who + " – " + when + ".\nDrafts: open the session in the committee app (" + app + "), Generate, Copy.\nSocial card with photo: " + cardUrl(s) });
+      out.push({ kind: "day", date: s.date, time: "09:00", dur: 30, title: "TaDa today: reminder post + Zoom link for " + who,
+        desc: "Session day: reminder on LinkedIn and Bluesky, and send the Zoom link" + (s.zoom ? " (" + s.zoom + ")" : "") + " to the subscribers.\nChair: " + chair + ".\n" + when });
+    }
+    out.push({ kind: "session", date: s.date, time: s.time || "17:00", dur: 60, title: "TaDa session: " + who + (s.title ? " – “" + s.title + "”" : "") + " (chair " + (s.chair || "?") + ")",
+      desc: (s.title ? s.title + "\n" : "") + (s.affiliation ? s.affiliation + "\n" : "") + "Chair: " + chair + (s.zoom ? "\nZoom: " + s.zoom : "") + "\nOnline, " + when });
+    return out;
+  }
+  function stamp(iso, time) { var p = iso.split("-"), t = (time || "17:00").split(":"); return p.join("") + "T" + pad(+t[0]) + pad(+t[1] || 0) + "00"; }
+  function stampEnd(iso, time, dur) { var t = (time || "17:00").split(":"), mins = (+t[0]) * 60 + (+t[1] || 0) + (dur || 30), d = iso; if (mins >= 1440) { mins -= 1440; d = addDays(iso, 1); } return stamp(d, pad(Math.floor(mins / 60)) + ":" + pad(mins % 60)); }
+  function gcalUrl(r) { return "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(r.title) + "&dates=" + stamp(r.date, r.time) + "/" + stampEnd(r.date, r.time, r.dur) + "&ctz=Europe%2FBerlin&details=" + encodeURIComponent(r.desc); }
+  function icsText(v) { return String(v || "").replace(/\\/g, "\\\\").replace(/\r?\n/g, "\\n").replace(/[,;]/g, function (c) { return "\\" + c; }); }
+  var VTZ = ["BEGIN:VTIMEZONE", "TZID:Europe/Berlin", "BEGIN:DAYLIGHT", "TZOFFSETFROM:+0100", "TZOFFSETTO:+0200", "TZNAME:CEST", "DTSTART:19700329T020000", "RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU", "END:DAYLIGHT", "BEGIN:STANDARD", "TZOFFSETFROM:+0200", "TZOFFSETTO:+0100", "TZNAME:CET", "DTSTART:19701025T030000", "RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU", "END:STANDARD", "END:VTIMEZONE"];
+  function icsOf(list, name) {
+    var dt = new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) + "Z";
+    var ev = list.map(function (r) { return ["BEGIN:VEVENT", "UID:tada-" + r.kind + "-" + r.date + "@tada.cool", "DTSTAMP:" + dt, "DTSTART;TZID=Europe/Berlin:" + stamp(r.date, r.time), "DTEND;TZID=Europe/Berlin:" + stampEnd(r.date, r.time, r.dur), "SUMMARY:" + icsText(r.title), "DESCRIPTION:" + icsText(r.desc), "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:" + icsText(r.title), "TRIGGER:" + (r.kind === "session" ? "-PT30M" : "-PT0M"), "END:VALARM", "END:VEVENT"].join("\r\n"); });
+    return ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//TaDa//Committee reminders//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH", "X-WR-CALNAME:" + icsText(name), "X-WR-TIMEZONE:Europe/Berlin"].concat(VTZ, ev, ["END:VCALENDAR"]).join("\r\n");
+  }
+  function downloadText(name, text, type) { var blob = new Blob([text], { type: type || "text/plain" }), a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000); }
+  $("#reminders-btn").addEventListener("click", function () { if (!currentTerm) { toast("Create a term first"); return; } $("#rem-term").textContent = currentTerm; $("#rem-dlg").showModal(); });
+  $("#rem-form").addEventListener("submit", function (e) {
+    if (e.submitter && e.submitter.value !== "download") return;
+    var kinds = $$("input[name=kind]:checked", $("#rem-form")).map(function (i) { return i.value; }), mine = $("#rem-mine").checked, list = [];
+    sessionsOfTerm().filter(function (s) { return s.status !== "cancelled" && s.status !== "declined"; }).forEach(function (s) {
+      remindersFor(s).forEach(function (r) { if (kinds.indexOf(r.kind) < 0) return; if (mine && r.kind === "chair" && s.chair !== me.initials) return; list.push(r); });
+    });
+    if (!list.length) { e.preventDefault(); toast("Nothing to export: tick at least one reminder type"); return; }
+    downloadText("tada-reminders-" + currentTerm.replace(/\s+/g, "-").toLowerCase() + ".ics", icsOf(list, "TaDa reminders " + currentTerm), "text/calendar");
+    toast(list.length + " reminders exported");
+  });
+  function paintReminders(s) {
+    var box = $("#sd-reminders"); if (!box) return;
+    if (!s || !s.date) { box.innerHTML = '<span class="hint">Save the session first; the links use the saved data.</span>'; return; }
+    box.innerHTML = remindersFor(s).map(function (r) { return '<a class="btn btn-ghost justify-start" href="' + esc(gcalUrl(r)) + '" target="_blank" rel="noopener"><span class="material-symbols-outlined text-[16px]">event</span>' + esc(REM_LABEL[r.kind]) + '<span class="hint">· ' + esc(fmtShort(r.date) + " " + r.time) + ' · Google Calendar</span></a>'; }).join("") +
+      '<button class="btn btn-ghost justify-start" type="button" data-rem-ics><span class="material-symbols-outlined text-[16px]">download</span>Download these as .ics (Outlook, Apple Calendar)</button>';
+  }
+  drawer.addEventListener("click", function (e) {
+    if (e.target.closest("[data-rem-ics]")) { var s = sessionFromForm(); if (!s.date) { toast("Date is required"); return; } downloadText("tada-reminders-" + s.date + ".ics", icsOf(remindersFor(s), "TaDa " + s.date), "text/calendar"); return; }
+    if (e.target.closest("[data-card]")) { var s2 = sessionFromForm(); if (!s2.date) { toast("Date is required"); return; } window.open(cardUrl(s2), "_blank", "noopener"); }
+  });
 
   /* ---------- speaker responses ---------- */
   var RF = "new";

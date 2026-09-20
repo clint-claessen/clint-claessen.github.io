@@ -6,7 +6,8 @@
   "title": "Embedding Regression: Models for Context-Specific Description and Inference in Political Science",
   "type": "Reading Group",
   "url": "",
-  "paper": "https://github.com/prodriguezsosa/EmbeddingRegression/blob/main/Paper/RodriguezSpirlingStewart\\_EmbedRegression.pdf"
+  "paper": "https://github.com/prodriguezsosa/EmbeddingRegression/blob/main/Paper/RodriguezSpirlingStewart_EmbedRegression.pdf",
+  "authors": "Rodriguez, Spirling & Stewart"
  },
  {
   "date": "2021-05-04",
@@ -15,7 +16,8 @@
   "title": "SemAxis: A Lightweight Framework to Characterize Domain-Specific Word Semantics Beyond Sentiment",
   "type": "Reading Group",
   "url": "",
-  "paper": "https://arxiv.org/pdf/1806.05521.pdf"
+  "paper": "https://arxiv.org/pdf/1806.05521.pdf",
+  "authors": "An, Kwak & Ahn (2018)"
  },
  {
   "date": "2021-05-18",
@@ -24,7 +26,8 @@
   "title": "The Geometry of Culture: Analyzing the Meanings of Class through Word Embeddings",
   "type": "Reading Group",
   "url": "",
-  "paper": "https://journals.sagepub.com/doi/full/10.1177/0003122419877135"
+  "paper": "https://journals.sagepub.com/doi/full/10.1177/0003122419877135",
+  "authors": "Kozlowski, Taddy & Evans (2019)"
  },
  {
   "date": "2021-06-01",
@@ -33,7 +36,8 @@
   "title": "Swimming with the Tide? Positional Claim Detection across Political Text Types",
   "type": "Reading Group",
   "url": "",
-  "paper": "https://www.aclweb.org/anthology/2020.nlpcss-1.3/"
+  "paper": "https://www.aclweb.org/anthology/2020.nlpcss-1.3/",
+  "authors": "Blokker, Dayanik, Lapesa & Padó (2020)"
  },
  {
   "date": "2021-06-15",
@@ -42,7 +46,8 @@
   "title": "Measuring Polarization with Text Analysis: Evidence from the UK House of Commons, 1811–2015",
   "type": "Reading Group",
   "url": "",
-  "paper": "https://www.cambridge.org/core/journals/political-analysis/article/abs/measuring-polarization-with-text-analysis-evidence-from-the-uk-house-of-commons-18112015/C590F249EB2CC25D09434A61017FF5A3"
+  "paper": "https://www.cambridge.org/core/journals/political-analysis/article/abs/measuring-polarization-with-text-analysis-evidence-from-the-uk-house-of-commons-18112015/C590F249EB2CC25D09434A61017FF5A3",
+  "authors": "Goet (2019)"
  },
  {
   "date": "2021-06-29",
@@ -51,7 +56,8 @@
   "title": "What drives media slant?",
   "type": "Reading Group",
   "url": "",
-  "paper": "https://web.stanford.edu/\\~gentzkow/research/biasmeas.pdf"
+  "paper": "https://web.stanford.edu/~gentzkow/research/biasmeas.pdf",
+  "authors": "Gentzkow & Shapiro (2010)"
  },
  {
   "date": "2021-09-28",
@@ -60,7 +66,8 @@
   "title": "Causal Inference with Latent/Text Treatments (2 papers)",
   "type": "Reading Group",
   "url": "",
-  "paper": "https://www.dropbox.com/s/hebu10a3vze585c/dexp\\_public.pdf?dl=0, https://arxiv.org/abs/2010.12919"
+  "paper": "https://www.dropbox.com/s/hebu10a3vze585c/dexp_public.pdf?dl=0, https://arxiv.org/abs/2010.12919",
+  "authors": "Fong & Grimmer; Pryzant, Card, Jurafsky, Veitch & Sridhar (2021)"
  },
  {
   "date": "2021-10-12",
@@ -69,7 +76,8 @@
   "title": "Top2Vec: Distributed Representations of Topics",
   "type": "Reading Group",
   "url": "",
-  "paper": "https://arxiv.org/abs/2008.09470"
+  "paper": "https://arxiv.org/abs/2008.09470",
+  "authors": "Angelov (2020)"
  },
  {
   "date": "2021-10-26",
@@ -78,7 +86,8 @@
   "title": "Modeling Framing in Immigration Discourse on Social Media",
   "type": "Reading Group",
   "url": "",
-  "paper": "https://aclanthology.org/2021.naacl-main.179.pdf"
+  "paper": "https://aclanthology.org/2021.naacl-main.179.pdf",
+  "authors": "Mendelsohn, Budak & Jurgens (2021)"
  },
  {
   "date": "2021-11-09",
@@ -87,7 +96,8 @@
   "title": "Causal Inference with Latent/Text Treatments (2 papers)",
   "type": "Reading Group",
   "url": "",
-  "paper": "https://www.dropbox.com/s/hebu10a3vze585c/dexp\\_public.pdf?dl=0, https://arxiv.org/abs/2010.12919"
+  "paper": "https://www.dropbox.com/s/hebu10a3vze585c/dexp_public.pdf?dl=0, https://arxiv.org/abs/2010.12919",
+  "authors": "Fong & Grimmer; Pryzant, Card, Jurafsky, Veitch & Sridhar (2021)"
  },
  {
   "date": "2021-11-23",
@@ -96,7 +106,8 @@
   "title": "Measuring Group Differences in High-dimensional choices",
   "type": "Reading Group",
   "url": "",
-  "paper": "https://onlinelibrary.wiley.com/doi/pdf/10.3982/ECTA16566?casa\\_token=Es4J9Rimwi8AAAAA:kfzkcyCIEHxvlY3dl0w5OqTurKtc8IWuRl1bhA\\_eGswKXmzl4w7cHP9hvT0mFzASPYgTWOqaDkvz0uMU"
+  "paper": "https://onlinelibrary.wiley.com/doi/pdf/10.3982/ECTA16566?casa_token=Es4J9Rimwi8AAAAA:kfzkcyCIEHxvlY3dl0w5OqTurKtc8IWuRl1bhA_eGswKXmzl4w7cHP9hvT0mFzASPYgTWOqaDkvz0uMU",
+  "authors": "Gentzkow, Shapiro & Taddy (2019)"
  },
  {
   "date": "2021-12-07",
@@ -666,24 +677,16 @@
   "photo": "assets/speakers/2026-05-13-sean-j-westwood.jpg"
  },
  {
-  "date": "2026-09-30",
-  "speaker": "",
-  "affiliation": "",
-  "title": "",
-  "type": "Speaker Series",
-  "url": "",
-  "term": "Fall 2026",
-  "time": "17:00"
- },
- {
   "date": "2026-10-14",
-  "speaker": "",
-  "affiliation": "",
-  "title": "",
+  "speaker": "Leah von der Heyde",
+  "affiliation": "GESIS – Leibniz Institute for the Social Sciences",
+  "title": "How (not) to use LLMs in survey research",
   "type": "Speaker Series",
-  "url": "",
+  "url": "https://www.gesis.org/en/institute/about-us/staff/person/Leah.vonderHeyde",
   "term": "Fall 2026",
-  "time": "17:00"
+  "time": "17:00",
+  "abstract": "Survey research has historically been a human-powered field that embraces various technologies for the collection, processing, and analysis of behavioral, political, and social outcomes of interest. Large Language Models (LLMs) bring new technological challenges and prerequisites in order to fully harness their potential for survey and public opinion research. In this talk, I will discuss potential applications of LLMs across the entire survey lifecycle. Based on a systematic review, I will showcase at which tasks, contexts, and research designs LLMs succeed and fail, zooming in on the two popular applications of silicon sampling and open-text classification, and highlight which applications are underexplored. Based on the findings, I will discuss the potentials, concerns, and gaps of LLM use in survey and public opinion research, providing a starting point for future innovations.",
+  "photo": "assets/speakers/2026-10-14-leah-von-der-heyde.jpg"
  },
  {
   "date": "2026-10-28",
@@ -698,22 +701,36 @@
  {
   "date": "2026-11-11",
   "speaker": "Andreu Casas",
-  "affiliation": "Royal Holloway, University of London",
+  "affiliation": "University of Oxford",
   "title": "Large Language Models as Lab Agents: Transfer Learning for Building Generalizable Automatic In-House Annotators",
   "type": "Speaker Series",
   "url": "https://andreucasas.com/",
   "abstract": "Automatic data annotation is a common task in social science research, such as labeling social media posts for the presence of hate speech, or new articles for their ideological leaning. When fine-tuned with some manually annotated examples, Large Language Models (LLMs) consistently outperform traditional machine learning models. However, researchers often fine-tune a pre-trained LLM from scratch for each new task at hand. Building on the notion of transfer learning, in this paper we leverage several datasets annotated in the same research lab, for different tasks and projects, to develop a Lab Agent that gradually performs better at zero-shot and few-shot classification on new unseen tasks. We explore the performance of several options in the development of such Lab Agents, with the goal of facilitating and speeding up accurate data annotation for social science research.",
   "term": "Fall 2026",
-  "time": "17:00"
+  "time": "17:00",
+  "photo": "assets/speakers/2026-11-11-andreu-casas.jpg"
  },
  {
   "date": "2026-11-25",
-  "speaker": "",
-  "affiliation": "",
+  "speaker": "Christopher Barrie",
+  "affiliation": "New York University",
+  "title": "Reproducible Workflows with AI",
+  "type": "Speaker Series",
+  "url": "https://as.nyu.edu/faculty/chris-barrie.html",
+  "term": "Fall 2026",
+  "time": "17:00",
+  "abstract": "This talk draws on lessons from several recent publications to examine a central challenge for computational research: how to maintain standards of reproducibility as AI becomes increasingly integrated into research workflows. It will first demonstrate the problem empirically, before considering a range of practical steps that researchers and disciplines can take to improve transparency and reproducibility in AI-assisted research pipelines.",
+  "photo": "assets/speakers/2026-11-25-christopher-barrie.jpg"
+ },
+ {
+  "date": "2026-12-09",
+  "speaker": "Matt DiGiuseppe",
+  "affiliation": "Leiden University",
   "title": "",
   "type": "Speaker Series",
-  "url": "",
+  "url": "https://www.matthewdigiuseppe.com/",
   "term": "Fall 2026",
-  "time": "17:00"
+  "time": "17:00",
+  "photo": "assets/speakers/2026-12-09-matt-digiuseppe.jpg"
  }
 ]
