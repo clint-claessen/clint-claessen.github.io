@@ -71,8 +71,8 @@
   function byDate(a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; }
   function initials(n) { return (n || "").split(/[\s&,]+/).filter(Boolean).slice(0, 2).map(function (w) { return w[0]; }).join("").toUpperCase(); }
   /* Speaker portrait (from the original site or the committee app) with an initials fallback. */
-  function avatar(s, tba, size, quiet) {
-    if (s.photo) return '<img class="' + size + ' rounded-pill object-cover shrink-0 bg-surface-container-high shadow-sm" src="' + esc(s.photo) + '" alt="" loading="lazy" data-initials="' + esc(initials(s.speaker)) + '" />';
+  function avatar(s, tba, size, quiet, eager) {
+    if (s.photo) return '<img class="' + size + ' rounded-pill object-cover shrink-0 bg-surface-container-high shadow-sm" src="' + esc(s.photo) + '" alt="" loading="' + (eager ? "eager" : "lazy") + '" decoding="async" data-initials="' + esc(initials(s.speaker)) + '" />';
     return '<span class="' + size + ' rounded-pill shrink-0 inline-flex items-center justify-center select-none ' + (quiet ? "bg-surface-container-high text-on-surface-variant font-code-sm text-code-sm" : "bg-primary-container text-on-primary font-headline-sm text-headline-sm") + '">' + (tba ? "?" : esc(initials(s.speaker))) + '</span>';
   }
   /* A portrait that fails to load falls back to the initials badge. */
@@ -98,7 +98,7 @@
       (s.term ? '<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-code-sm text-code-sm">' + esc(s.term) + '</span>' : '') + '</div>' +
       '<div class="flex flex-col gap-space-xs"><div class="font-code-md text-code-md text-on-surface-variant">' + esc(fmtDate(s.date, true)) + ' · ' + esc(s.time || "17:00") + ' Berlin time</div>' + (hint ? '<div class="font-body-sm text-body-sm text-tertiary">' + esc(hint) + '</div>' : '') + '</div>' +
       '<div class="my-space-md p-space-md rounded bg-surface-container-low flex flex-col gap-space-xs">' +
-      '<div class="flex items-center gap-space-sm">' + avatar(s, tba, "w-24 h-24") + '<div class="flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm text-on-surface truncate">' + (tba ? "Speaker to be announced" : esc(s.speaker)) + '</span>' + (s.affiliation ? '<span class="font-code-sm text-code-sm text-tertiary truncate">' + esc(s.affiliation) + '</span>' : '') + '</div></div>' +
+      '<div class="flex items-center gap-space-sm">' + avatar(s, tba, "w-24 h-24", false, true) + '<div class="flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm text-on-surface truncate">' + (tba ? "Speaker to be announced" : esc(s.speaker)) + '</span>' + (s.affiliation ? '<span class="font-code-sm text-code-sm text-tertiary truncate">' + esc(s.affiliation) + '</span>' : '') + '</div></div>' +
       (s.title ? '<h2 class="font-headline-md text-headline-md text-on-surface mt-space-xs tracking-tight">“' + esc(s.title) + '”</h2>' : (tba ? '<h2 class="font-headline-md text-headline-md text-on-surface mt-space-xs tracking-tight">' + esc(CFG.termTheme || "AI Tools for Social Scientists") + '</h2>' : '')) +
       (s.abstract ? '<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-3 mt-space-xs">' + esc(s.abstract) + '</p>' : '') + '</div>' +
       '<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-space-sm">' +
