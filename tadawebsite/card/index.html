@@ -36,11 +36,31 @@
   .raw main { display: block; padding: 0; max-width: none; }
   .raw .preview { padding: 0; box-shadow: none; border-radius: 0; }
   .raw canvas { max-width: none; width: 1280px; border-radius: 0; box-shadow: none; margin: 0; }
+  /* organizer sign-in gate (same accounts as the committee app) */
+  #gate { min-height: calc(100vh - 57px); display: flex; align-items: center; justify-content: center; padding: 24px; }
+  #gate form { width: 100%; max-width: 380px; align-items: stretch; }
+  #gate h2 { margin: 0; font-size: 18px; font-weight: 600; }
+  #gate .logo { width: 56px; height: 56px; border-radius: 50%; margin-bottom: 4px; }
+  #gate p { margin: 0; }
+  #signout { margin-left: 12px; background: none; border: 0; color: var(--muted); font: inherit; cursor: pointer; text-decoration: underline; }
+  [hidden] { display: none !important; }
 </style>
 </head>
 <body>
-<header><img src="../assets/tada-logo.png" alt="" /><h1>TaDa social card</h1><a href="../committee/">Committee app</a></header>
-<main>
+<header><img src="../assets/tada-logo.png" alt="" /><h1>TaDa social card</h1><a href="../committee/">Committee app</a><button id="signout" type="button" hidden>Sign out</button></header>
+<div id="gate">
+  <form id="gate-form" autocomplete="on">
+    <img class="logo" src="../assets/tada-logo.png" alt="" />
+    <h2>Organizer sign-in</h2>
+    <p class="hint">The card and poster generator is for the TaDa executive committee. Use your committee-app account.</p>
+    <label>E-mail<input id="gate-email" type="email" autocomplete="username" required /></label>
+    <label>Password<input id="gate-password" type="password" autocomplete="current-password" required /></label>
+    <button class="btn" type="submit" id="gate-btn">Sign in</button>
+    <span class="err" id="gate-err"></span>
+    <p class="hint">Forgot your password? Use “Forgot password?” in the <a href="../committee/">committee app</a>.</p>
+  </form>
+</div>
+<main id="app" hidden>
   <form id="f" autocomplete="off">
     <label>Session from the programme<select id="pick"><option value="">Choose…</option></select></label>
     <label>Speaker<input id="speaker" /></label>
@@ -66,10 +86,26 @@
   <div class="preview"><canvas id="c" width="1200" height="1200"></canvas></div>
 </main>
 <script src="../committee/config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-auth-compat.js"></script>
 <script>
 (function () {
   "use strict";
   function $(s) { return document.querySelector(s); }
+  /* ----- organizer gate: the generator is shown only to signed-in committee accounts (Firebase Auth, sign-up disabled) ----- */
+  var CFG = window.TADA_CONFIG || {};
+  if (!CFG.firebase || !window.firebase) { $("#gate-err").textContent = "Sign-in is not configured (Firebase scripts or config missing)."; $("#gate-btn").disabled = true; }
+  else {
+    var auth = (firebase.apps.length ? firebase.app() : firebase.initializeApp(CFG.firebase)).auth();
+    auth.onAuthStateChanged(function (u) { var on = !!u; $("#gate").hidden = on; $("#app").hidden = !on; $("#signout").hidden = !on; if (on) { $("#gate-err").textContent = ""; try { draw(); } catch (e) { } } });
+    $("#gate-form").addEventListener("submit", function (e) {
+      e.preventDefault(); $("#gate-err").textContent = ""; $("#gate-btn").disabled = true;
+      auth.signInWithEmailAndPassword($("#gate-email").value.trim(), $("#gate-password").value).catch(function (err) {
+        var c = (err && err.code) || ""; $("#gate-err").textContent = /wrong-password|invalid-credential|invalid-login-credentials|user-not-found/.test(c) ? "E-mail or password is wrong." : /too-many-requests/.test(c) ? "Too many attempts. Wait a few minutes or reset your password in the committee app." : /network/.test(c) ? "Network problem. Try again." : (err && err.message) || "Sign-in failed.";
+      }).then(function () { $("#gate-btn").disabled = false; });
+    });
+    $("#signout").addEventListener("click", function () { auth.signOut(); });
+  }
   var MONTHS_LONG = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   var DAYS_LONG = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   function dparts(iso) { var p = iso.split("-"); return { y: +p[0], m: +p[1], d: +p[2], dow: new Date(Date.UTC(+p[0], +p[1] - 1, +p[2], 12)).getUTCDay() }; }

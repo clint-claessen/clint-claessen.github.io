@@ -58,7 +58,7 @@ allow reactions on other people's messages.
   re-import updates rather than duplicates in most calendars). The session drawer offers the same
   four reminders as prefilled Google Calendar links. Nothing runs on a server: the reminders live in
   each organizer's own calendar, which is also what rings on the phone.
-- **Social card** (session drawer, or `/tadawebsite/card/`): renders the announcement image for
+- **Social card** (session drawer, or `/tadawebsite/card/`; organizer sign-in required, same accounts as this app; also makes the term poster, format "Term poster"): renders the announcement image for
   LinkedIn and Bluesky (photo on the blue panel, date badge, name, title; red badge when the session
   is not on a Wednesday) and downloads it as PNG, square or landscape. Uses the portrait stored in
   `assets/speakers/` (photos from other websites cannot be exported by the browser; upload them or
