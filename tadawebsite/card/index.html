@@ -31,6 +31,11 @@
   canvas { width: 100%; max-width: 720px; height: auto; display: block; margin: 0 auto; border-radius: 6px; box-shadow: 0 1px 8px rgba(11,28,48,.10); }
   .hint { font-size: 12px; color: var(--muted); }
   .err { color: #ba1a1a; font-size: 12px; min-height: 1em; }
+  /* ?raw=1: only the canvas at its natural size, for headless screenshots */
+  .raw header, .raw form { display: none; }
+  .raw main { display: block; padding: 0; max-width: none; }
+  .raw .preview { padding: 0; box-shadow: none; border-radius: 0; }
+  .raw canvas { max-width: none; width: 1280px; border-radius: 0; box-shadow: none; margin: 0; }
 </style>
 </head>
 <body>
@@ -44,7 +49,14 @@
     <div class="row"><label>Date<input id="date" type="date" /></label><label>Time (Berlin)<input id="time" type="time" value="17:00" /></label></div>
     <label>Photo (link, or assets/speakers/… path on this site)<input id="photo" placeholder="assets/speakers/2026-10-14-name.jpg" /></label>
     <label>Or use a photo from your computer<input id="file" type="file" accept="image/*" /></label>
-    <label>Format<select id="format"><option value="square">Square 1200 × 1200 (LinkedIn, Bluesky)</option><option value="wide">Landscape 1200 × 675 (link previews, LinkedIn)</option></select></label>
+    <label>Format<select id="format"><option value="square">Square 1200 × 1200 (LinkedIn, Bluesky)</option><option value="wide">Landscape 1200 × 675 (link previews, LinkedIn)</option><option value="poster">Term poster 1280 × 720 (all speakers of a term)</option></select></label>
+    <div id="poster-fields" hidden style="display:flex;flex-direction:column;gap:10px">
+      <div class="row"><label>Term<input id="pterm" placeholder="Fall 2026" /></label><label>Time label<input id="ptime" value="Wednesdays @ 5pm" /></label></div>
+      <label>Theme (big title)<input id="ptheme" placeholder="AI Tools for Social Scientists" /></label>
+      <label>Extra cards, one per line: date label | name | affiliation | photo<textarea id="pextra" placeholder="Date TBA | Molly Roberts | UC San Diego | assets/speakers/molly-roberts.jpg"></textarea></label>
+      <label>Footer line<input id="pcta" value="Sign up for our newsletter on our website:" /></label>
+      <span class="hint">Cards come from the programme data of that term (speakers only, in date order) plus the extra lines above.</span>
+    </div>
     <label>Photo position (up / down) <input id="pos" type="range" min="0" max="100" value="30" /></label>
     <label>Photo zoom <input id="zoom" type="range" min="100" max="220" value="100" /></label>
     <button class="btn" type="button" id="dl">Download PNG</button>
@@ -64,20 +76,31 @@
   function berlinOffset(iso) { try { var n = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Berlin", timeZoneName: "longOffset" }).formatToParts(new Date(iso + "T12:00:00Z")).filter(function (x) { return x.type === "timeZoneName"; })[0].value; return /\+02/.test(n) ? 2 : 1; } catch (e) { return 1; } }
   function tz(iso) { return berlinOffset(iso) === 2 ? "CEST" : "CET"; }
   function photoSrc(p) { return /^(https?:|\/|data:|blob:|\.\.\/)/i.test(p) ? p : "../" + p.replace(/^\.\//, ""); }
-  var TALKS = [], img = null, imgKey = "", logo = null, fileUrl = "";
+  var TALKS = [], ALL = [], img = null, imgKey = "", logo = null, fileUrl = "", CACHE = {};
   var q = new URLSearchParams(location.search);
   ["speaker", "affiliation", "title", "date", "time", "photo"].forEach(function (k) { if (q.get(k)) $("#" + k).value = q.get(k); });
+  if (q.get("format")) $("#format").value = q.get("format");
+  if (q.get("term")) $("#pterm").value = q.get("term");
+  if (q.get("theme")) $("#ptheme").value = q.get("theme");
+  if (q.get("extra")) $("#pextra").value = q.get("extra").split(";;").join("\n");
+  if (q.get("raw")) document.body.classList.add("raw");
+  function togglePoster() { $("#poster-fields").hidden = $("#format").value !== "poster"; }
+  togglePoster(); $("#format").addEventListener("change", togglePoster);
 
   /* ----- data ----- */
   function fill(r) { $("#speaker").value = r.speaker || ""; $("#affiliation").value = r.affiliation || ""; $("#title").value = r.title || ""; $("#date").value = r.date || ""; $("#time").value = r.time || "17:00"; $("#photo").value = r.photo || ""; fileUrl = ""; draw(); }
   fetch("../data/talks.json").then(function (r) { return r.json(); }).then(function (rows) {
+    ALL = rows.slice();
+    if (!$("#pterm").value) { var withTerm = rows.filter(function (r) { return r.term; }).sort(function (a, b) { return a.date < b.date ? 1 : -1; }); if (withTerm.length) $("#pterm").value = withTerm[0].term; }
+    if (!$("#ptheme").value) $("#ptheme").value = (window.TADA_CONFIG && window.TADA_CONFIG.termTheme) || "";
+    if ($("#format").value === "poster") draw();
     TALKS = rows.filter(function (r) { return r.speaker; }).sort(function (a, b) { return a.date < b.date ? 1 : -1; });
     $("#pick").innerHTML = '<option value="">Choose…</option>' + TALKS.map(function (r) { return '<option value="' + r.date + '">' + r.date + " · " + r.speaker + "</option>"; }).join("");
     var d = q.get("date"); if (d) { $("#pick").value = d; if (!q.get("speaker")) { var row = TALKS.filter(function (r) { return r.date === d; })[0]; if (row) fill(row); } }
   }).catch(function () { });
   $("#pick").addEventListener("change", function () { var row = TALKS.filter(function (r) { return r.date === $("#pick").value; })[0]; if (row) fill(row); });
   $("#file").addEventListener("change", function () { var f = this.files && this.files[0]; if (!f) return; if (fileUrl) URL.revokeObjectURL(fileUrl); fileUrl = URL.createObjectURL(f); draw(); });
-  ["speaker", "affiliation", "title", "date", "time", "photo", "format", "pos", "zoom"].forEach(function (k) { $("#" + k).addEventListener("input", function () { if (k === "photo") fileUrl = ""; draw(); }); });
+  ["speaker", "affiliation", "title", "date", "time", "photo", "format", "pos", "zoom", "pterm", "ptime", "ptheme", "pextra", "pcta"].forEach(function (k) { $("#" + k).addEventListener("input", function () { if (k === "photo") fileUrl = ""; draw(); }); });
 
   /* ----- drawing helpers ----- */
   function loadImage(src) { return new Promise(function (res, rej) { var i = new Image(); if (/^https?:/i.test(src) && src.indexOf(location.origin) !== 0) i.crossOrigin = "anonymous"; i.onload = function () { res(i); }; i.onerror = function () { rej(new Error("Photo could not be loaded: " + src)); }; i.src = src; }); }
@@ -152,10 +175,70 @@
     ctx.fillStyle = "#727785"; ctx.font = "500 20px Inter, system-ui, sans-serif"; ctx.textAlign = "left"; ctx.textBaseline = "middle";
     ctx.fillText("TaDa · Text-as-Data Speaker Series · Wednesdays 17:00 Berlin time · tada.cool", x + 52, y + 1);
   }
+  /* ----- term poster (all speakers of a term on one image, 1280x720) ----- */
+  function getImg(src) { if (!src) return Promise.resolve(null); if (CACHE[src]) return Promise.resolve(CACHE[src]); return loadImage(src).then(function (i) { CACHE[src] = i; return i; }).catch(function () { return null; }); }
+  function shortAff(a) { return String(a || "").split(/\s+[–-]\s+|,/)[0].trim(); }
+  function fitFont(ctx, text, maxW, px, min, weight, family) { for (var s = px; s >= min; s -= 1) { ctx.font = weight + " " + s + "px " + family; if (ctx.measureText(text).width <= maxW) return s; } return min; }
+  function shadowOn(ctx) { ctx.shadowColor = "rgba(0,0,0,0.45)"; ctx.shadowBlur = 5; ctx.shadowOffsetX = 1; ctx.shadowOffsetY = 2; }
+  function shadowOff(ctx) { ctx.shadowColor = "transparent"; ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0; }
+  function posterCards() {
+    var term = $("#pterm").value.trim(), cards = ALL.filter(function (r) { return r.speaker && r.term && term && r.term.toLowerCase() === term.toLowerCase(); }).sort(function (a, b) { return a.date < b.date ? -1 : 1; })
+      .map(function (r) { var p = dparts(r.date); return { dateLabel: MONTHS_LONG[p.m - 1] + " " + p.d, name: r.speaker, affiliation: shortAff(r.affiliation), photo: r.photo || "" }; });
+    $("#pextra").value.split(/\n/).map(function (l) { return l.trim(); }).filter(Boolean).forEach(function (l) { var f = l.split("|").map(function (s) { return s.trim(); }); if (f[1]) cards.push({ dateLabel: f[0] || "Date TBA", name: f[1], affiliation: shortAff(f[2] || ""), photo: f[3] || "" }); });
+    return cards;
+  }
+  function renderPoster(ctx, W, H, cards, imgs) {
+    var term = $("#pterm").value.trim() || "Fall 2026", ym = /(\d{4})/.exec(term), year = ym ? ym[1] : "", tword = term.replace(/\d{4}/, "").trim() || "Fall";
+    var theme = $("#ptheme").value.trim() || "AI Tools for Social Scientists", timeLbl = $("#ptime").value.trim() || "Wednesdays @ 5pm", cta = $("#pcta").value.trim();
+    /* background: cream with soft pastel shapes */
+    ctx.fillStyle = "#fbf6f0"; ctx.fillRect(0, 0, W, H);
+    function blob(x, y, rx, ry, color, a) { ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = color; ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
+    blob(1180, 120, 210, 150, "#f6c4ad", 0.75); blob(90, 640, 200, 130, "#f6c4ad", 0.6); blob(1230, 600, 170, 170, "#f6c4ad", 0.45);
+    blob(250, 700, 320, 90, "#b7cfe0", 0.55); blob(1000, 40, 260, 60, "#b7cfe0", 0.5); blob(40, 330, 60, 180, "#b7cfe0", 0.5); blob(1250, 380, 70, 200, "#b7cfe0", 0.45);
+    blob(140, 560, 26, 80, "#b9d3c1", 0.7); blob(1150, 470, 26, 80, "#b9d3c1", 0.6); blob(70, 450, 20, 60, "#b9d3c1", 0.6);
+    /* logo */
+    if (logo) { ctx.save(); shadowOn(ctx); ctx.beginPath(); ctx.arc(108, 108, 88, 0, Math.PI * 2); ctx.fillStyle = "#fff"; ctx.fill(); shadowOff(ctx); ctx.clip(); ctx.drawImage(logo, 20, 20, 176, 176); ctx.restore(); }
+    /* title banners */
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    function banner(x, y, w, h, fill, text, px, min) { ctx.save(); shadowOn(ctx); roundRect(ctx, x, y, w, h, 8); ctx.fillStyle = fill; ctx.fill(); shadowOff(ctx); var s = fitFont(ctx, text, w - 40, px, min, "700", "Inter, system-ui, sans-serif"); ctx.font = "700 " + s + "px Inter, system-ui, sans-serif"; shadowOn(ctx); ctx.fillStyle = "#fff"; ctx.fillText(text, x + w / 2, y + h / 2 + 1); ctx.restore(); }
+    banner(215, 22, 850, 64, "#0b57b0", (year ? year + " " : "") + tword + " Term Speaker Series on", 40, 26);
+    banner(330, 88, 620, 90, "#0a4a9a", theme, 56, 30);
+    banner(430, 180, 420, 44, "#0b57b0", timeLbl + "  ·  Berlin time", 28, 18);
+    /* card panel */
+    var N = Math.max(cards.length, 1), px0 = 110, py0 = 232, pw = 1060, ph = 380;
+    ctx.save(); shadowOn(ctx); roundRect(ctx, px0, py0, pw, ph, 12); ctx.fillStyle = "rgba(176,208,226,0.85)"; ctx.fill(); ctx.restore();
+    var gap = 14, pad = 22, cw = (pw - 2 * pad - (N - 1) * gap) / N, small = N > 5;
+    var photoW = Math.round(cw - 8), photoH = Math.round(photoW * 1.3), dateSize = small ? 20 : 24, nameSize = small ? 17 : 19, affSize = small ? 15 : 17;
+    cards.forEach(function (cd, i) {
+      var x = px0 + pad + i * (cw + gap), cx = x + cw / 2, y = py0 + 16;
+      ctx.save(); shadowOn(ctx); ctx.fillStyle = "#fff"; ctx.font = "700 " + fitFont(ctx, cd.dateLabel, cw - 6, dateSize, 14, "700", "Inter, system-ui, sans-serif") + "px Inter, system-ui, sans-serif"; ctx.fillText(cd.dateLabel, cx, y + 16); ctx.restore();
+      var fy = y + 38, fx = Math.round(cx - photoW / 2);
+      ctx.save(); shadowOn(ctx); ctx.fillStyle = "#fff"; ctx.fillRect(fx - 3, fy - 3, photoW + 6, photoH + 6); ctx.restore();
+      if (imgs[i]) drawPhoto(ctx, imgs[i], fx, fy, photoW, photoH, 2, 0.15, 1); else { ctx.fillStyle = "#dce9ff"; ctx.fillRect(fx, fy, photoW, photoH); ctx.fillStyle = "#0050a7"; ctx.font = "600 " + Math.round(photoW * 0.34) + "px Inter, system-ui, sans-serif"; ctx.fillText((cd.name || "?").split(/\s+/).slice(0, 2).map(function (s) { return s[0]; }).join("").toUpperCase(), cx, fy + photoH / 2); }
+      var ty = fy + photoH + 22; ctx.save(); shadowOn(ctx); ctx.fillStyle = "#fff"; ctx.font = "700 " + nameSize + "px Inter, system-ui, sans-serif";
+      wrap(ctx, cd.name, cw - 6, 3).forEach(function (ln) { ctx.fillText(ln, cx, ty); ty += nameSize + 4; });
+      if (cd.affiliation) { ctx.font = "500 " + affSize + "px Inter, system-ui, sans-serif"; wrap(ctx, "(" + cd.affiliation + ")", cw - 6, 2).forEach(function (ln) { ctx.fillText(ln, cx, ty); ty += affSize + 4; }); }
+      ctx.restore();
+    });
+    /* footer */
+    ctx.save(); shadowOn(ctx); roundRect(ctx, 380, 636, 520, 70, 10); ctx.fillStyle = "rgba(176,208,226,0.9)"; ctx.fill(); ctx.restore();
+    ctx.fillStyle = "#0b1c30"; ctx.font = "600 21px Inter, system-ui, sans-serif"; ctx.fillText(cta, 640, 656);
+    ctx.font = "800 32px Inter, system-ui, sans-serif"; var a = "TADA", b = ".cool", wa = ctx.measureText(a).width, wb = ctx.measureText(b).width, sx = 640 - (wa + wb) / 2; ctx.textAlign = "left"; ctx.fillStyle = "#0b1c30"; ctx.fillText(a, sx, 686); ctx.fillStyle = "#0167d4"; ctx.fillText(b, sx + wa, 686); ctx.textAlign = "center";
+    ctx.textBaseline = "alphabetic";
+  }
   var drawing = false, again = false;
   function draw() {
     if (drawing) { again = true; return; } drawing = true; $("#err").textContent = "";
-    var c = $("#c"), wide = $("#format").value === "wide"; c.width = 1200; c.height = wide ? 675 : 1200;
+    var c = $("#c"), wide = $("#format").value === "wide", poster = $("#format").value === "poster"; c.width = poster ? 1280 : 1200; c.height = poster ? 720 : wide ? 675 : 1200;
+    if (poster) {
+      var cards = posterCards();
+      var fontsP = document.fonts ? Promise.all([document.fonts.load("700 40px Inter"), document.fonts.load("800 32px Inter")]).catch(function () { }) : Promise.resolve();
+      var plP = logo ? Promise.resolve() : loadImage("../assets/tada-logo.png").then(function (l) { logo = l; }).catch(function () { });
+      Promise.all([fontsP, plP]).then(function () { return Promise.all(cards.map(function (cd) { return getImg(cd.photo ? photoSrc(cd.photo) : ""); })); })
+        .then(function (imgs) { renderPoster(c.getContext("2d"), c.width, c.height, cards, imgs); if (!cards.length) $("#err").textContent = "No speakers found for term “" + $("#pterm").value + "” – check the term name or add extra cards."; }, function (e) { $("#err").textContent = e.message; })
+        .then(function () { drawing = false; if (again) { again = false; draw(); } });
+      return;
+    }
     var src = fileUrl || ($("#photo").value.trim() ? photoSrc($("#photo").value.trim()) : "");
     var fonts = document.fonts ? Promise.all([document.fonts.load("500 72px Newsreader"), document.fonts.load("400 42px Newsreader"), document.fonts.load("700 24px Inter")]).catch(function () { }) : Promise.resolve();
     var pl = logo ? Promise.resolve(logo) : loadImage("../assets/tada-logo.png").then(function (l) { logo = l; }).catch(function () { });
@@ -164,7 +247,7 @@
       .then(function () { drawing = false; if (again) { again = false; draw(); } });
   }
   $("#dl").addEventListener("click", function () {
-    var c = $("#c"), name = "tada-card-" + ($("#date").value || "session") + "-" + ($("#speaker").value.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "speaker") + ($("#format").value === "wide" ? "-wide" : "") + ".png";
+    var c = $("#c"), name = $("#format").value === "poster" ? "tada-poster-" + ($("#pterm").value.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-") || "term") + ".png" : "tada-card-" + ($("#date").value || "session") + "-" + ($("#speaker").value.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "speaker") + ($("#format").value === "wide" ? "-wide" : "") + ".png";
     try {
       c.toBlob(function (b) { if (!b) { $("#err").textContent = "Export failed."; return; } var a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = name; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000); }, "image/png");
     } catch (e) { $("#err").textContent = "The browser blocks exporting this photo (it comes from another website). Save it to assets/speakers/ or upload it from your computer."; }
