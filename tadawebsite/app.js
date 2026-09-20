@@ -111,7 +111,7 @@
     var body = $("#programme-body"); if (!body) return;
     var up = list.filter(isUpcoming).sort(byDate);
     var term = (up.filter(function (x) { return x.term; })[0] || {}).term;
-    var eb = $("#programme-eyebrow"); if (eb && term) eb.textContent = term + " · " + (CFG.termTheme || "AI Tools for Social Scientists");
+    var eb = $("#programme-title"); if (eb && term) eb.textContent = term + " · " + (CFG.termTheme || "AI Tools for Social Scientists");
     if (!up.length) { body.innerHTML = '<tr><td colspan="4" class="py-space-lg px-space-md text-on-surface-variant italic">The next term is being prepared. Subscribe to be the first to know.</td></tr>'; return; }
     body.innerHTML = up.map(function (s) {
       var tba = !s.speaker;
