@@ -21,6 +21,15 @@ window.TADA_CONFIG = {
   linkedinUrl: "",   /* real page only; empty = LinkedIn links hidden */
   termTheme: "AI Tools for Social Scientists",
 
+  /* Organizer roster (names and initials only): always offered as chair / proposer / owner in the committee app,
+     even before a person has signed in and created a profile. Profiles that exist take precedence. */
+  organizers: [
+    { initials: "NB", name: "Nicolai Berk" },
+    { initials: "CK", name: "Christopher Klamm" },
+    { initials: "VK", name: "Verena Kunz" },
+    { initials: "CC", name: "Clint Claessen" }
+  ],
+
   /* Set to false if you never want the public page to read the live programme from Firestore */
   livePublic: true
 };

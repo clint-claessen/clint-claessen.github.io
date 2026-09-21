@@ -150,8 +150,18 @@
   }
   function paintMe() { $("#user-initials").textContent = me.initials || initialsOf(me.name); $("#user-name").textContent = me.name || ""; $("#user-initials").className = "w-8 h-8 rounded-full flex items-center justify-center font-label-md text-label-md font-semibold " + avColor(user.uid); }
   function memberList() { return Object.keys(members).map(function (uid) { var m = members[uid]; m.uid = uid; return m; }).sort(function (a, b) { return (a.name || "").localeCompare(b.name || ""); }); }
+  /* Signed-in profiles plus the configured organizer roster (config.js), so every organizer can be chosen as chair before they have logged in. */
+  function rosterList() {
+    var list = memberList().slice(), key = function (s) { return String(s || "").trim().toLowerCase(); };
+    (CFG.organizers || []).forEach(function (o) {
+      if (!o || !o.initials) return;
+      var dup = list.some(function (m) { return key(m.initials) === key(o.initials) || (o.name && key(m.name) === key(o.name)); });
+      if (!dup) list.push({ uid: "", initials: o.initials, name: o.name || o.initials, email: "", fromConfig: true });
+    });
+    return list.sort(function (a, b) { return (a.name || "").localeCompare(b.name || ""); });
+  }
   function fillPeopleSelects() {
-    var opts = '<option value="">—</option>' + memberList().map(function (m) { return '<option value="' + esc(m.initials) + '">' + esc(m.initials + " · " + m.name) + '</option>'; }).join("");
+    var opts = '<option value="">—</option>' + rosterList().map(function (m) { return '<option value="' + esc(m.initials) + '">' + esc(m.initials + " · " + m.name) + '</option>'; }).join("");
     ["sd-chair", "cd-proposedBy", "cd-owner"].forEach(function (id) { var s = $("#" + id), v = s.value; s.innerHTML = opts; s.value = v; });
   }
 
@@ -220,7 +230,7 @@
     });
     $("#sessions-empty").hidden = rows.length > 0; $("#seed-btn").hidden = sessions.length > 0;
     $("#sessions-body").innerHTML = rows.map(function (s) {
-      var inv = (s.invitation || {}).status || "none", pr = s.promo || {}, chairM = memberList().filter(function (m) { return m.initials === s.chair; })[0];
+      var inv = (s.invitation || {}).status || "none", pr = s.promo || {}, chairM = rosterList().filter(function (m) { return m.initials === s.chair; })[0];
       return '<tr data-id="' + esc(s.id) + '" class="cursor-pointer">' +
         '<td><div class="font-headline-sm text-headline-sm tabular">' + esc(fmtShort(s.date)) + ' <span class="text-tertiary font-normal">' + esc(s.date.slice(0, 4)) + '</span></div><div class="font-code-sm text-code-sm text-tertiary mt-0.5">' + esc((s.time || "17:00") + " " + tz(s.date)) + '</div></td>' +
         '<td class="max-w-[360px]">' + (s.speaker ? '<div class="font-headline-sm text-headline-sm truncate">' + esc(s.speaker) + '</div>' + (s.affiliation ? '<div class="font-body-sm text-body-sm text-on-surface-variant truncate">' + esc(s.affiliation) + '</div>' : "") + (s.title ? '<div class="font-body-sm text-body-sm text-primary italic truncate">“' + esc(s.title) + '”</div>' : "") : '<div class="font-headline-sm text-headline-sm text-tertiary italic">Open slot</div><div class="font-body-sm text-body-sm text-outline">' + (s.notes ? esc(s.notes.slice(0, 80)) + (s.notes.length > 80 ? "…" : "") : "No speaker yet") + '</div>') + '</td>' +
@@ -316,7 +326,8 @@
     var c = e.target.closest("[data-copy]"); if (c) { copyText($("#" + c.getAttribute("data-copy")).value); return; }
     var m = e.target.closest("[data-mailto]"); if (m) mailto(m.getAttribute("data-mailto"));
   });
-  function others() { return memberList().filter(function (m) { return m.uid !== user.uid; }); }
+  function others() { return rosterList().filter(function (m) { return m.uid !== user.uid && key0(m.name) !== key0(me.name); }); }
+  function key0(s) { return String(s || "").trim().toLowerCase(); }
   function joinNames(a) { return a.length <= 1 ? a.join("") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1]; }
   function openDates() { return sessionsOfTerm().filter(function (s) { return s.status === "open" && !s.speaker; }).map(function (s) { return s.date; }); }
   function datesSentence(ds) { if (!ds.length) return "one of our sessions this term"; var parts = ds.map(function (d) { var p = dparts(d); return p.d + " " + MONTHS_LONG[p.m - 1]; }); return "one of our sessions on " + joinNames(parts) + " " + dparts(ds[ds.length - 1]).y + " (Wednesdays, 17:00 Berlin time)"; }
@@ -376,7 +387,7 @@
   function addDays(iso, n) { var p = iso.split("-"); return isoOf(new Date(+p[0], +p[1] - 1, +p[2] + n)); }
   function timeLabel(t) { var p = (t || "17:00").split(":"), h = +p[0], m = +p[1] || 0; return (h % 12 || 12) + (m ? ":" + pad(m) : "") + (h >= 12 ? "pm" : "am"); }
   function daysUntil(iso) { var a = iso.split("-"), b = todayISO().split("-"); return Math.round((Date.UTC(+a[0], +a[1] - 1, +a[2]) - Date.UTC(+b[0], +b[1] - 1, +b[2])) / 864e5); }
-  function chairName(s) { var m = memberList().filter(function (x) { return x.initials === s.chair; })[0]; return m ? m.name : (s.chair || "unassigned"); }
+  function chairName(s) { var m = rosterList().filter(function (x) { return x.initials === s.chair; })[0]; return m ? m.name : (s.chair || "unassigned"); }
   function siteRoot() { return location.origin + location.pathname.replace(/committee\/[^/]*$/, ""); }
   function cardUrl(s) { return siteRoot() + "card/?" + ["date", "time", "speaker", "affiliation", "title", "photo"].filter(function (k) { return s[k]; }).map(function (k) { return k + "=" + encodeURIComponent(s[k]); }).join("&"); }
   var REM_LABEL = { chair: "Chair e-mails the speaker (1 week before)", promo: "Announcement posts (6 days before)", day: "Session-day reminder post + Zoom link", session: "The session itself" };
