@@ -64,6 +64,10 @@ allow reactions on other people's messages.
   `assets/speakers/` (photos from other websites cannot be exported by the browser; upload them or
   add them to the repo, named `YYYY-MM-DD-first-last.jpg`, square, about 800 px).
 - **Post drafts** (LinkedIn, Bluesky) follow the wording of the spring 2026 posts; attach the social card.
+- **Newsletter sign-up** (public page, "Subscribe to the newsletter"): the form posts straight to the tada.cool
+  mailing list on IONOS (`ml.kundenserver.de`, list `news@tada.cool`), the same sign-up as on the old Google Site;
+  the list is administered in Christopher's IONOS account. Bluesky/LinkedIn links on the page show up only once a
+  real profile URL is set in `committee/config.js`.
 - **Logo files**: `assets/tada-logo.png` (1024 px, transparent) is used everywhere on the site and in the cards;
   the official master with transparent background is `assets/brand/tada-logo-transparent.png`
   (brand colours #274387 dark blue, #3AB8EF light blue). Social-media profile and cover versions are in the

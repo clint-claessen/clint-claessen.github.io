@@ -43,7 +43,7 @@
       <a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors py-space-xs" href="#contact">Contact</a>
     </nav>
     <div class="flex items-center gap-space-md">
-      <a class="hidden sm:inline-flex items-center justify-center px-space-md py-space-xs h-9 bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md rounded transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.06)] whitespace-nowrap" href="#subscribe" data-join>Get the Zoom link</a>
+      <a class="hidden sm:inline-flex items-center justify-center px-space-md py-space-xs h-9 bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md rounded transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.06)] whitespace-nowrap" href="#subscribe" data-join>Subscribe to the newsletter</a>
       <a class="hidden sm:flex w-8 h-8 rounded-full bg-surface-container-high hover:bg-primary hover:text-on-primary text-on-surface-variant items-center justify-center shrink-0 transition-colors" href="committee/" title="Organizer login" aria-label="Organizer login"><span class="material-symbols-outlined text-[18px]">person</span></a>
       <button class="lg:hidden w-9 h-9 rounded flex items-center justify-center text-on-surface hover:bg-surface-container" id="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav"><span class="material-symbols-outlined">menu</span></button>
     </div>
@@ -84,7 +84,7 @@
         </div>
         </div>
         <div class="flex flex-wrap items-center gap-space-md pt-space-xs">
-          <a class="inline-flex items-center justify-center h-10 px-space-lg rounded bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md transition-colors shadow-sm gap-2" href="#subscribe" data-join><span class="material-symbols-outlined text-[18px]">mail</span>Subscribe for Zoom links</a>
+          <a class="inline-flex items-center justify-center h-10 px-space-lg rounded bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md transition-colors shadow-sm gap-2" href="#subscribe" data-join><span class="material-symbols-outlined text-[18px]">mail</span>Subscribe to the newsletter</a>
           <a class="inline-flex items-center justify-center h-10 px-space-lg rounded bg-surface-container-lowest hover:bg-surface-container-low text-on-surface font-label-md text-label-md transition-colors shadow-sm gap-2" href="#programme"><span class="material-symbols-outlined text-[18px]">calendar_month</span>See the programme</a>
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-space-sm pt-space-md">
@@ -139,28 +139,43 @@
   <div class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin flex flex-col gap-space-xl">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter lg:gap-space-xl items-center">
       <div class="lg:col-span-6 flex flex-col gap-space-xs">
-        <span class="font-code-sm text-code-sm text-secondary-fixed-dim uppercase tracking-wider">Mailing list</span>
-        <h2 class="font-headline-xl text-headline-xl-mobile md:text-headline-xl text-surface tracking-tight">Get the Zoom link, every time</h2>
-        <p class="font-body-lg text-body-lg text-surface-variant max-w-lg mt-space-xs">One e-mail per session: the announcement and, on the day, the Zoom link. No registration, no cost, one-click unsubscribe.</p>
+        <span class="font-code-sm text-code-sm text-secondary-fixed-dim uppercase tracking-wider">Newsletter</span>
+        <h2 class="font-headline-xl text-headline-xl-mobile md:text-headline-xl text-surface tracking-tight">Subscribe to the newsletter for the Zoom link</h2>
+        <p class="font-body-lg text-body-lg text-surface-variant max-w-lg mt-space-xs">Join the tada.cool mailing list with your e-mail address: you get each session's announcement and, on the day, the Zoom link. Free, and you can unsubscribe any time.</p>
       </div>
       <div class="lg:col-span-6">
-        <form class="flex flex-col sm:flex-row gap-space-sm p-space-sm rounded-lg bg-surface/10" id="subscribe-form">
-          <div class="relative flex-1">
-            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-surface-variant text-[20px]">alternate_email</span>
-            <label class="sr-only" for="sub-email">Your e-mail</label>
-            <input class="w-full h-11 pl-10 pr-space-md rounded bg-surface text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-secondary-fixed-dim" id="sub-email" placeholder="name@university.edu" required type="email" />
+        <!-- Posts to the tada.cool mailing list (IONOS list service), the same sign-up as on the old Google Site. -->
+        <form class="flex flex-col gap-space-sm p-space-sm rounded-lg bg-surface/10" id="subscribe-form" action="https://ml.kundenserver.de/cgi-bin/mailinglist.cgi" method="POST" target="_blank">
+          <input type="hidden" name="subscribe_r" value="subscribe" />
+          <input type="hidden" name="FBMLNAME" value="news@tada.cool" />
+          <input type="hidden" name="FBLANG" value="en" />
+          <input type="hidden" name="FBURLERROR_L" value="https://ml.kundenserver.de/mailinglist/error.en.html" />
+          <input type="hidden" name="FBURLSUBSCRIBE_L" value="https://ml.kundenserver.de/mailinglist/subscribe.en.html" />
+          <input type="hidden" name="FBURLUNSUBSCRIBE_L" value="https://ml.kundenserver.de/mailinglist/unsubscribe.en.html" />
+          <input type="hidden" name="FBURLINVALID_L" value="https://ml.kundenserver.de/mailinglist/invalid.en.html" />
+          <div class="flex flex-col sm:flex-row gap-space-sm">
+            <div class="relative flex-1">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-surface-variant text-[20px]">alternate_email</span>
+              <label class="sr-only" for="sub-email">Your e-mail</label>
+              <input class="w-full h-11 pl-10 pr-space-md rounded bg-surface text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-secondary-fixed-dim" id="sub-email" name="mailaccount_r" maxlength="51" placeholder="name@university.edu" required type="email" autocomplete="email" />
+            </div>
+            <div class="relative flex-1">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-surface-variant text-[20px]">done_all</span>
+              <label class="sr-only" for="sub-email2">Repeat your e-mail</label>
+              <input class="w-full h-11 pl-10 pr-space-md rounded bg-surface text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-secondary-fixed-dim" id="sub-email2" name="mailaccount2_r" maxlength="51" placeholder="repeat your e-mail" required type="email" autocomplete="email" />
+            </div>
+            <button class="h-11 px-space-lg rounded bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md transition-colors flex items-center justify-center gap-2 shrink-0" type="submit"><span>Subscribe</span><span class="material-symbols-outlined text-[18px]">arrow_forward</span></button>
           </div>
-          <button class="h-11 px-space-lg rounded bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md transition-colors flex items-center justify-center gap-2 shrink-0" type="submit"><span>Subscribe</span><span class="material-symbols-outlined text-[18px]">arrow_forward</span></button>
         </form>
         <div class="flex flex-wrap items-center gap-space-md mt-space-xs px-space-sm">
           <span class="font-code-sm text-code-sm text-surface-variant">✓ One mail per session</span>
-          <span class="font-code-sm text-code-sm text-surface-variant">✓ One-click unsubscribe</span>
+          <span class="font-code-sm text-code-sm text-surface-variant">✓ Unsubscribe any time</span>
           <span class="font-code-sm text-code-sm text-surface-variant">✓ Address never shared</span>
         </div>
       </div>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
-      <div class="p-space-lg rounded-xl bg-surface/5 flex flex-col justify-between gap-space-md hover:bg-surface/10 transition-colors">
+      <div class="p-space-lg rounded-xl bg-surface/5 flex flex-col justify-between gap-space-md hover:bg-surface/10 transition-colors" id="talk-card">
         <div class="flex flex-col gap-space-xs">
           <div class="flex items-center justify-between"><span class="font-code-sm text-code-sm text-secondary-fixed-dim uppercase tracking-wider">Call for talks</span><span class="material-symbols-outlined text-secondary-fixed-dim">campaign</span></div>
           <h3 class="font-headline-md text-headline-md text-surface tracking-tight mt-space-xs">Give a talk</h3>
@@ -168,7 +183,7 @@
         </div>
         <a class="inline-flex items-center gap-2 text-secondary-fixed font-label-md text-label-md hover:underline" href="#" data-propose><span>Propose a session</span><span class="material-symbols-outlined text-[16px]">arrow_outward</span></a>
       </div>
-      <div class="p-space-lg rounded-xl bg-surface/5 flex flex-col justify-between gap-space-md hover:bg-surface/10 transition-colors">
+      <div class="p-space-lg rounded-xl bg-surface/5 flex flex-col justify-between gap-space-md hover:bg-surface/10 transition-colors" id="follow-card" hidden>
         <div class="flex flex-col gap-space-xs">
           <div class="flex items-center justify-between"><span class="font-code-sm text-code-sm text-secondary-fixed-dim uppercase tracking-wider">Follow</span><span class="material-symbols-outlined text-secondary-fixed-dim">hub</span></div>
           <h3 class="font-headline-md text-headline-md text-surface tracking-tight mt-space-xs">Announcements</h3>
@@ -267,8 +282,8 @@
         <div class="flex items-center gap-space-md"><img src="assets/tada-logo-384.png" alt="" width="72" height="72" class="w-[72px] h-[72px] shrink-0" loading="lazy" /><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface">TaDa</span><span class="font-code-sm text-code-sm text-on-surface-variant uppercase tracking-wider">Text as Data Speaker Series</span></div></div>
         <p class="font-body-sm text-body-sm text-on-surface-variant max-w-lg mt-space-xs">A community of machine learning, text-as-data and NLP enthusiasts in the social sciences, and friends from all related fields. Sessions are recorded only with the speaker's consent.</p>
         <div class="flex items-center gap-space-md mt-space-sm">
-          <a class="font-code-sm text-code-sm uppercase text-secondary hover:text-on-surface-variant transition-colors" href="#" data-bluesky rel="noopener" target="_blank">Bluesky</a><span class="font-code-sm text-code-sm text-outline-variant">•</span>
-          <a class="font-code-sm text-code-sm uppercase text-secondary hover:text-on-surface-variant transition-colors" href="#" data-linkedin rel="noopener" target="_blank">LinkedIn</a><span class="font-code-sm text-code-sm text-outline-variant">•</span>
+          <span data-social="bluesky" hidden><a class="font-code-sm text-code-sm uppercase text-secondary hover:text-on-surface-variant transition-colors" href="#" data-bluesky rel="noopener" target="_blank">Bluesky</a><span class="font-code-sm text-code-sm text-outline-variant"> • </span></span>
+          <span data-social="linkedin" hidden><a class="font-code-sm text-code-sm uppercase text-secondary hover:text-on-surface-variant transition-colors" href="#" data-linkedin rel="noopener" target="_blank">LinkedIn</a><span class="font-code-sm text-code-sm text-outline-variant"> • </span></span>
           <a class="font-code-sm text-code-sm uppercase text-secondary hover:text-on-surface-variant transition-colors" href="https://tada.cool">tada.cool</a>
         </div>
       </div>

@@ -2,12 +2,12 @@
 (function () {
   "use strict";
   var CFG = window.TADA_CONFIG || {};
+  /* Social links appear only when a real profile URL is configured (no keyword-search fallbacks). */
   var LINKS = {
     join: CFG.joinUrl || "",
     propose: CFG.proposeUrl || "mailto:nicolai.berk@gess.ethz.ch?subject=TaDa%3A%20talk%20proposal",
-    bluesky: CFG.blueskyUrl || "https://bsky.app/search?q=%23TextAsData",
-    linkedin: CFG.linkedinUrl || "https://www.linkedin.com/search/results/content/?keywords=TADA%20Speaker%20Series",
-    subscribeMail: "nicolai.berk@gess.ethz.ch"
+    bluesky: CFG.blueskyUrl || "",
+    linkedin: CFG.linkedinUrl || ""
   };
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
@@ -49,8 +49,11 @@
   /* ---------- links, header, misc ---------- */
   $$("[data-join]").forEach(function (a) { if (LINKS.join) a.href = LINKS.join; });
   $$("[data-propose]").forEach(function (a) { a.href = LINKS.propose; });
-  $$("[data-bluesky]").forEach(function (a) { a.href = LINKS.bluesky; });
-  $$("[data-linkedin]").forEach(function (a) { a.href = LINKS.linkedin; });
+  $$("[data-bluesky]").forEach(function (a) { if (LINKS.bluesky) a.href = LINKS.bluesky; else a.hidden = true; });
+  $$("[data-linkedin]").forEach(function (a) { if (LINKS.linkedin) a.href = LINKS.linkedin; else a.hidden = true; });
+  $$("[data-social]").forEach(function (w) { w.hidden = !LINKS[w.getAttribute("data-social")]; });
+  var fc = $("#follow-card"), tc0 = $("#talk-card");
+  if (fc) { var anySocial = !!(LINKS.bluesky || LINKS.linkedin); fc.hidden = !anySocial; if (tc0 && !anySocial) tc0.classList.add("md:col-span-2"); }
   $$(".email[data-email]").forEach(function (el) { var v = el.getAttribute("data-email").split("|"); var addr = v[0] + "@" + v[1]; var a = document.createElement("a"); a.href = "mailto:" + addr; a.className = "text-primary hover:underline"; a.textContent = addr; el.appendChild(a); });
   var yr = $("#yr"); if (yr) yr.textContent = new Date().getFullYear();
   var mb = $("#menu-btn"), mn = $("#mobile-nav");
@@ -58,12 +61,12 @@
     mb.addEventListener("click", function () { var open = mn.hidden; mn.hidden = !open; mb.setAttribute("aria-expanded", open ? "true" : "false"); });
     $$("a", mn).forEach(function (a) { a.addEventListener("click", function () { mn.hidden = true; mb.setAttribute("aria-expanded", "false"); }); });
   }
-  var sf = $("#subscribe-form");
-  if (sf) sf.addEventListener("submit", function (e) {
-    e.preventDefault(); var em = $("#sub-email").value.trim();
-    if (LINKS.join) { window.location.href = LINKS.join; return; }
-    window.location.href = "mailto:" + LINKS.subscribeMail + "?subject=" + encodeURIComponent("Subscribe to the TaDa Speaker Series") + "&body=" + encodeURIComponent("Please add " + em + " to the TaDa mailing list.");
-  });
+  /* The newsletter form posts natively to the tada.cool mailing list; only check that the two addresses match. */
+  var sf = $("#subscribe-form"), se2 = $("#sub-email2");
+  if (sf && se2) {
+    sf.addEventListener("submit", function (e) { var a = $("#sub-email").value.trim().toLowerCase(), b = se2.value.trim().toLowerCase(); if (a !== b) { e.preventDefault(); se2.setCustomValidity("The two addresses differ."); se2.reportValidity(); } });
+    se2.addEventListener("input", function () { se2.setCustomValidity(""); });
+  }
 
   /* ---------- data + rendering ---------- */
   var TALKS = [], TODAY = todayISO();
@@ -102,7 +105,7 @@
       (s.title ? '<h2 class="font-headline-md text-headline-md text-on-surface mt-space-xs tracking-tight">“' + esc(s.title) + '”</h2>' : (tba ? '<h2 class="font-headline-md text-headline-md text-on-surface mt-space-xs tracking-tight">' + esc(CFG.termTheme || "AI Tools for Social Scientists") + '</h2>' : '')) +
       (s.abstract ? '<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-3 mt-space-xs">' + esc(s.abstract) + '</p>' : '') + '</div>' +
       '<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-space-sm">' +
-      '<a class="flex-1 inline-flex items-center justify-center h-10 px-space-md rounded bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md transition-colors gap-2" href="' + esc(LINKS.join || "#subscribe") + '"><span class="material-symbols-outlined text-[18px]">videocam</span>Get the Zoom link</a>' +
+      '<a class="flex-1 inline-flex items-center justify-center h-10 px-space-md rounded bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md transition-colors gap-2" href="' + esc(LINKS.join || "#subscribe") + '"><span class="material-symbols-outlined text-[18px]">mail</span>Subscribe for the Zoom link</a>' +
       '<button class="inline-flex items-center justify-center h-10 px-space-md rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-md text-label-md transition-colors gap-1.5" type="button" data-ics><span class="material-symbols-outlined text-[18px]">event</span>Add to calendar (.ics)</button></div>';
     $("[data-ics]", card).addEventListener("click", function () { downloadICS(s); });
   }

@@ -15,10 +15,10 @@ window.TADA_CONFIG = {
   firebaseVersion: "12.4.0",
 
   /* Public page links */
-  joinUrl: "",       /* e.g. the Google Group "join" link or a sign-up form; empty = mailto fallback */
+  joinUrl: "",       /* optional external sign-up page; empty = the newsletter form on the public page (tada.cool mailing list, IONOS) */
   proposeUrl: "",    /* e.g. a Google Form for talk proposals; empty = mailto fallback */
-  blueskyUrl: "",    /* e.g. https://bsky.app/profile/tada.bsky.social */
-  linkedinUrl: "",   /* e.g. a LinkedIn page or Christopher's profile */
+  blueskyUrl: "",    /* real profile only, e.g. https://bsky.app/profile/tada.bsky.social; empty = Bluesky links hidden */
+  linkedinUrl: "",   /* real page only; empty = LinkedIn links hidden */
   termTheme: "AI Tools for Social Scientists",
 
   /* Set to false if you never want the public page to read the live programme from Firestore */
