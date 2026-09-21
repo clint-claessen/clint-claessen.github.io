@@ -68,9 +68,12 @@ allow reactions on other people's messages.
   mailing list on IONOS (`ml.kundenserver.de`, list `news@tada.cool`), the same sign-up as on the old Google Site;
   the list is administered in Christopher's IONOS account. Bluesky/LinkedIn links on the page show up only once a
   real profile URL is set in `committee/config.js`.
-- **Logo files**: `assets/tada-logo.png` (1024 px, transparent) is used everywhere on the site and in the cards;
-  the official master with transparent background is `assets/brand/tada-logo-transparent.png`
-  (brand colours #274387 dark blue, #3AB8EF light blue). Social-media profile and cover versions are in the
+- **Logo files**: `assets/tada-logo.png` (1024 px, transparent) is used everywhere on the site and in the cards.
+  It is the "TaDa · SPEAKER SERIES" badge (Sep 2026): the official "READING GROUP" master
+  (`assets/brand/tada-logo-transparent.png`, brand colours #274387 dark blue, #3AB8EF light blue) with the
+  bottom arc re-lettered in Poppins Bold and the ring closed up to the text; the result is kept as
+  `assets/brand/tada-logo-speaker-series.png`. Favicons, `og-image.png` and `tada-logo-384.png` derive from it.
+  For a vector version, ask the original designer to change the wording in the source file. Social-media profile and cover versions are in the
   organizers' shared logo package (final.zip), not in the repo.
 
 ## What lives where
