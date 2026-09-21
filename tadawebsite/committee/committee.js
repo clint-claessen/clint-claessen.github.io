@@ -237,7 +237,8 @@
         '<td>' + pillSel("status", "session", s.status || "open", STATUS) + '</td>' +
         '<td>' + (s.chair ? '<span class="avatar w-7 h-7 text-[10px] ' + (chairM ? avColor(chairM.uid) : "bg-surface-container-high text-on-surface") + '" title="' + esc(chairM ? chairM.name : s.chair) + '">' + esc(s.chair) + '</span>' : '<span class="text-outline">—</span>') + '</td>' +
         '<td>' + pillSel("invitation.status", "inv", inv, INV) + (s.invitation && s.invitation.sentBy ? '<div class="hint mt-1">' + esc(s.invitation.sentBy + " · " + (s.invitation.sentAt || "").slice(0, 10)) + '</div>' : "") + '</td>' +
-        '<td><span class="promo-grid">' + promoCell("newsletter", "N", (pr.newsletter || {}).status || "todo") + promoCell("linkedin", "L", (pr.linkedin || {}).status || "todo") + promoCell("bluesky", "B", (pr.bluesky || {}).status || "todo") + promoCell("website", "W", (pr.website || {}).status || "todo") + '</span></td>' +
+        '<td><span class="promo-grid">' + promoCell("newsletter", "N", (pr.newsletter || {}).status || "todo") + promoCell("linkedin", "L", (pr.linkedin || {}).status || "todo") + promoCell("bluesky", "B", (pr.bluesky || {}).status || "todo") + promoCell("website", "W", (pr.website || {}).status || "todo") + '</span>' +
+        (s.speaker ? '<button class="btn btn-ghost mt-1" type="button" data-newsletter title="Open the newsletter for this session in your e-mail program, addressed to the mailing list (send it from team@tada.cool)"><span class="material-symbols-outlined text-[16px]">outgoing_mail</span>Newsletter</button>' : "") + '</td>' +
         '<td><span class="hint">' + esc(s.updatedBy ? s.updatedBy + " · " + (s.updatedAtLabel || "") : "") + '</span></td>' +
         '<td><button class="btn btn-ghost" type="button" data-open title="Open"><span class="material-symbols-outlined text-[18px]">open_in_full</span></button></td></tr>';
     }).join("");
@@ -254,6 +255,8 @@
   });
   $("#sessions-body").addEventListener("click", function (e) {
     if (e.target.closest("select")) return;
+    var nbtn = e.target.closest("[data-newsletter]");
+    if (nbtn) { var sN = sessionById(nbtn.closest("tr").getAttribute("data-id")); if (sN) openNewsletterMail(((sN.promo || {}).newsletter || {}).draft || newsletterText(sN)); return; }
     var pc = e.target.closest("[data-promo]");
     if (pc) { var id0 = pc.closest("tr").getAttribute("data-id"), k = pc.getAttribute("data-promo"), s0 = sessionById(id0), cur = ((s0.promo || {})[k] || {}).status || "todo", list = k === "website" ? ["todo", "done"] : PROMO, upd = {}; upd["promo." + k + ".status"] = list[(list.indexOf(cur) + 1) % list.length]; patchSession(id0, upd); return; }
     var tr = e.target.closest("tr[data-id]"); if (!tr) return; var s = sessionById(tr.getAttribute("data-id")); if (s) openSession(s);
@@ -375,9 +378,18 @@
     var to = "", subject = "", body = "", cc = others().map(function (m) { return m.email; }).filter(Boolean).join(",");
     if (kind === "invitation") { to = sd("email").value.trim(); subject = "Invitation: TaDa Speaker Series " + (currentTerm || ""); body = $("#sd-inv-draft").value; }
     if (kind === "cand-invitation") { to = $("#cd-email").value.trim(); subject = "Invitation: TaDa Speaker Series " + (currentTerm || ""); body = $("#cd-draft").value; }
-    if (kind === "newsletter") { var txt = $("#sd-d-newsletter").value, m = txt.match(/^Subject:\s*(.*)$/m); subject = m ? m[1] : "TaDa Speaker Series"; body = txt.replace(/^Subject:.*\n\n?/, ""); cc = ""; }
+    if (kind === "newsletter") { openNewsletterMail($("#sd-d-newsletter").value); return; }
     var url = "mailto:" + encodeURIComponent(to) + "?subject=" + encodeURIComponent(subject) + (cc ? "&cc=" + encodeURIComponent(cc) : "") + "&body=" + encodeURIComponent(body);
     if (url.length > 7000) { copyText(body); toast("Text copied (too long for a mail link): paste it into your e-mail"); }
+    window.location.href = url;
+  }
+  /* Newsletter: open the e-mail program with the draft addressed to the mailing list (CFG.newsletterTo). Send it from the moderator mailbox. */
+  function openNewsletterMail(txt) {
+    var m = (txt || "").match(/^Subject:\s*(.*)$/m), subject = m ? m[1] : "TaDa Speaker Series", body = (txt || "").replace(/^Subject:.*\n\n?/, ""), to = CFG.newsletterTo || "";
+    if (!txt) { toast("No newsletter text yet: open the session and click Generate"); return; }
+    var url = "mailto:" + encodeURIComponent(to) + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+    if (url.length > 7000) { copyText(body); toast("Text copied (too long for a mail link): paste it into your e-mail"); }
+    toast("Opening your e-mail program: send from team@tada.cool to " + (to || "the list"));
     window.location.href = url;
   }
 
@@ -396,7 +408,7 @@
     var when = fmtLong(s.date) + ", " + (s.time || "17:00") + " " + tz(s.date) + " (Berlin time)";
     if (s.speaker) {
       out.push({ kind: "chair", date: addDays(s.date, -7), time: "10:00", dur: 30, title: "TaDa chair (" + (s.chair || "?") + "): e-mail " + who + " – session " + fmtShort(s.date),
-        desc: "One week before the session, the chair (" + chair + ") writes to " + who + (s.email ? " <" + s.email + ">" : "") + ": confirm date and time (" + when + "), the format (60 minutes, 20–30-minute talk then discussion), ask for the final title and abstract, a portrait photo and links, mention the recording question, and send the Zoom link" + (s.zoom ? ": " + s.zoom : " once it exists") + ".\nCommittee app: " + app });
+        desc: "One week before the session, the chair (" + chair + ") writes to " + who + (s.email ? " <" + s.email + ">" : "") + ": confirm date and time (" + when + "), the format (60 minutes, 20–30-minute talk then discussion), ask for the final title and abstract, a portrait photo and links, and send the Zoom link" + (s.zoom ? ": " + s.zoom : " once it exists") + ".\nCommittee app: " + app });
       out.push({ kind: "promo", date: addDays(s.date, -6), time: "10:00", dur: 30, title: "TaDa promo: announce " + who + " (LinkedIn, Bluesky, newsletter)",
         desc: "Post the announcement for " + who + " – " + when + ".\nDrafts: open the session in the committee app (" + app + "), Generate, Copy.\nSocial card with photo: " + cardUrl(s) });
       out.push({ kind: "day", date: s.date, time: "09:00", dur: 30, title: "TaDa today: reminder post + Zoom link for " + who,
@@ -458,7 +470,7 @@
         '<div class="flex flex-wrap items-start justify-between gap-space-sm"><div class="flex items-center gap-space-sm min-w-0"><span class="avatar w-9 h-9 text-[11px] bg-secondary text-on-secondary">' + esc(initialsOf(r.name).slice(0, 2)) + '</span><div class="flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm truncate">' + esc(r.name) + '</span><span class="font-body-sm text-body-sm text-on-surface-variant truncate">' + esc(r.affiliation || "") + (r.email ? ' · <a class="text-primary hover:underline" href="mailto:' + esc(r.email) + '">' + esc(r.email) + '</a>' : "") + '</span></div></div>' +
         '<div class="flex items-center gap-space-xs"><span class="pill ' + (r.handled ? "pill-ok" : "pill-sky") + '">' + (r.handled ? "handled" : "new") + '</span><span class="hint">' + esc(whenLabel(r)) + '</span></div></div>' +
         '<div class="font-body-lg text-body-lg font-medium">“' + esc(r.title || "") + '”</div>' + (r.abstract ? '<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-3" title="' + esc(r.abstract) + '">' + esc(r.abstract) + '</p>' : "") +
-        '<div class="flex flex-wrap items-center gap-1">' + (r.noneOfThese ? '<span class="pill pill-rose">none of the dates</span>' : picked.map(function (d) { return '<span class="pill pill-slate">' + esc(fmtShort(d)) + '</span>'; }).join("")) + '<span class="pill ' + (r.recording === "no" ? "pill-rose" : "pill-ok") + '">rec: ' + esc(r.recording || "?") + '</span>' + (r.url ? '<a class="pill pill-sky" href="' + esc(r.url) + '" target="_blank" rel="noopener">web</a>' : "") + (r.paper ? '<a class="pill pill-sky" href="' + esc(r.paper) + '" target="_blank" rel="noopener">paper</a>' : "") + (r.bluesky ? '<span class="pill pill-slate">' + esc(r.bluesky) + '</span>' : "") + (r.linkedin ? '<a class="pill pill-sky" href="' + esc(r.linkedin) + '" target="_blank" rel="noopener">linkedin</a>' : "") + '</div>' +
+        '<div class="flex flex-wrap items-center gap-1">' + (r.noneOfThese ? '<span class="pill pill-rose">none of the dates</span>' : picked.map(function (d) { return '<span class="pill pill-slate">' + esc(fmtShort(d)) + '</span>'; }).join("")) + (r.recording ? '<span class="pill ' + (r.recording === "no" ? "pill-rose" : "pill-ok") + '">rec: ' + esc(r.recording) + '</span>' : "") + (r.url ? '<a class="pill pill-sky" href="' + esc(r.url) + '" target="_blank" rel="noopener">web</a>' : "") + (r.paper ? '<a class="pill pill-sky" href="' + esc(r.paper) + '" target="_blank" rel="noopener">paper</a>' : "") + (r.bluesky ? '<span class="pill pill-slate">' + esc(r.bluesky) + '</span>' : "") + (r.linkedin ? '<a class="pill pill-sky" href="' + esc(r.linkedin) + '" target="_blank" rel="noopener">linkedin</a>' : "") + '</div>' +
         (r.notes ? '<p class="font-body-sm text-body-sm"><span class="hint">Notes:</span> ' + esc(r.notes) + '</p>' : "") +
         '<div class="flex flex-wrap items-center justify-between gap-space-sm pt-space-xs"><div class="flex items-center gap-space-xs"><select class="field w-auto h-8" data-slot><option value="">Choose an open slot…</option>' + slotOpts + '</select><button class="btn btn-primary" type="button" data-assign><span class="material-symbols-outlined text-[16px]">event_available</span>Assign to slot</button></div>' +
         '<div class="flex items-center gap-space-xs"><button class="btn btn-secondary" type="button" data-handled>' + (r.handled ? "Reopen" : "Mark handled") + '</button><button class="btn btn-danger" type="button" data-del-resp><span class="material-symbols-outlined text-[16px]">delete</span></button></div></div></article>';

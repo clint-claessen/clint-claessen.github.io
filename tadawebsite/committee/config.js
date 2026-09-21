@@ -21,6 +21,10 @@ window.TADA_CONFIG = {
   linkedinUrl: "",   /* real page only; empty = LinkedIn links hidden */
   termTheme: "AI Tools for Social Scientists",
 
+  /* Mailing list address the newsletter goes to. Messages must be sent FROM the moderator mailbox (team@tada.cool):
+     the committee app only opens your e-mail program with the draft and this recipient. */
+  newsletterTo: "news@tada.cool",
+
   /* Organizer roster (names and initials only): always offered as chair / proposer / owner in the committee app,
      even before a person has signed in and created a profile. Profiles that exist take precedence. */
   organizers: [
