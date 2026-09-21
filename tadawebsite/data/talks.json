@@ -32,12 +32,13 @@
  {
   "date": "2021-06-01",
   "speaker": "Christopher Klamm",
-  "affiliation": "",
+  "affiliation": "University of Mannheim",
   "title": "Swimming with the Tide? Positional Claim Detection across Political Text Types",
   "type": "Reading Group",
   "url": "",
   "paper": "https://www.aclweb.org/anthology/2020.nlpcss-1.3/",
-  "authors": "Blokker, Dayanik, Lapesa & Padó (2020)"
+  "authors": "Blokker, Dayanik, Lapesa & Padó (2020)",
+  "photo": "assets/team/christopher-klamm.jpg"
  },
  {
   "date": "2021-06-15",
@@ -82,12 +83,13 @@
  {
   "date": "2021-10-26",
   "speaker": "Christopher Klamm",
-  "affiliation": "",
+  "affiliation": "University of Mannheim",
   "title": "Modeling Framing in Immigration Discourse on Social Media",
   "type": "Reading Group",
   "url": "",
   "paper": "https://aclanthology.org/2021.naacl-main.179.pdf",
-  "authors": "Mendelsohn, Budak & Jurgens (2021)"
+  "authors": "Mendelsohn, Budak & Jurgens (2021)",
+  "photo": "assets/team/christopher-klamm.jpg"
  },
  {
   "date": "2021-11-09",
@@ -112,11 +114,12 @@
  {
   "date": "2021-12-07",
   "speaker": "Christopher Klamm",
-  "affiliation": "",
+  "affiliation": "University of Mannheim",
   "title": "Transformer Models",
   "type": "Reading Group",
   "url": "",
-  "paper": "https://github.com/chkla/NLP2CSS-Tutorial"
+  "paper": "https://github.com/chkla/NLP2CSS-Tutorial",
+  "photo": "assets/team/christopher-klamm.jpg"
  },
  {
   "date": "2022-04-12",
@@ -239,10 +242,11 @@
  {
   "date": "2022-10-25",
   "speaker": "Christopher Klamm",
-  "affiliation": "",
+  "affiliation": "University of Mannheim",
   "title": "Pipeline Standardization for Transparency & Accountability",
   "type": "Reading Group",
-  "url": ""
+  "url": "",
+  "photo": "assets/team/christopher-klamm.jpg"
  },
  {
   "date": "2022-11-08",
@@ -283,10 +287,11 @@
  {
   "date": "2022-12-06",
   "speaker": "Christopher Klamm",
-  "affiliation": "",
+  "affiliation": "University of Mannheim",
   "title": "Hosting and Sharing ML Models with Streamlit & Huggingface's Spaces",
   "type": "Reading Group",
-  "url": ""
+  "url": "",
+  "photo": "assets/team/christopher-klamm.jpg"
  },
  {
   "date": "2022-12-13",
