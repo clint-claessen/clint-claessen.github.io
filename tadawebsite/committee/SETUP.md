@@ -64,6 +64,10 @@ allow reactions on other people's messages.
   `assets/speakers/` (photos from other websites cannot be exported by the browser; upload them or
   add them to the repo, named `YYYY-MM-DD-first-last.jpg`, square, about 800 px).
 - **Post drafts** (LinkedIn, Bluesky) follow the wording of the spring 2026 posts; attach the social card.
+- **Logo files**: `assets/tada-logo.png` (1024 px, transparent) is used everywhere on the site and in the cards;
+  the official master with transparent background is `assets/brand/tada-logo-transparent.png`
+  (brand colours #274387 dark blue, #3AB8EF light blue). Social-media profile and cover versions are in the
+  organizers' shared logo package (final.zip), not in the repo.
 
 ## What lives where
 | Data | Firestore collection | Who can read | Who can write |

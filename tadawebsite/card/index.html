@@ -220,9 +220,6 @@
     return s.replace(/^(the\s+)?universit(y|ät|é|à|eit)\s+(of|de|di|van|degli studi di)\s+/i, "").replace(/\s+universit(y|ät|é|eit)$/i, "").trim() || s;
   }
   function fitFont(ctx, text, maxW, px, min, weight, family) { for (var s = px; s >= min; s -= 1) { ctx.font = weight + " " + s + "px " + family; if (ctx.measureText(text).width <= maxW) return s; } return min; }
-  function shadowOn(ctx) { ctx.shadowColor = "rgba(0,0,0,0.6)"; ctx.shadowBlur = 3; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2; }
-  function boxShadow(ctx) { ctx.shadowColor = "rgba(0,0,0,0.35)"; ctx.shadowBlur = 0; ctx.shadowOffsetX = 3; ctx.shadowOffsetY = 3; }
-  function shadowOff(ctx) { ctx.shadowColor = "transparent"; ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0; }
   function posterCards() {
     var term = $("#pterm").value.trim(), cards = ALL.filter(function (r) { return r.speaker && r.term && term && r.term.toLowerCase() === term.toLowerCase(); }).sort(function (a, b) { return a.date < b.date ? -1 : 1; })
       .map(function (r) { var p = dparts(r.date); return { dateLabel: MONTHS_LONG[p.m - 1] + " " + p.d, name: r.speaker, affiliation: shortAff(r.affiliation), photo: r.photo || "" }; });
@@ -232,53 +229,50 @@
   function renderPoster(ctx, W, H, cards, imgs) {
     var term = $("#pterm").value.trim() || "Fall 2026", ym = /(\d{4})/.exec(term), year = ym ? ym[1] : "", tword = term.replace(/\d{4}/, "").trim() || "Fall";
     var theme = $("#ptheme").value.trim() || "AI Tools for Social Scientists", timeLbl = $("#ptime").value.trim() || "Wednesdays @ 5pm", cta = $("#pcta").value.trim();
-    /* background: cream with soft-edged pastel shapes, kept clear of the logo and the panel */
-    ctx.fillStyle = "#fbf6f0"; ctx.fillRect(0, 0, W, H);
-    function soft(x, y, rx, ry, color, a) { ctx.save(); ctx.translate(x, y); ctx.scale(1, ry / rx); var g = ctx.createRadialGradient(0, 0, rx * 0.55, 0, 0, rx); g.addColorStop(0, color); g.addColorStop(1, "rgba(255,255,255,0)"); ctx.globalAlpha = a; ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, rx, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
-    soft(1180, 120, 240, 240, "#fddccb", 0.95); soft(70, 660, 230, 150, "#fddccb", 0.8); soft(1240, 640, 190, 190, "#fddccb", 0.55);
-    soft(300, 730, 360, 110, "#b7cfe0", 0.7); soft(960, 30, 300, 70, "#b7cfe0", 0.6); soft(30, 330, 70, 200, "#b7cfe0", 0.55); soft(1262, 380, 62, 190, "#b7cfe0", 0.5);
-    soft(62, 540, 24, 76, "#b9d3c1", 0.85); soft(1218, 470, 24, 76, "#b9d3c1", 0.75); soft(1040, 706, 120, 30, "#b9d3c1", 0.6);
-    /* logo */
-    if (logo) { ctx.save(); boxShadow(ctx); ctx.beginPath(); ctx.arc(112, 112, 100, 0, Math.PI * 2); ctx.fillStyle = "#fff"; ctx.fill(); shadowOff(ctx); ctx.clip(); ctx.drawImage(logo, 12, 12, 200, 200); ctx.restore(); }
-    /* title banners: theme biggest, then the series line, then the time line; stacked without gaps like the 2025 poster */
+    /* clean layout: flat white background, the official badge top-left, official brand blues (#274387 dark, #3AB8EF light) */
+    var BLUE = "#274387", LIGHT = "#3ab8ef", TINT = "#e6f4fc", SOFT = "rgba(39,67,135,0.78)";
+    ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W, H);
+    /* logo (transparent PNG, drawn as is) */
+    if (logo) ctx.drawImage(logo, 14, 6, 236, 236);
+    /* title banners: theme biggest (800 weight), series line and time line lighter; equal edges, 6px gaps */
     ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    function banner(x, y, w, h, fill, text, px, min) { ctx.save(); boxShadow(ctx); roundRect(ctx, x, y, w, h, 4); ctx.fillStyle = fill; ctx.fill(); shadowOff(ctx); var s = fitFont(ctx, text, w - 50, px, min, "700", "Inter, system-ui, sans-serif"); ctx.font = "700 " + s + "px Inter, system-ui, sans-serif"; shadowOn(ctx); ctx.fillStyle = "#fff"; ctx.fillText(text, x + w / 2, y + h / 2 + 1); ctx.restore(); }
-    var BLUE = "#0071c2";
-    banner(215, 22, 850, 66, BLUE, (year ? year + " " : "") + tword + " Term Speaker Series on", 46, 26);
-    banner(240, 88, 800, 92, BLUE, theme, 56, 32);
-    banner(430, 180, 420, 48, BLUE, timeLbl, 34, 18);
+    function banner(x, y, w, h, fill, ink, text, px, min, weight) { ctx.save(); roundRect(ctx, x, y, w, h, 8); ctx.fillStyle = fill; ctx.fill(); var s = fitFont(ctx, text, w - 50, px, min, weight, "Inter, system-ui, sans-serif"); ctx.font = weight + " " + s + "px Inter, system-ui, sans-serif"; ctx.fillStyle = ink; ctx.fillText(text, x + w / 2, y + h / 2 + 1); ctx.restore(); }
+    banner(262, 16, 758, 48, BLUE, "#ffffff", (year ? year + " " : "") + tword + " Term Speaker Series on", 32, 22, "600");
+    banner(262, 70, 758, 96, BLUE, "#ffffff", theme, 56, 32, "800");
+    banner(431, 172, 420, 46, LIGHT, BLUE, timeLbl, 28, 18, "700");
     /* card panel */
-    var N = Math.max(cards.length, 1), px0 = 110, py0 = 234, pw = 1060, ph = 372;
-    ctx.save(); boxShadow(ctx); roundRect(ctx, px0, py0, pw, ph, 6); ctx.fillStyle = "rgba(169,210,222,0.96)"; ctx.fill(); ctx.restore();
+    var N = Math.max(cards.length, 1), px0 = 70, py0 = 236, pw = 1140, ph = 368;
+    roundRect(ctx, px0, py0, pw, ph, 8); ctx.fillStyle = TINT; ctx.fill();
     var gap = 14, pad = 22, cw = (pw - 2 * pad - (N - 1) * gap) / N, small = N > 5;
-    var photoW = Math.round(cw - 8), photoH = Math.round(photoW * (small ? 1.12 : 1.18)), dateSize = small ? 22 : 26, nameSize = small ? 19 : 22, affSize = small ? 17 : 20;
+    var photoW = Math.round(cw - 8), photoH = Math.round(photoW * (small ? 1.06 : 1.12)), dateSize = small ? 24 : 28, nameSize = small ? 21 : 24, affSize = small ? 18 : 20;
     cards.forEach(function (cd, i) {
-      var x = px0 + pad + i * (cw + gap), cx = x + cw / 2, y = py0 + 18;
-      ctx.save(); shadowOn(ctx); ctx.fillStyle = "#fff"; ctx.font = "700 " + fitFont(ctx, cd.dateLabel, cw - 6, dateSize, 16, "700", "Inter, system-ui, sans-serif") + "px Inter, system-ui, sans-serif"; ctx.fillText(cd.dateLabel, cx, y + 15); ctx.restore();
-      var fy = y + 40, fx = Math.round(cx - photoW / 2);
-      ctx.save(); boxShadow(ctx); ctx.fillStyle = "#fff"; ctx.fillRect(fx - 3, fy - 3, photoW + 6, photoH + 6); ctx.restore();
-      if (imgs[i]) drawPhoto(ctx, imgs[i], fx, fy, photoW, photoH, 2, 0.15, 1); else { ctx.fillStyle = "#dce9ff"; ctx.fillRect(fx, fy, photoW, photoH); ctx.fillStyle = "#0050a7"; ctx.font = "600 " + Math.round(photoW * 0.34) + "px Inter, system-ui, sans-serif"; ctx.fillText((cd.name || "?").split(/\s+/).slice(0, 2).map(function (s) { return s[0]; }).join("").toUpperCase(), cx, fy + photoH / 2); }
-      var ty = fy + photoH + 24; ctx.save(); shadowOn(ctx); ctx.fillStyle = "#fff"; ctx.font = "700 " + nameSize + "px Inter, system-ui, sans-serif";
-      var nameLines = wrap(ctx, cd.name, cw - 10, 2); nameLines.forEach(function (ln) { ctx.fillText(ln, cx, ty); ty += Math.round(nameSize * 1.25); });
-      if (cd.affiliation) { ctx.font = "700 " + affSize + "px Inter, system-ui, sans-serif"; wrap(ctx, "(" + cd.affiliation + ")", cw - 10, 2).forEach(function (ln) { ctx.fillText(ln, cx, ty); ty += Math.round(affSize * 1.25); }); }
-      ctx.restore();
+      var x = px0 + pad + i * (cw + gap), cx = x + cw / 2, y = py0 + 20;
+      ctx.fillStyle = BLUE; ctx.font = "700 " + fitFont(ctx, cd.dateLabel, cw - 6, dateSize, 16, "700", "Inter, system-ui, sans-serif") + "px Inter, system-ui, sans-serif"; ctx.fillText(cd.dateLabel, cx, y + 15);
+      var fy = y + 42, fx = Math.round(cx - photoW / 2);
+      roundRect(ctx, fx - 3, fy - 3, photoW + 6, photoH + 6, 6); ctx.fillStyle = LIGHT; ctx.fill();
+      if (imgs[i]) drawPhoto(ctx, imgs[i], fx, fy, photoW, photoH, 4, 0.15, 1); else { ctx.fillStyle = "#cfe9f9"; ctx.fillRect(fx, fy, photoW, photoH); ctx.fillStyle = BLUE; ctx.font = "600 " + Math.round(photoW * 0.34) + "px Inter, system-ui, sans-serif"; ctx.fillText((cd.name || "?").split(/\s+/).slice(0, 2).map(function (s) { return s[0]; }).join("").toUpperCase(), cx, fy + photoH / 2); }
+      /* name on one line where it fits (shrunk down to 18px), otherwise two lines; the affiliation keeps a fixed baseline */
+      var ty = fy + photoH + 26, ns = fitFont(ctx, cd.name, cw - 10, nameSize, 18, "700", "Inter, system-ui, sans-serif"); ctx.fillStyle = BLUE; ctx.font = "700 " + ns + "px Inter, system-ui, sans-serif";
+      var nameLines = ctx.measureText(cd.name).width <= cw - 10 ? [cd.name] : wrap(ctx, cd.name, cw - 10, 2); nameLines.forEach(function (ln, k) { ctx.fillText(ln, cx, ty + k * Math.round(ns * 1.15)); });
+      var ay = ty + Math.round(nameSize * 1.25) + (nameLines.length > 1 ? Math.round(ns * 1.15) : 0);
+      if (cd.affiliation) { ctx.fillStyle = SOFT; ctx.font = "500 " + affSize + "px Inter, system-ui, sans-serif"; wrap(ctx, cd.affiliation, cw - 10, 1).forEach(function (ln) { ctx.fillText(ln, cx, ay); }); }
     });
-    /* footer */
-    ctx.save(); boxShadow(ctx); roundRect(ctx, 380, 620, 520, 84, 6); ctx.fillStyle = "rgba(167,209,221,0.97)"; ctx.fill(); ctx.restore();
-    ctx.fillStyle = "#0b1c30"; ctx.font = "600 22px Inter, system-ui, sans-serif"; ctx.fillText(cta, 640, 645);
-    ctx.font = "800 34px Inter, system-ui, sans-serif"; var a = "TADA", b = ".cool", wa = ctx.measureText(a).width, wb = ctx.measureText(b).width, sx = 640 - (wa + wb) / 2; ctx.textAlign = "left"; ctx.fillStyle = "#0b1c30"; ctx.fillText(a, sx, 681); ctx.fillStyle = "#0167d4"; ctx.fillText(b, sx + wa, 681); ctx.textAlign = "center";
+    /* footer: dark band with the site address */
+    roundRect(ctx, 380, 620, 520, 84, 8); ctx.fillStyle = BLUE; ctx.fill();
+    ctx.fillStyle = "#ffffff"; ctx.font = "600 22px Inter, system-ui, sans-serif"; ctx.fillText(cta, 640, 645);
+    ctx.font = "800 34px Inter, system-ui, sans-serif"; var a = "TADA", b = ".cool", wa = ctx.measureText(a).width, wb = ctx.measureText(b).width, sx = 640 - (wa + wb) / 2; ctx.textAlign = "left"; ctx.fillStyle = "#ffffff"; ctx.fillText(a, sx, 681); ctx.fillStyle = LIGHT; ctx.fillText(b, sx + wa, 681); ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
   }
   var drawing = false, again = false;
   function draw() {
     if (drawing) { again = true; return; } drawing = true; $("#err").textContent = "";
-    var c = $("#c"), wide = $("#format").value === "wide", poster = $("#format").value === "poster"; c.width = poster ? 1280 : 1200; c.height = poster ? 720 : wide ? 675 : 1200;
+    var c = $("#c"), wide = $("#format").value === "wide", poster = $("#format").value === "poster"; c.width = poster ? 2560 : 1200; c.height = poster ? 1440 : wide ? 675 : 1200;
     if (poster) {
       var cards = posterCards();
       var fontsP = document.fonts ? Promise.all([document.fonts.load("700 40px Inter"), document.fonts.load("800 32px Inter")]).catch(function () { }) : Promise.resolve();
       var plP = logo ? Promise.resolve() : loadImage("../assets/tada-logo.png").then(function (l) { logo = l; }).catch(function () { });
       Promise.all([fontsP, plP]).then(function () { return Promise.all(cards.map(function (cd) { return getImg(cd.photo ? photoSrc(cd.photo) : ""); })); })
-        .then(function (imgs) { renderPoster(c.getContext("2d"), c.width, c.height, cards, imgs); if (!cards.length) $("#err").textContent = "No speakers found for term “" + $("#pterm").value + "” – check the term name or add extra cards."; }, function (e) { $("#err").textContent = e.message; })
+        .then(function (imgs) { var g = c.getContext("2d"); g.setTransform(2, 0, 0, 2, 0, 0); renderPoster(g, 1280, 720, cards, imgs); g.setTransform(1, 0, 0, 1, 0, 0); if (!cards.length) $("#err").textContent = "No speakers found for term “" + $("#pterm").value + "” – check the term name or add extra cards."; }, function (e) { $("#err").textContent = e.message; })
         .then(function () { drawing = false; if (again) { again = false; draw(); } });
       return;
     }
