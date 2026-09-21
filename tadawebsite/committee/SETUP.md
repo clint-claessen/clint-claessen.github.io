@@ -58,6 +58,18 @@ allow reactions on other people's messages.
   re-import updates rather than duplicates in most calendars). The session drawer offers the same
   four reminders as prefilled Google Calendar links. Nothing runs on a server: the reminders live in
   each organizer's own calendar, which is also what rings on the phone.
+- **Slack reminders (automatic)**: a GitHub Actions job in the site repository
+  (`.github/workflows/tada-slack-reminders.yml`, script `.github/scripts/tada_slack_reminders.py`) runs every hour,
+  reads the duties list that *Publish to website* writes to Firestore (`public/duties`: dates, speakers, chairs by
+  name; no e-mails, no Zoom links) and posts to the organizers' Slack channel, Berlin time: chair e-mail 7 days
+  before (09:30; the inviter creates the Zoom meeting and puts the link in the e-mail), announcement 6 days before
+  (09:30; newsletter with the Zoom link, LinkedIn, Bluesky), session-day reminder (09:30) and a heads-up one hour
+  before the session (16:30). One-time setup: (1) in Slack, https://api.slack.com/apps → *Create New App* → *From
+  scratch* → name "TaDa reminders", workspace tadapolisci → *Incoming Webhooks* → activate → *Add New Webhook to
+  Workspace* → pick the organizers' channel → copy the URL; (2) on GitHub, repository *Settings → Secrets and
+  variables → Actions → New repository secret* named `SLACK_WEBHOOK_URL` with that URL; (3) *Actions → TaDa Slack
+  reminders → Run workflow* with "Post a test message" ticked. Set the chairs in the Series view and press
+  *Publish to website* whenever the programme or the chairs change, otherwise the reminders name nobody.
 - **Social card** (session drawer, or `/tadawebsite/card/`; organizer sign-in required, same accounts as this app; also makes the term poster, format "Term poster"): renders the announcement image for
   LinkedIn and Bluesky (photo on the blue panel, date badge, name, title; red badge when the session
   is not on a Wednesday) and downloads it as PNG, square or landscape. Uses the portrait stored in

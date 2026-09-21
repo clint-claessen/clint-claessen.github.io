@@ -1,0 +1,46 @@
+name: TaDa Slack reminders
+
+# Hourly; the script works in Berlin time and posts only what is due that hour
+# (chair e-mail 7 days before, announcement 6 days before, session-day reminder, one-hour heads-up).
+# Needs the repository secret SLACK_WEBHOOK_URL (Slack incoming webhook for the organizers' channel).
+on:
+  schedule:
+    - cron: "30 * * * *"
+  workflow_dispatch:
+    inputs:
+      test:
+        description: "Post a test message to the channel"
+        type: boolean
+        default: false
+      now:
+        description: "Pretend it is this Berlin date-time (YYYY-MM-DDTHH:MM), to preview a day's reminders"
+        required: false
+        default: ""
+      dry_run:
+        description: "Print instead of posting"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Post due reminders
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          TEST: ${{ inputs.test }}
+          NOW: ${{ inputs.now }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          ARGS=""
+          if [ "$TEST" = "true" ]; then ARGS="$ARGS --test"; fi
+          if [ -n "$NOW" ]; then ARGS="$ARGS --now $NOW"; fi
+          if [ "$DRY_RUN" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+          python .github/scripts/tada_slack_reminders.py $ARGS

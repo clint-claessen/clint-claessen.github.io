@@ -24,6 +24,9 @@ window.TADA_CONFIG = {
   /* Mailing list address the newsletter goes to. Messages must be sent FROM the moderator mailbox (team@tada.cool):
      the committee app only opens your e-mail program with the draft and this recipient. */
   newsletterTo: "news@tada.cool",
+  /* Webmail of the moderator mailbox: the Newsletter button copies the draft and opens this page in a new tab
+     (webmail cannot be prefilled by a link). Set to "" to use the mailto link for a local e-mail program instead. */
+  newsletterWebmail: "https://email.ionos.de/",
 
   /* Organizer roster (names and initials only): always offered as chair / proposer / owner in the committee app,
      even before a person has signed in and created a profile. Profiles that exist take precedence. */

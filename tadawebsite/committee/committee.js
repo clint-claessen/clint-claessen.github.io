@@ -238,7 +238,7 @@
         '<td>' + (s.chair ? '<span class="avatar w-7 h-7 text-[10px] ' + (chairM ? avColor(chairM.uid) : "bg-surface-container-high text-on-surface") + '" title="' + esc(chairM ? chairM.name : s.chair) + '">' + esc(s.chair) + '</span>' : '<span class="text-outline">—</span>') + '</td>' +
         '<td>' + pillSel("invitation.status", "inv", inv, INV) + (s.invitation && s.invitation.sentBy ? '<div class="hint mt-1">' + esc(s.invitation.sentBy + " · " + (s.invitation.sentAt || "").slice(0, 10)) + '</div>' : "") + '</td>' +
         '<td><span class="promo-grid">' + promoCell("newsletter", "N", (pr.newsletter || {}).status || "todo") + promoCell("linkedin", "L", (pr.linkedin || {}).status || "todo") + promoCell("bluesky", "B", (pr.bluesky || {}).status || "todo") + promoCell("website", "W", (pr.website || {}).status || "todo") + '</span>' +
-        (s.speaker ? '<button class="btn btn-ghost mt-1" type="button" data-newsletter title="Open the newsletter for this session in your e-mail program, addressed to the mailing list (send it from team@tada.cool)"><span class="material-symbols-outlined text-[16px]">outgoing_mail</span>Newsletter</button>' : "") + '</td>' +
+        (s.speaker ? '<button class="btn btn-ghost mt-1" type="button" data-newsletter title="Copies the newsletter draft for this session and opens the team@tada.cool webmail: paste it into a new message to the mailing list"><span class="material-symbols-outlined text-[16px]">outgoing_mail</span>Newsletter</button>' : "") + '</td>' +
         '<td><span class="hint">' + esc(s.updatedBy ? s.updatedBy + " · " + (s.updatedAtLabel || "") : "") + '</span></td>' +
         '<td><button class="btn btn-ghost" type="button" data-open title="Open"><span class="material-symbols-outlined text-[18px]">open_in_full</span></button></td></tr>';
     }).join("");
@@ -268,8 +268,12 @@
     if (!currentTerm) { toast("No term selected"); return; }
     var ts = termSettings[currentTerm] || {};
     var pub = sessionsOfTerm().filter(function (s) { return s.status !== "cancelled"; }).map(function (s) { var show = s.status === "confirmed" || s.status === "done"; return { date: s.date, time: s.time || "17:00", term: currentTerm, speaker: show ? (s.speaker || "") : "", affiliation: show ? (s.affiliation || "") : "", url: show ? (s.url || "") : "", photo: show ? (s.photo || "") : "", title: show ? (s.title || "") : "", paper: show ? (s.paper || "") : "", abstract: show ? (s.abstract || "") : "" }; });
-    if (!confirm("Publish " + pub.length + " session(s) of " + currentTerm + " to the public website?\nSpeakers are shown only when their status is confirmed or done; other slots appear as open.")) return;
+    if (!confirm("Publish " + pub.length + " session(s) of " + currentTerm + " to the public website?\nSpeakers are shown only when their status is confirmed or done; other slots appear as open.\nThe duties list for the Slack reminders (dates, speakers, chairs by name) is refreshed at the same time.")) return;
     var label = nowLabel();
+    /* Duties list read by the Slack reminder job (.github/scripts/tada_slack_reminders.py): names and initials only, no e-mails, no Zoom links. */
+    var nameOf = function (ini) { var m = rosterList().filter(function (x) { return x.initials === ini; })[0]; return m ? m.name : ""; };
+    var duties = sessionsOfTerm().filter(function (s) { return s.status !== "cancelled" && s.status !== "declined"; }).map(function (s) { var inv = (s.invitation || {}).sentBy || ""; return { date: s.date, time: s.time || "17:00", term: currentTerm, speaker: s.speaker || "", title: s.title || "", status: s.status || "open", chair: s.chair || "", chairName: s.chair ? nameOf(s.chair) : "", inviter: inv, inviterName: inv ? nameOf(inv) : "" }; });
+    db.collection("public").doc("duties").set({ json: JSON.stringify(duties), term: currentTerm, updatedAt: TS(), updatedBy: me.initials, updatedAtLabel: label }).catch(function (err) { toast("Duties list not saved: " + friendly(err)); });
     db.collection("public").doc("programme").set({ term: currentTerm, theme: ts.theme || CFG.termTheme || "", sessions: pub, updatedAt: TS(), updatedBy: me.initials, updatedAtLabel: label })
       .then(function () { return db.collection("settings").doc("term-" + currentTerm).set({ publishedAtLabel: label, publishedBy: me.initials }, { merge: true }); })
       .then(function () { return db.batch(); }).then(function (b) { sessionsOfTerm().forEach(function (s) { if (s.status === "confirmed" || s.status === "done") b.update(db.collection("sessions").doc(s.id), { "promo.website.status": "done" }); }); return b.commit(); })
@@ -378,15 +382,23 @@
     var to = "", subject = "", body = "", cc = others().map(function (m) { return m.email; }).filter(Boolean).join(",");
     if (kind === "invitation") { to = sd("email").value.trim(); subject = "Invitation: TaDa Speaker Series " + (currentTerm || ""); body = $("#sd-inv-draft").value; }
     if (kind === "cand-invitation") { to = $("#cd-email").value.trim(); subject = "Invitation: TaDa Speaker Series " + (currentTerm || ""); body = $("#cd-draft").value; }
-    if (kind === "newsletter") { openNewsletterMail($("#sd-d-newsletter").value); return; }
+    if (kind === "newsletter") { openNewsletterMail($("#sd-d-newsletter").value, true); return; }
     var url = "mailto:" + encodeURIComponent(to) + "?subject=" + encodeURIComponent(subject) + (cc ? "&cc=" + encodeURIComponent(cc) : "") + "&body=" + encodeURIComponent(body);
     if (url.length > 7000) { copyText(body); toast("Text copied (too long for a mail link): paste it into your e-mail"); }
     window.location.href = url;
   }
-  /* Newsletter: open the e-mail program with the draft addressed to the mailing list (CFG.newsletterTo). Send it from the moderator mailbox. */
-  function openNewsletterMail(txt) {
+  /* Newsletter: with CFG.newsletterWebmail set, copy the draft (recipient, subject, body) and open the webmail of the
+     moderator mailbox in a new tab; otherwise open a mailto link addressed to the list (CFG.newsletterTo). */
+  function openNewsletterMail(txt, forceMailto) {
     var m = (txt || "").match(/^Subject:\s*(.*)$/m), subject = m ? m[1] : "TaDa Speaker Series", body = (txt || "").replace(/^Subject:.*\n\n?/, ""), to = CFG.newsletterTo || "";
     if (!txt) { toast("No newsletter text yet: open the session and click Generate"); return; }
+    if (CFG.newsletterWebmail && !forceMailto) {
+      var clip = "To: " + to + "\nSubject: " + subject + "\n\n" + body;
+      var w = window.open(CFG.newsletterWebmail, "_blank", "noopener");
+      copyText(clip).then(function () { toast("Draft copied. In the webmail: new message to " + to + ", paste, send from team@tada.cool."); });
+      if (!w) toast("Pop-up blocked: open " + CFG.newsletterWebmail + " yourself; the draft is in your clipboard.");
+      return;
+    }
     var url = "mailto:" + encodeURIComponent(to) + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
     if (url.length > 7000) { copyText(body); toast("Text copied (too long for a mail link): paste it into your e-mail"); }
     toast("Opening your e-mail program: send from team@tada.cool to " + (to || "the list"));
@@ -408,9 +420,9 @@
     var when = fmtLong(s.date) + ", " + (s.time || "17:00") + " " + tz(s.date) + " (Berlin time)";
     if (s.speaker) {
       out.push({ kind: "chair", date: addDays(s.date, -7), time: "10:00", dur: 30, title: "TaDa chair (" + (s.chair || "?") + "): e-mail " + who + " – session " + fmtShort(s.date),
-        desc: "One week before the session, the chair (" + chair + ") writes to " + who + (s.email ? " <" + s.email + ">" : "") + ": confirm date and time (" + when + "), the format (60 minutes, 20–30-minute talk then discussion), ask for the final title and abstract, a portrait photo and links, and send the Zoom link" + (s.zoom ? ": " + s.zoom : " once it exists") + ".\nCommittee app: " + app });
-      out.push({ kind: "promo", date: addDays(s.date, -6), time: "10:00", dur: 30, title: "TaDa promo: announce " + who + " (LinkedIn, Bluesky, newsletter)",
-        desc: "Post the announcement for " + who + " – " + when + ".\nDrafts: open the session in the committee app (" + app + "), Generate, Copy.\nSocial card with photo: " + cardUrl(s) });
+        desc: "One week before the session, the chair (" + chair + ") writes to " + who + (s.email ? " <" + s.email + ">" : "") + ": confirm date and time (" + when + "), the format (60 minutes, 20–30-minute talk then discussion), ask for the final title and abstract, a portrait photo and links. Create the Zoom meeting yourself and put the link in the e-mail" + (s.zoom ? " (" + s.zoom + ")" : "") + ".\nCommittee app: " + app });
+      out.push({ kind: "promo", date: addDays(s.date, -6), time: "10:00", dur: 30, title: "TaDa promo: announce " + who + " (newsletter with Zoom link, LinkedIn, Bluesky)",
+        desc: "Announce " + who + " – " + when + ": newsletter to the list (it must contain the Zoom link), then the LinkedIn and Bluesky posts.\nDrafts: open the session in the committee app (" + app + "), Generate, Newsletter.\nSocial card with photo: " + cardUrl(s) });
       out.push({ kind: "day", date: s.date, time: "09:00", dur: 30, title: "TaDa today: reminder post + Zoom link for " + who,
         desc: "Session day: reminder on LinkedIn and Bluesky, and send the Zoom link" + (s.zoom ? " (" + s.zoom + ")" : "") + " to the subscribers.\nChair: " + chair + ".\n" + when });
     }
