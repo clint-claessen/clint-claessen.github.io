@@ -17,6 +17,7 @@ import datetime as dt
 import json
 import os
 import sys
+import urllib.error
 import urllib.request
 from zoneinfo import ZoneInfo
 
@@ -27,10 +28,17 @@ CARD_URL = "https://clintclaessen.com/tadawebsite/card/?date="
 
 
 def fetch_duties(url: str) -> list:
-    """The committee app stores the list as a JSON string in the field `json` of public/duties."""
+    """The committee app stores the list as a JSON string in the field `json` of public/duties.
+    A missing document (nothing published yet) means there is nothing to remind about."""
     req = urllib.request.Request(url, headers={"User-Agent": "tada-slack-reminders"})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        doc = json.load(r)
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            doc = json.load(r)
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            print("No duties list published yet (public/duties missing): press 'Publish to website' in the committee app.")
+            return []
+        raise
     raw = doc.get("fields", {}).get("json", {}).get("stringValue", "")
     return json.loads(raw) if raw else []
 
