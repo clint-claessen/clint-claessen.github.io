@@ -10,7 +10,7 @@ Console: https://console.firebase.google.com/project/tadawebsite
 | URL | What it is |
 | --- | --- |
 | `/tadawebsite/` | Public site: next session, programme, join band, archive, organizers. Reads `data/talks.json` and, when published, the live programme from Firestore. |
-| `/tadawebsite/speak/` | Speaker form linked from invitation e-mails: title, abstract, available dates (the open slots), recording consent. Writes to Firestore `responses`. |
+| `/tadawebsite/speak/` | Speaker form linked from invitation e-mails: title, abstract, links, portrait, available dates (the open slots), notes. Writes to Firestore `responses` (the recording question was removed in Sep 2026; the field is sent empty so the published rules still apply). |
 | `/tadawebsite/committee/` | Organizer app: Series, Speaker responses, Candidates, Messages, Profile & settings. |
 
 ## 1. Web app config → `committee/config.js` — DONE (10 Sep 2026)
