@@ -73,6 +73,21 @@
   function isUpcoming(s) { return s.date >= TODAY; }
   function byDate(a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; }
   function initials(n) { return (n || "").split(/[\s&,]+/).filter(Boolean).slice(0, 2).map(function (w) { return w[0]; }).join("").toUpperCase(); }
+  /* Title Case for talk titles (team decision, Sep 2026): capitalise each word, keep small words lowercase except at the start or after a colon, leave acronyms and words with inner capitals (LLMs, NLP, ParlLawSpeech) untouched. */
+  var SMALL = { a: 1, an: 1, the: 1, and: 1, but: 1, or: 1, nor: 1, "for": 1, so: 1, yet: 1, at: 1, by: 1, "in": 1, of: 1, on: 1, to: 1, up: 1, as: 1, vs: 1, "vs.": 1, via: 1, from: 1, "with": 1, into: 1, over: 1, per: 1, than: 1, off: 1, onto: 1, upon: 1, et: 1, "al.": 1 };
+  function titleCase(s) {
+    if (!s) return s;
+    var words = String(s).split(" "), n = words.length;
+    function capTok(tok) { var core = tok.replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g, ""); if (!core) return tok; if (/[A-Z]/.test(core.slice(1))) return tok; var m = tok.match(/^([^A-Za-z0-9]*)([A-Za-z0-9])(.*)$/); return m ? m[1] + m[2].toUpperCase() + m[3] : tok; }
+    return words.map(function (w, i) {
+      var prev = i ? words[i - 1] : "", starts = i === 0 || /[:?!.–—-]$/.test(prev), last = i === n - 1 || /[:?!.][)"'”’]*$/.test(w), parts = w.split("-");
+      return parts.map(function (p, j) {
+        var bare = p.replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g, ""), edge = parts.length > 1 && (j === 0 || j === parts.length - 1);
+        if (bare && SMALL[bare.toLowerCase()] && !(starts && j === 0) && !(last && j === parts.length - 1) && !edge && !/[A-Z]/.test(bare.slice(1))) { var lead = (p.match(/^([^A-Za-z0-9]*)/) || ["", ""])[1], trail = (p.match(/([^A-Za-z0-9]*)$/) || ["", ""])[1]; return lead + bare.toLowerCase() + trail; }
+        return capTok(p);
+      }).join("-");
+    }).join(" ");
+  }
   /* Speaker portrait (from the original site or the committee app) with an initials fallback. */
   function avatar(s, tba, size, quiet, eager) {
     if (s.photo) return '<img class="' + size + ' rounded-pill object-cover shrink-0 bg-surface-container-high shadow-sm" src="' + esc(s.photo) + '" alt="" loading="' + (eager ? "eager" : "lazy") + '" decoding="async" data-initials="' + esc(initials(s.speaker)) + '" />';
@@ -102,7 +117,7 @@
       '<div class="flex flex-col gap-space-xs"><div class="font-code-md text-code-md text-on-surface-variant">' + esc(fmtDate(s.date, true)) + ' · ' + esc(s.time || "17:00") + ' Berlin time</div>' + (hint ? '<div class="font-body-sm text-body-sm text-tertiary">' + esc(hint) + '</div>' : '') + '</div>' +
       '<div class="my-space-md p-space-md rounded bg-surface-container-low flex flex-col gap-space-xs">' +
       '<div class="flex items-center gap-space-sm">' + avatar(s, tba, "w-24 h-24", false, true) + '<div class="flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm text-on-surface truncate">' + (tba ? "Speaker to be announced" : esc(s.speaker)) + '</span>' + (s.affiliation ? '<span class="font-code-sm text-code-sm text-tertiary truncate">' + esc(s.affiliation) + '</span>' : '') + '</div></div>' +
-      (s.title ? '<h2 class="font-headline-md text-headline-md text-on-surface mt-space-xs tracking-tight">“' + esc(s.title) + '”</h2>' : (tba ? '<h2 class="font-headline-md text-headline-md text-on-surface mt-space-xs tracking-tight">' + esc(CFG.termTheme || "AI Tools for Social Scientists") + '</h2>' : '')) +
+      (s.title ? '<h2 class="font-headline-md text-headline-md text-on-surface mt-space-xs tracking-tight">“' + esc(titleCase(s.title)) + '”</h2>' : (tba ? '<h2 class="font-headline-md text-headline-md text-on-surface mt-space-xs tracking-tight">' + esc(CFG.termTheme || "AI Tools for Social Scientists") + '</h2>' : '')) +
       (s.abstract ? '<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-3 mt-space-xs">' + esc(s.abstract) + '</p>' : '') + '</div>' +
       '<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-space-sm">' +
       '<a class="flex-1 inline-flex items-center justify-center min-h-10 py-2 px-space-md rounded bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md transition-colors gap-2 text-center" href="' + esc(LINKS.join || "#subscribe") + '"><span class="material-symbols-outlined text-[18px] shrink-0">mail</span>Subscribe to the newsletter for the Zoom link</a>' +
@@ -122,7 +137,7 @@
         '<td class="py-space-md px-space-md align-top"><div class="font-headline-sm text-headline-sm text-on-surface">' + esc(fmtDate(s.date, true)) + '</div><div class="font-code-sm text-code-sm text-tertiary mt-0.5">' + esc((s.time || "17:00") + " " + tzLabel(s.date)) + '</div></td>' +
         '<td class="py-space-md px-space-md align-top">' + (tba ? '<div class="font-headline-sm text-headline-sm text-tertiary italic">To be announced</div><div class="font-body-sm text-body-sm text-outline-variant mt-0.5">Invitations out</div>' :
           '<div class="flex items-center gap-space-md">' + avatar(s, false, "w-16 h-16") + '<div class="min-w-0"><div class="font-headline-sm text-headline-sm text-on-surface">' + (s.url ? '<a class="hover:text-primary" href="' + esc(s.url) + '" rel="noopener">' + esc(s.speaker) + '</a>' : esc(s.speaker)) + '</div>' + (s.affiliation ? '<div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">' + esc(s.affiliation) + '</div>' : '') + '</div></div>') + '</td>' +
-        '<td class="py-space-md px-space-md align-top">' + (s.title ? '<div class="font-body-lg text-body-lg text-on-surface font-medium">' + (s.paper ? '<a class="hover:text-primary" href="' + esc(s.paper) + '" rel="noopener">“' + esc(s.title) + '”</a>' : '“' + esc(s.title) + '”') + '</div>' : '<div class="font-body-lg text-body-lg text-tertiary italic">' + (tba ? "To be announced" : "Title to follow") + '</div>') + '</td>' +
+        '<td class="py-space-md px-space-md align-top">' + (s.title ? '<div class="font-body-lg text-body-lg text-on-surface font-medium">' + (s.paper ? '<a class="hover:text-primary" href="' + esc(s.paper) + '" rel="noopener">“' + esc(titleCase(s.title)) + '”</a>' : '“' + esc(titleCase(s.title)) + '”') + '</div>' : '<div class="font-body-lg text-body-lg text-tertiary italic">' + (tba ? "To be announced" : "Title to follow") + '</div>') + '</td>' +
         '<td class="py-space-md px-space-md align-top text-right"><span class="pill ' + (tba ? "pill-slate" : "pill-ok") + '">' + (tba ? "Open slot" : "Confirmed") + '</span></td></tr>';
     }).join("");
     var hint = $("#tz-hint"); var lh = localHint(up[0].date, up[0].time); if (hint && lh) hint.textContent = lh;
@@ -148,7 +163,7 @@
       return '<div class="p-space-md rounded bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow flex flex-col md:flex-row md:items-center justify-between gap-space-sm">' +
         '<div class="flex items-center gap-space-sm md:gap-space-md min-w-0"><span class="hidden md:inline font-code-md text-code-md text-tertiary w-32 shrink-0 tabular">' + esc(fmtDate(s.date, true)) + '</span>' + avatar(s, false, "w-14 h-14 md:w-16 md:h-16", true) +
         '<div class="flex flex-col min-w-0"><span class="md:hidden font-code-sm text-code-sm text-tertiary tabular">' + esc(fmtDate(s.date, true)) + '</span><div class="flex items-center gap-space-xs flex-wrap"><span class="font-headline-sm text-headline-sm text-on-surface">' + (s.url ? '<a class="hover:text-primary" href="' + esc(s.url) + '" rel="noopener">' + esc(s.speaker) + '</a>' : esc(s.speaker)) + '</span>' + (s.affiliation ? '<span class="font-body-sm text-body-sm text-on-surface-variant">· ' + esc(s.affiliation) + '</span>' : '') + '</div>' +
-        (s.title ? '<div class="font-body-md text-body-md text-primary italic mt-0.5">' + (s.paper ? '<a class="hover:underline" href="' + esc(s.paper) + '" rel="noopener">“' + esc(s.title) + '”</a>' : '“' + esc(s.title) + '”') + (s.authors ? '<span class="not-italic text-on-surface-variant"> — ' + esc(s.authors) + '</span>' : '') + '</div>' : '') + '</div></div>' +
+        (s.title ? '<div class="font-body-md text-body-md text-primary italic mt-0.5">' + (s.paper ? '<a class="hover:underline" href="' + esc(s.paper) + '" rel="noopener">“' + esc(titleCase(s.title)) + '”</a>' : '“' + esc(titleCase(s.title)) + '”') + (s.authors ? '<span class="not-italic text-on-surface-variant"> — ' + esc(s.authors) + '</span>' : '') + '</div>' : '') + '</div></div>' +
         '<div class="flex items-center gap-space-sm shrink-0"><span class="px-2 py-0.5 rounded-full ' + (rg ? "bg-secondary-fixed text-on-secondary-fixed" : "bg-surface-container-high text-on-surface") + ' font-code-sm text-code-sm uppercase">' + (rg ? "Reading group" : "Speaker series") + '</span>' + (s.paper ? '<a class="p-1 text-tertiary hover:text-primary transition-colors" href="' + esc(s.paper) + '" rel="noopener" title="Paper"><span class="material-symbols-outlined text-[18px]">description</span></a>' : '') + '</div></div>';
     }).join("");
   }
@@ -161,19 +176,33 @@
   fetch("data/talks.json").then(function (r) { return r.json(); }).then(function (rows) { TALKS = rows; renderAll(); loadLive(); })
     .catch(function () { var b = $("#programme-body"); if (b) b.innerHTML = '<tr><td colspan="4" class="p-space-md text-on-surface-variant">Programme could not be loaded.</td></tr>'; });
 
-  /* ---------- live programme from Firestore (public/programme, written by the committee app) ---------- */
+  /* ---------- live data from Firestore, written by the committee app: public/programme (term schedule) and public/team (organizer cards) ---------- */
   function loadScript(src) { return new Promise(function (res, rej) { var s = document.createElement("script"); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
+  function applyProgramme(doc) {
+    if (!doc || !doc.exists) return; var d = doc.data() || {}; var live = (d.sessions || []).filter(function (s) { return s && s.date; }); if (!live.length) return;
+    var dates = {}; live.forEach(function (s) { dates[s.date] = true; });
+    var statics = TALKS;
+    TALKS = TALKS.filter(function (s) { return !isUpcoming(s) && !dates[s.date]; }).concat(live.map(function (s) { return { date: s.date, time: s.time || "17:00", speaker: s.speaker || "", affiliation: s.affiliation || "", url: s.url || "", title: s.title || "", abstract: s.abstract || "", paper: s.paper || "", photo: photoFor(s, statics), type: "Speaker Series", term: s.term || d.term || "" }; }));
+    if (d.theme) CFG.termTheme = d.theme; renderAll();
+  }
+  /* Team cards: each published entry updates the card with matching initials; empty fields keep the static text. */
+  function applyTeam(list) {
+    (list || []).forEach(function (t) {
+      var card = t && t.initials ? $('[data-team="' + String(t.initials).toUpperCase().replace(/[^A-Z]/g, "") + '"]') : null; if (!card) return;
+      var set = function (f, v) { var el = $('[data-f="' + f + '"]', card); if (el && v) el.textContent = v; };
+      set("name", t.name); set("role", t.role); set("institution", t.institution); set("bio", t.bio);
+      var a = $('[data-f="website"]', card); if (a && t.website && /^https?:\/\//i.test(t.website)) a.href = t.website;
+      var img = $('[data-f="photo"]', card); if (img && t.photo) { img.src = t.photo; if (t.name) img.alt = "Portrait of " + t.name; }
+    });
+  }
   function loadLive() {
     if (!CFG.firebase || CFG.livePublic === false) return;
     var v = CFG.firebaseVersion || "12.4.0";
     loadScript("https://www.gstatic.com/firebasejs/" + v + "/firebase-app-compat.js").then(function () { return loadScript("https://www.gstatic.com/firebasejs/" + v + "/firebase-firestore-compat.js"); })
-      .then(function () { var app = firebase.apps.length ? firebase.app() : firebase.initializeApp(CFG.firebase); return app.firestore().collection("public").doc("programme").get(); })
-      .then(function (doc) {
-        if (!doc.exists) return; var d = doc.data() || {}; var live = (d.sessions || []).filter(function (s) { return s && s.date; }); if (!live.length) return;
-        var dates = {}; live.forEach(function (s) { dates[s.date] = true; });
-        var statics = TALKS;
-        TALKS = TALKS.filter(function (s) { return !isUpcoming(s) && !dates[s.date]; }).concat(live.map(function (s) { return { date: s.date, time: s.time || "17:00", speaker: s.speaker || "", affiliation: s.affiliation || "", url: s.url || "", title: s.title || "", abstract: s.abstract || "", paper: s.paper || "", photo: photoFor(s, statics), type: "Speaker Series", term: s.term || d.term || "" }; }));
-        if (d.theme) CFG.termTheme = d.theme; renderAll();
+      .then(function () {
+        var app = firebase.apps.length ? firebase.app() : firebase.initializeApp(CFG.firebase), fs = app.firestore();
+        fs.collection("public").doc("programme").get().then(applyProgramme).catch(function () { });
+        fs.collection("public").doc("team").get().then(function (doc) { if (doc.exists) { try { applyTeam(JSON.parse((doc.data() || {}).json || "[]")); } catch (e) { } } }).catch(function () { });
       }).catch(function () { });
   }
 })();

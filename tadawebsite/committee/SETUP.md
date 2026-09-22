@@ -30,6 +30,12 @@ Rules tab → replace everything with the contents of `committee/firestore.rules
 The current rules add the `responses` collection (public create, validated field lengths) and
 allow reactions on other people's messages.
 
+## Public bios (team cards)
+Each organizer edits their own card under *Profile & settings → Public bio* (field line, position ·
+institution, one sentence, website, portrait). *Save and publish* writes `public/team`, which the public
+page reads on load; empty fields keep the fixed text that is in `index.html`. *Publish to website* in the
+Series view refreshes the same document. Portraits: put a square JPEG in `assets/team/` (repo) or use a link.
+
 ## 4. First login
 1. Open `https://clintclaessen.com/tadawebsite/committee/` and sign in.
 2. *Profile & settings*: display name, username (for @mentions), initials (used as chair/owner),

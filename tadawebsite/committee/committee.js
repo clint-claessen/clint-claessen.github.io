@@ -274,6 +274,7 @@
     var nameOf = function (ini) { var m = rosterList().filter(function (x) { return x.initials === ini; })[0]; return m ? m.name : ""; };
     var duties = sessionsOfTerm().filter(function (s) { return s.status !== "cancelled" && s.status !== "declined"; }).map(function (s) { var inv = (s.invitation || {}).sentBy || ""; return { date: s.date, time: s.time || "17:00", term: currentTerm, speaker: s.speaker || "", title: s.title || "", status: s.status || "open", chair: s.chair || "", chairName: s.chair ? nameOf(s.chair) : "", inviter: inv, inviterName: inv ? nameOf(inv) : "" }; });
     db.collection("public").doc("duties").set({ json: JSON.stringify(duties), term: currentTerm, updatedAt: TS(), updatedBy: me.initials, updatedAtLabel: label }).catch(function (err) { toast("Duties list not saved: " + friendly(err)); });
+    publishTeam().catch(function (err) { toast("Team cards not saved: " + friendly(err)); });
     db.collection("public").doc("programme").set({ term: currentTerm, theme: ts.theme || CFG.termTheme || "", sessions: pub, updatedAt: TS(), updatedBy: me.initials, updatedAtLabel: label })
       .then(function () { return db.collection("settings").doc("term-" + currentTerm).set({ publishedAtLabel: label, publishedBy: me.initials }, { merge: true }); })
       .then(function () { return db.batch(); }).then(function (b) { sessionsOfTerm().forEach(function (s) { if (s.status === "confirmed" || s.status === "done") b.update(db.collection("sessions").doc(s.id), { "promo.website.status": "done" }); }); return b.commit(); })
@@ -687,7 +688,24 @@
     var list = memberList(); $("#team-count").textContent = list.length + (list.length === 1 ? " organizer" : " organizers");
     $("#member-list").innerHTML = list.map(function (m) { return '<li class="flex items-center gap-space-sm py-2"><span class="avatar w-8 h-8 text-[10px] ' + avColor(m.uid) + '">' + esc(m.initials || initialsOf(m.name)) + '</span><div class="flex flex-col min-w-0"><span class="font-label-md text-label-md font-semibold truncate">' + esc(m.name) + (m.username ? ' <span class="hint">@' + esc(m.username) + '</span>' : "") + '</span><span class="font-body-sm text-body-sm text-on-surface-variant truncate">' + esc(m.email || "") + (m.intro ? " · " + esc(m.intro) : "") + '</span></div></li>'; }).join("");
   }
-  function fillProfile() { $("#pf-name").value = me.name || ""; $("#pf-username").value = me.username || ""; $("#pf-initials").value = me.initials || ""; $("#pf-intro").value = me.intro || ""; $("#cur-email").textContent = user.email || ""; }
+  function fillProfile() {
+    $("#pf-name").value = me.name || ""; $("#pf-username").value = me.username || ""; $("#pf-initials").value = me.initials || ""; $("#pf-intro").value = me.intro || ""; $("#cur-email").textContent = user.email || "";
+    var pb = me.public || {}; $("#pb-role").value = pb.role || ""; $("#pb-institution").value = pb.institution || ""; $("#pb-bio").value = pb.bio || ""; $("#pb-website").value = pb.website || ""; $("#pb-photo").value = pb.photo || "";
+  }
+  /* Team cards on the public page: one entry per organizer in roster order, from the members' public bio fields (public/team, read by app.js). */
+  function publishTeam() {
+    var team = [], seen = {};
+    var pick = function (m) { var pb = m.public || {}; return { initials: m.initials || "", name: m.name || "", role: pb.role || "", institution: pb.institution || "", bio: pb.bio || "", website: pb.website || "", photo: pb.photo || "" }; };
+    (CFG.organizers || []).forEach(function (o) { var m = memberList().filter(function (x) { return key0(x.initials) === key0(o.initials) || key0(x.name) === key0(o.name); })[0]; if (m) { team.push(pick(m)); seen[m.uid] = true; } });
+    memberList().forEach(function (m) { if (!seen[m.uid]) team.push(pick(m)); });
+    return db.collection("public").doc("team").set({ json: JSON.stringify(team), updatedAt: TS(), updatedBy: me.initials, updatedAtLabel: nowLabel() });
+  }
+  $("#bio-form").addEventListener("submit", function (e) {
+    e.preventDefault(); $("#pb-error").textContent = "";
+    var pub = { role: $("#pb-role").value.trim(), institution: $("#pb-institution").value.trim(), bio: $("#pb-bio").value.trim(), website: $("#pb-website").value.trim(), photo: $("#pb-photo").value.trim() };
+    db.collection("members").doc(user.uid).update({ public: pub, updatedAt: TS() }).then(function () { me.public = pub; if (members[user.uid]) members[user.uid].public = pub; return publishTeam(); })
+      .then(function () { $("#pb-hint").textContent = "Published " + nowLabel(); toast("Bio saved and published to the website"); }, function (err) { $("#pb-error").textContent = friendly(err); });
+  });
   $("#profile-form").addEventListener("submit", function (e) {
     e.preventDefault(); $("#pf-error").textContent = "";
     var upd = { name: $("#pf-name").value.trim(), username: $("#pf-username").value.trim().replace(/^@/, "").toLowerCase(), initials: ($("#pf-initials").value.trim() || initialsOf($("#pf-name").value)).toUpperCase().slice(0, 3), intro: $("#pf-intro").value.trim(), updatedAt: TS() };

@@ -112,6 +112,21 @@
   function berlinOffset(iso) { try { var n = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Berlin", timeZoneName: "longOffset" }).formatToParts(new Date(iso + "T12:00:00Z")).filter(function (x) { return x.type === "timeZoneName"; })[0].value; return /\+02/.test(n) ? 2 : 1; } catch (e) { return 1; } }
   function tz(iso) { return berlinOffset(iso) === 2 ? "CEST" : "CET"; }
   function photoSrc(p) { return /^(https?:|\/|data:|blob:|\.\.\/)/i.test(p) ? p : "../" + p.replace(/^\.\//, ""); }
+  /* Title Case for talk titles, same rules as app.js on the public page. */
+  var SMALL = { a: 1, an: 1, the: 1, and: 1, but: 1, or: 1, nor: 1, "for": 1, so: 1, yet: 1, at: 1, by: 1, "in": 1, of: 1, on: 1, to: 1, up: 1, as: 1, vs: 1, "vs.": 1, via: 1, from: 1, "with": 1, into: 1, over: 1, per: 1, than: 1, off: 1, onto: 1, upon: 1, et: 1, "al.": 1 };
+  function titleCase(s) {
+    if (!s) return s;
+    var words = String(s).split(" "), n = words.length;
+    function capTok(tok) { var core = tok.replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g, ""); if (!core) return tok; if (/[A-Z]/.test(core.slice(1))) return tok; var m = tok.match(/^([^A-Za-z0-9]*)([A-Za-z0-9])(.*)$/); return m ? m[1] + m[2].toUpperCase() + m[3] : tok; }
+    return words.map(function (w, i) {
+      var prev = i ? words[i - 1] : "", starts = i === 0 || /[:?!.–—-]$/.test(prev), last = i === n - 1 || /[:?!.][)"'”’]*$/.test(w), parts = w.split("-");
+      return parts.map(function (p, j) {
+        var bare = p.replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g, ""), edge = parts.length > 1 && (j === 0 || j === parts.length - 1);
+        if (bare && SMALL[bare.toLowerCase()] && !(starts && j === 0) && !(last && j === parts.length - 1) && !edge && !/[A-Z]/.test(bare.slice(1))) { var lead = (p.match(/^([^A-Za-z0-9]*)/) || ["", ""])[1], trail = (p.match(/([^A-Za-z0-9]*)$/) || ["", ""])[1]; return lead + bare.toLowerCase() + trail; }
+        return capTok(p);
+      }).join("-");
+    }).join(" ");
+  }
   var TALKS = [], ALL = [], img = null, imgKey = "", logo = null, fileUrl = "", CACHE = {};
   var q = new URLSearchParams(location.search);
   ["speaker", "affiliation", "title", "date", "time", "photo"].forEach(function (k) { if (q.get(k)) $("#" + k).value = q.get(k); });
@@ -175,7 +190,7 @@
     return { text: (p.d + " " + MONTHS_LONG[p.m - 1] + " " + p.y + (unusual ? " • " + DAYS_LONG[p.dow] : "") + " • " + (time || "17:00") + " " + tz(iso)).toUpperCase(), red: unusual };
   }
   function render(ctx, W, H, im) {
-    var wide = W > H, d = dateText($("#date").value, $("#time").value), name = $("#speaker").value.trim() || "Speaker to be announced", aff = $("#affiliation").value.trim(), title = $("#title").value.trim();
+    var wide = W > H, d = dateText($("#date").value, $("#time").value), name = $("#speaker").value.trim() || "Speaker to be announced", aff = $("#affiliation").value.trim(), title = titleCase($("#title").value.trim());
     var pos = (+$("#pos").value || 0) / 100, zoom = (+$("#zoom").value || 100) / 100;
     ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W, H);
     ctx.letterSpacing = "0.06em";
@@ -222,7 +237,7 @@
   function fitFont(ctx, text, maxW, px, min, weight, family) { for (var s = px; s >= min; s -= 1) { ctx.font = weight + " " + s + "px " + family; if (ctx.measureText(text).width <= maxW) return s; } return min; }
   function posterCards() {
     var term = $("#pterm").value.trim(), cards = ALL.filter(function (r) { return r.speaker && r.term && term && r.term.toLowerCase() === term.toLowerCase(); }).sort(function (a, b) { return a.date < b.date ? -1 : 1; })
-      .map(function (r) { var p = dparts(r.date); return { dateLabel: MONTHS_LONG[p.m - 1] + " " + p.d, name: r.speaker, affiliation: shortAff(r.affiliation), photo: r.photo || "" }; });
+      .map(function (r) { var p = dparts(r.date); return { dateLabel: MONTHS_LONG[p.m - 1] + " " + p.d, name: r.speaker, affiliation: shortAff(r.affiliation), photo: r.photo || "", title: titleCase(r.title || "") }; });
     $("#pextra").value.split(/\n/).map(function (l) { return l.trim(); }).filter(Boolean).forEach(function (l) { var f = l.split("|").map(function (s) { return s.trim(); }); if (f[1]) cards.push({ dateLabel: f[0] || "Date TBA", name: f[1], affiliation: shortAff(f[2] || ""), photo: f[3] || "" }); });
     return cards;
   }

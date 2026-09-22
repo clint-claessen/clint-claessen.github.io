@@ -9,7 +9,7 @@
       "affiliation": "GESIS – Leibniz Institute for the Social Sciences",
       "url": "https://www.gesis.org/en/institute/about-us/staff/person/Leah.vonderHeyde",
       "photo": "assets/speakers/2026-10-14-leah-von-der-heyde.jpg",
-      "title": "How (not) to use LLMs in survey research",
+      "title": "How (Not) to Use LLMs in Survey Research",
       "abstract": "Survey research has historically been a human-powered field that embraces various technologies for the collection, processing, and analysis of behavioral, political, and social outcomes of interest. Large Language Models (LLMs) bring new technological challenges and prerequisites in order to fully harness their potential for survey and public opinion research. In this talk, I will discuss potential applications of LLMs across the entire survey lifecycle. Based on a systematic review, I will showcase at which tasks, contexts, and research designs LLMs succeed and fail, zooming in on the two popular applications of silicon sampling and open-text classification, and highlight which applications are underexplored. Based on the findings, I will discuss the potentials, concerns, and gaps of LLM use in survey and public opinion research, providing a starting point for future innovations.",
       "status": "confirmed",
       "chair": "VK",

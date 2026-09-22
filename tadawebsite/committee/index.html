@@ -282,6 +282,18 @@
             </div>
             <div class="flex items-center justify-between"><span class="hint" id="pf-hint"></span><span class="hint err" id="pf-error"></span><button class="btn btn-primary" type="submit">Save profile</button></div>
           </form>
+          <form class="block" id="bio-form">
+            <div class="block-h"><h3>Public bio</h3><span class="hint">your card under “Organizers” on the website</span></div>
+            <p class="font-body-sm text-body-sm text-on-surface-variant">Saving publishes the team cards right away. Empty fields keep the current text on the website.</p>
+            <div class="kv">
+              <div><label class="flabel" for="pb-role">Field (small line above the position)</label><input class="field" id="pb-role" maxlength="60" placeholder="Computational social science" /></div>
+              <div><label class="flabel" for="pb-institution">Position · institution</label><input class="field" id="pb-institution" maxlength="80" placeholder="Postdoc · ETH Zurich" /></div>
+              <div class="full"><label class="flabel" for="pb-bio">One sentence about you</label><input class="field" id="pb-bio" maxlength="220" placeholder="Public Policy Group and Immigration Policy Lab; media, migration and text-as-data." /></div>
+              <div><label class="flabel" for="pb-website">Website</label><input class="field" id="pb-website" type="url" placeholder="https://…" /></div>
+              <div><label class="flabel" for="pb-photo">Portrait (assets path or link)</label><input class="field" id="pb-photo" placeholder="assets/team/first-last.jpg" /></div>
+            </div>
+            <div class="flex items-center justify-between"><span class="hint" id="pb-hint"></span><span class="hint err" id="pb-error"></span><button class="btn btn-primary" type="submit"><span class="material-symbols-outlined text-[16px]">public</span>Save and publish</button></div>
+          </form>
           <div class="block">
             <div class="block-h"><h3>Team</h3><span class="hint" id="team-count"></span></div>
             <ul class="flex flex-col divide-y divide-surface-container" id="member-list"></ul>
