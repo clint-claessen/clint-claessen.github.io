@@ -45,7 +45,7 @@
     var v = { name: $("#name").value.trim(), email: $("#email").value.trim(), affiliation: $("#affiliation").value.trim(), url: $("#url").value.trim(), bluesky: $("#bluesky").value.trim(), linkedin: $("#linkedin").value.trim(), photo: $("#photo").value.trim(), title: $("#title").value.trim(), abstract: $("#abstract").value.trim(), paper: $("#paper").value.trim(), dates: dates, noneOfThese: none, recording: "", notes: $("#notes").value.trim() }; /* recording question removed (Sep 2026); the empty string keeps the Firestore rule satisfied */
     if (!v.name || !v.email || !v.affiliation || !v.title || !v.abstract) return showError("Please fill in name, e-mail, affiliation, title and abstract.");
     if (!dates.length && !none) return showError("Please tick at least one date, or 'none of these work for me'.");
-    if (!db) return showError("The form is not connected yet. Please e-mail your details to nicolai.berk@gess.ethz.ch.");
+    if (!db) return showError("The form is not connected yet. Please e-mail your details to team@tada.cool.");
     var btn = $("#submit"); btn.disabled = true;
     v.handled = false; v.createdAt = firebase.firestore.FieldValue.serverTimestamp(); v.ua = navigator.userAgent.slice(0, 120);
     db.collection("responses").add(v).then(function () { $("#success").hidden = false; $("#speaker-form").hidden = true; window.scrollTo({ top: 0, behavior: "smooth" }); })

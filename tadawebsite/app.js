@@ -5,7 +5,7 @@
   /* Social links appear only when a real profile URL is configured (no keyword-search fallbacks). */
   var LINKS = {
     join: CFG.joinUrl || "",
-    propose: CFG.proposeUrl || "mailto:nicolai.berk@gess.ethz.ch?subject=TaDa%3A%20talk%20proposal",
+    propose: CFG.proposeUrl || "mailto:team@tada.cool?subject=TaDa%3A%20talk%20proposal",
     bluesky: CFG.blueskyUrl || "",
     linkedin: CFG.linkedinUrl || ""
   };
@@ -105,7 +105,7 @@
       (s.title ? '<h2 class="font-headline-md text-headline-md text-on-surface mt-space-xs tracking-tight">“' + esc(s.title) + '”</h2>' : (tba ? '<h2 class="font-headline-md text-headline-md text-on-surface mt-space-xs tracking-tight">' + esc(CFG.termTheme || "AI Tools for Social Scientists") + '</h2>' : '')) +
       (s.abstract ? '<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-3 mt-space-xs">' + esc(s.abstract) + '</p>' : '') + '</div>' +
       '<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-space-sm">' +
-      '<a class="flex-1 inline-flex items-center justify-center h-10 px-space-md rounded bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md transition-colors gap-2" href="' + esc(LINKS.join || "#subscribe") + '"><span class="material-symbols-outlined text-[18px]">mail</span>Subscribe for the Zoom link</a>' +
+      '<a class="flex-1 inline-flex items-center justify-center min-h-10 py-2 px-space-md rounded bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md transition-colors gap-2 text-center" href="' + esc(LINKS.join || "#subscribe") + '"><span class="material-symbols-outlined text-[18px] shrink-0">mail</span>Subscribe to the newsletter for the Zoom link</a>' +
       '<button class="inline-flex items-center justify-center h-10 px-space-md rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-md text-label-md transition-colors gap-1.5" type="button" data-ics><span class="material-symbols-outlined text-[18px]">event</span>Add to calendar (.ics)</button></div>';
     $("[data-ics]", card).addEventListener("click", function () { downloadICS(s); });
   }
