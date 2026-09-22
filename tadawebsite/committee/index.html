@@ -346,7 +346,7 @@
       </div>
       <div class="block">
         <div class="block-h"><h3>Reminders &amp; social card</h3><button class="btn btn-ghost" type="button" data-card title="Open the social-card generator with this session's data"><span class="material-symbols-outlined text-[16px]">image</span>Social card</button></div>
-        <p class="hint">Put this session's duties in your calendar: chair e-mail one week before, announcement posts six days before, reminder post on the day. Links open Google Calendar prefilled; the .ics is for Outlook or Apple Calendar. “Reminders” in the Series view exports the whole term at once.</p>
+        <p class="hint">Put this session's duties in your calendar: chair pings the speaker two weeks before, invitation newsletter one week before, reminder newsletter on the day. Links open Google Calendar prefilled; the .ics is for Outlook or Apple Calendar. “Reminders” in the Series view exports the whole term at once; the same three moments are posted to Slack automatically.</p>
         <div class="flex flex-col gap-1" id="sd-reminders"></div>
       </div>
       <div class="block">
@@ -415,9 +415,9 @@
       <div class="flex flex-col"><span class="font-code-sm text-code-sm text-primary uppercase tracking-wider">Reminder calendar</span><h3 class="font-headline-md text-headline-md">Duties for <span id="rem-term">this term</span></h3></div>
       <p class="font-body-sm text-body-sm text-on-surface-variant">Exports one .ics file with the reminders below for every session of the term (Berlin time). Import it once into Google Calendar (Settings → Import &amp; export), Outlook or Apple Calendar; each reminder then rings on your phone like any other event. Open slots only get the session itself.</p>
       <div class="flex flex-col gap-1 font-body-sm text-body-sm">
-        <label class="flex items-center gap-2"><input type="checkbox" name="kind" value="chair" checked /> Chair e-mails the speaker · one week before, 10:00</label>
-        <label class="flex items-center gap-2"><input type="checkbox" name="kind" value="promo" checked /> Announcement posts (LinkedIn, Bluesky, newsletter) · six days before, 10:00</label>
-        <label class="flex items-center gap-2"><input type="checkbox" name="kind" value="day" checked /> Session-day reminder post + Zoom link · 09:00</label>
+        <label class="flex items-center gap-2"><input type="checkbox" name="kind" value="chair" checked /> Chair pings the speaker (and creates the Zoom link) · two weeks before, 10:00</label>
+        <label class="flex items-center gap-2"><input type="checkbox" name="kind" value="promo" checked /> Invitation newsletter with the Zoom link + LinkedIn, Bluesky · one week before, 10:00</label>
+        <label class="flex items-center gap-2"><input type="checkbox" name="kind" value="day" checked /> Session day: chair hosts, reminder newsletter + posts · 09:00</label>
         <label class="flex items-center gap-2"><input type="checkbox" name="kind" value="session" checked /> The sessions themselves (30-minute alert)</label>
         <label class="flex items-center gap-2 mt-space-xs"><input type="checkbox" id="rem-mine" /> Chair reminders only for the sessions I chair</label>
       </div>

@@ -6,10 +6,9 @@ committee app publishes to Firestore (public/duties: dates, speakers, chairs by 
 and posts to the organizers' Slack channel through an incoming webhook (secret SLACK_WEBHOOK_URL).
 
 Schedule, all in Berlin time (the workflow runs at xx:30, the script decides what is due):
-  7 days before, 09:xx   chair e-mails the speaker (creates the Zoom meeting and puts the link in the e-mail)
-  6 days before, 09:xx   announcement: newsletter to the list (with the Zoom link) + LinkedIn / Bluesky posts
-  session day,   09:xx   reminder post + Zoom-link e-mail to subscribers
-  session day,   16:xx   the session starts in one hour
+  14 days before, 09:xx  chair pings the speaker (creates the Zoom meeting and puts the link in the e-mail)
+   7 days before, 09:xx  invitation newsletter to the list (with the Zoom link) + LinkedIn / Bluesky posts
+  session day,    09:xx  reminder to the chair + reminder newsletter with the Zoom link + reminder posts
 Standard library only. `--dry-run` prints instead of posting; `--now` and `--duties-file` are for testing.
 """
 import argparse
@@ -65,19 +64,19 @@ def due_messages(sessions: list, now: dt.datetime) -> list:
         inviter = s.get("inviterName") or s.get("inviter") or ""
         when = when_label(s)
         card = CARD_URL + s["date"]
-        if days == 7 and hour == 9:
+        if days == 14 and hour == 9:
             opener = (f"*{chair_name}*, please write" if chair_name
                       else "No chair is set for this session yet (set it in the committee app). Whoever invited the speaker, please write")
             zoom = " (Zoom links are made by the inviter" + (f", here {inviter}" if inviter else "") + ")"
             out.append(
-                f":envelope: *Chair e-mail today* for the session on {when}.\n"
+                f":envelope: *Two weeks to go: ping the speaker* for the session on {when}.\n"
                 f"{opener} to *{who}* {title}: confirm date and time, the 60-minute format "
                 f"(20–30-minute talk, then discussion), ask for the final title, abstract, portrait and links, "
                 f"and *create the Zoom meeting yourself and put the link in the e-mail*{zoom}. Drafts and details: {APP_URL}"
             )
-        elif days == 6 and hour == 9:
+        elif days == 7 and hour == 9:
             out.append(
-                f":loudspeaker: *Announcement day* for *{who}* {title} on {when}.\n"
+                f":loudspeaker: *One week to go: invitation newsletter* for *{who}* {title} on {when}.\n"
                 f"Send the newsletter to the list *with the Zoom link in it*, then the LinkedIn and Bluesky posts. "
                 f"Drafts: open the session in the committee app ({APP_URL}) and click Generate / Newsletter. "
                 f"Social card with photo: {card}"
@@ -85,11 +84,9 @@ def due_messages(sessions: list, now: dt.datetime) -> list:
         elif days == 0 and hour == 9:
             out.append(
                 f":calendar: *Today at {s.get('time') or '17:00'} Berlin time: {who}* {title}.\n"
-                f"Reminder post on LinkedIn and Bluesky, and the reminder e-mail with the Zoom link to the subscribers. "
-                f"Chair: *{chair}*."
+                f"Chair *{chair}*: you host today. Everyone: reminder newsletter with the Zoom link to the subscribers, "
+                f"and the reminder posts on LinkedIn and Bluesky."
             )
-        elif days == 0 and hour == 16:
-            out.append(f":movie_camera: *In one hour: {who}* {title}. Chair: *{chair}*. See you on Zoom!")
     return out
 
 

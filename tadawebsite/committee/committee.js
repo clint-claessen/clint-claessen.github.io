@@ -414,17 +414,17 @@
   function chairName(s) { var m = rosterList().filter(function (x) { return x.initials === s.chair; })[0]; return m ? m.name : (s.chair || "unassigned"); }
   function siteRoot() { return location.origin + location.pathname.replace(/committee\/[^/]*$/, ""); }
   function cardUrl(s) { return siteRoot() + "card/?" + ["date", "time", "speaker", "affiliation", "title", "photo"].filter(function (k) { return s[k]; }).map(function (k) { return k + "=" + encodeURIComponent(s[k]); }).join("&"); }
-  var REM_LABEL = { chair: "Chair e-mails the speaker (1 week before)", promo: "Announcement posts (6 days before)", day: "Session-day reminder post + Zoom link", session: "The session itself" };
+  var REM_LABEL = { chair: "Chair pings the speaker (2 weeks before)", promo: "Invitation newsletter + posts (1 week before)", day: "Session day: chair + reminder newsletter", session: "The session itself" };
   function remindersFor(s) {
     var who = s.speaker || "open slot", chair = chairName(s), app = location.origin + location.pathname, out = [];
     var when = fmtLong(s.date) + ", " + (s.time || "17:00") + " " + tz(s.date) + " (Berlin time)";
     if (s.speaker) {
-      out.push({ kind: "chair", date: addDays(s.date, -7), time: "10:00", dur: 30, title: "TaDa chair (" + (s.chair || "?") + "): e-mail " + who + " – session " + fmtShort(s.date),
-        desc: "One week before the session, the chair (" + chair + ") writes to " + who + (s.email ? " <" + s.email + ">" : "") + ": confirm date and time (" + when + "), the format (60 minutes, 20–30-minute talk then discussion), ask for the final title and abstract, a portrait photo and links. Create the Zoom meeting yourself and put the link in the e-mail" + (s.zoom ? " (" + s.zoom + ")" : "") + ".\nCommittee app: " + app });
-      out.push({ kind: "promo", date: addDays(s.date, -6), time: "10:00", dur: 30, title: "TaDa promo: announce " + who + " (newsletter with Zoom link, LinkedIn, Bluesky)",
-        desc: "Announce " + who + " – " + when + ": newsletter to the list (it must contain the Zoom link), then the LinkedIn and Bluesky posts.\nDrafts: open the session in the committee app (" + app + "), Generate, Newsletter.\nSocial card with photo: " + cardUrl(s) });
-      out.push({ kind: "day", date: s.date, time: "09:00", dur: 30, title: "TaDa today: reminder post + Zoom link for " + who,
-        desc: "Session day: reminder on LinkedIn and Bluesky, and send the Zoom link" + (s.zoom ? " (" + s.zoom + ")" : "") + " to the subscribers.\nChair: " + chair + ".\n" + when });
+      out.push({ kind: "chair", date: addDays(s.date, -14), time: "10:00", dur: 30, title: "TaDa chair (" + (s.chair || "?") + "): e-mail " + who + " – session " + fmtShort(s.date),
+        desc: "Two weeks before the session, the chair (" + chair + ") writes to " + who + (s.email ? " <" + s.email + ">" : "") + ": confirm date and time (" + when + "), the format (60 minutes, 20–30-minute talk then discussion), ask for the final title and abstract, a portrait photo and links. Create the Zoom meeting yourself and put the link in the e-mail" + (s.zoom ? " (" + s.zoom + ")" : "") + ".\nCommittee app: " + app });
+      out.push({ kind: "promo", date: addDays(s.date, -7), time: "10:00", dur: 30, title: "TaDa: invitation newsletter for " + who + " (with Zoom link) + LinkedIn, Bluesky",
+        desc: "One week before: announce " + who + " – " + when + ": newsletter to the list (it must contain the Zoom link), then the LinkedIn and Bluesky posts.\nDrafts: open the session in the committee app (" + app + "), Generate, Newsletter.\nSocial card with photo: " + cardUrl(s) });
+      out.push({ kind: "day", date: s.date, time: "09:00", dur: 30, title: "TaDa today: " + who + " – chair " + (s.chair || "?") + ", reminder newsletter + posts",
+        desc: "Session day: the chair (" + chair + ") hosts; reminder newsletter with the Zoom link" + (s.zoom ? " (" + s.zoom + ")" : "") + " to the subscribers, reminder posts on LinkedIn and Bluesky.\n" + when });
     }
     out.push({ kind: "session", date: s.date, time: s.time || "17:00", dur: 60, title: "TaDa session: " + who + (s.title ? " – “" + s.title + "”" : "") + " (chair " + (s.chair || "?") + ")",
       desc: (s.title ? s.title + "\n" : "") + (s.affiliation ? s.affiliation + "\n" : "") + "Chair: " + chair + (s.zoom ? "\nZoom: " + s.zoom : "") + "\nOnline, " + when });

@@ -1,7 +1,7 @@
 name: TaDa Slack reminders
 
 # Hourly; the script works in Berlin time and posts only what is due that hour
-# (chair e-mail 7 days before, announcement 6 days before, session-day reminder, one-hour heads-up).
+# (chair pings the speaker 14 days before, invitation newsletter 7 days before, session-day reminder).
 # Needs the repository secret SLACK_WEBHOOK_URL (Slack incoming webhook for the organizers' channel).
 on:
   schedule:

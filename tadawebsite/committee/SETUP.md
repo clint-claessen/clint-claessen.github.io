@@ -51,9 +51,9 @@ allow reactions on other people's messages.
 - **Messages**: channels #general, #speakers, #promo, #random, direct messages, threads,
   reactions, @mentions, a pinned note. History is kept for good.
 - **Reminders** (Series view): exports an .ics with one calendar reminder per session and duty,
-  Berlin time: the chair e-mails the speaker one week before (10:00), the announcement posts go
-  out six days before (10:00), the reminder post + Zoom link on the day (09:00), plus the session
-  itself with a 30-minute alert. Import the file once into Google Calendar (Settings → Import &
+  Berlin time: the chair pings the speaker two weeks before (10:00), the invitation newsletter with
+  the Zoom link goes out one week before (10:00), the reminder newsletter on the day (09:00), plus
+  the session itself with a 30-minute alert. Import the file once into Google Calendar (Settings → Import &
   export), Outlook or Apple Calendar; re-export after the programme changes (same UIDs, so a
   re-import updates rather than duplicates in most calendars). The session drawer offers the same
   four reminders as prefilled Google Calendar links. Nothing runs on a server: the reminders live in
@@ -61,10 +61,10 @@ allow reactions on other people's messages.
 - **Slack reminders (automatic)**: a GitHub Actions job in the site repository
   (`.github/workflows/tada-slack-reminders.yml`, script `.github/scripts/tada_slack_reminders.py`) runs every hour,
   reads the duties list that *Publish to website* writes to Firestore (`public/duties`: dates, speakers, chairs by
-  name; no e-mails, no Zoom links) and posts to the organizers' Slack channel, Berlin time: chair e-mail 7 days
-  before (09:30; the inviter creates the Zoom meeting and puts the link in the e-mail), announcement 6 days before
-  (09:30; newsletter with the Zoom link, LinkedIn, Bluesky), session-day reminder (09:30) and a heads-up one hour
-  before the session (16:30). One-time setup: (1) in Slack, https://api.slack.com/apps → *Create New App* → *From
+  name; no e-mails, no Zoom links) and posts to the organizers' Slack channel, Berlin time, at 09:30: 14 days
+  before (chair pings the speaker; the inviter creates the Zoom meeting and puts the link in the e-mail), 7 days
+  before (invitation newsletter with the Zoom link, LinkedIn, Bluesky) and on the session day (chair hosts,
+  reminder newsletter with the Zoom link, reminder posts). One-time setup: (1) in Slack, https://api.slack.com/apps → *Create New App* → *From
   scratch* → name "TaDa reminders", workspace tadapolisci → *Incoming Webhooks* → activate → *Add New Webhook to
   Workspace* → pick the organizers' channel → copy the URL; (2) on GitHub, repository *Settings → Secrets and
   variables → Actions → New repository secret* named `SLACK_WEBHOOK_URL` with that URL; (3) *Actions → TaDa Slack
