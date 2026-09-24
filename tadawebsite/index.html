@@ -44,7 +44,6 @@
     </nav>
     <div class="flex items-center gap-space-md">
       <a class="hidden sm:inline-flex items-center justify-center px-space-md py-space-xs h-9 bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md rounded transition-colors shadow-[0_1px_3px_0_rgba(15,23,42,0.06)] whitespace-nowrap" href="#subscribe" data-join>Subscribe to the newsletter</a>
-      <a class="hidden sm:flex w-8 h-8 rounded-full bg-surface-container-high hover:bg-primary hover:text-on-primary text-on-surface-variant items-center justify-center shrink-0 transition-colors" href="committee/" title="Organizer login" aria-label="Organizer login"><span class="material-symbols-outlined text-[18px]">person</span></a>
       <button class="lg:hidden w-9 h-9 rounded flex items-center justify-center text-on-surface hover:bg-surface-container" id="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav"><span class="material-symbols-outlined">menu</span></button>
     </div>
   </div>
@@ -55,7 +54,6 @@
       <a class="py-2.5 font-label-md text-label-md text-on-surface" href="#archive">Archive</a>
       <a class="py-2.5 font-label-md text-label-md text-on-surface" href="#team">Team</a>
       <a class="py-2.5 font-label-md text-label-md text-on-surface" href="#contact">Contact</a>
-      <a class="py-2.5 font-label-md text-label-md text-on-surface-variant" href="committee/">Organizer login</a>
     </div>
   </nav>
 </header>
@@ -235,7 +233,7 @@
       <p class="font-body-md text-body-md text-on-surface-variant max-w-xl">Four researchers at four institutions, volunteering their time to keep the series free and open.</p>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
-      <!-- Team cards: the static text is the fallback; organizers edit their card in the committee app (Profile → Public bio), which publishes public/team. -->
+      <!-- Team cards: the static text is the fallback; published data (public/team) overrides it field by field. -->
       <div class="p-space-lg rounded-xl bg-surface shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between gap-space-md" data-team="NB">
         <div class="flex flex-col gap-space-sm">
           <img class="w-20 h-20 rounded-pill object-cover shadow-sm bg-surface-container-high" src="assets/team/nicolai-berk.jpg" alt="Portrait of Nicolai Berk" width="80" height="80" loading="lazy" data-f="photo" />
@@ -292,11 +290,7 @@
         <p class="font-body-sm text-body-sm text-on-surface">TaDa organizing team — <span class="email" data-email="team|tada.cool"></span></p>
         <p class="font-body-sm text-body-sm text-on-surface-variant">Nicolai Berk, Christopher Klamm, Verena Kunz and Clint Claessen</p>
       </div>
-      <div class="md:col-span-3 flex flex-col md:items-end justify-between self-stretch gap-space-md">
-        <div class="flex flex-col md:items-end">
-          <span class="font-code-sm text-code-sm text-on-surface-variant uppercase tracking-wider">Access</span>
-          <a class="mt-space-xs inline-flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-sm text-label-sm transition-colors" href="committee/"><span class="material-symbols-outlined text-[16px] text-tertiary">lock</span>Organizer login</a>
-        </div>
+      <div class="md:col-span-3 flex flex-col md:items-end justify-end self-stretch gap-space-md">
         <span class="font-code-sm text-code-sm text-tertiary">© <span id="yr"></span> TaDa Speaker Series</span>
       </div>
     </div>
@@ -311,7 +305,7 @@
   <a class="flex flex-col items-center gap-0.5 py-2 font-label-sm text-label-sm text-on-surface-variant" href="#team"><span class="material-symbols-outlined text-[20px]">groups</span>Team</a>
 </nav>
 
-<script src="committee/config.js"></script>
+<script src="assets/tada-config.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

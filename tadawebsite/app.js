@@ -88,7 +88,7 @@
       }).join("-");
     }).join(" ");
   }
-  /* Speaker portrait (from the original site or the committee app) with an initials fallback. */
+  /* Speaker portrait (from the data file or the published programme) with an initials fallback. */
   function avatar(s, tba, size, quiet, eager) {
     if (s.photo) return '<img class="' + size + ' rounded-pill object-cover shrink-0 bg-surface-container-high shadow-sm" src="' + esc(s.photo) + '" alt="" loading="' + (eager ? "eager" : "lazy") + '" decoding="async" data-initials="' + esc(initials(s.speaker)) + '" />';
     return '<span class="' + size + ' rounded-pill shrink-0 inline-flex items-center justify-center select-none ' + (quiet ? "bg-surface-container-high text-on-surface-variant font-code-sm text-code-sm" : "bg-primary-container text-on-primary font-headline-sm text-headline-sm") + '">' + (tba ? "?" : esc(initials(s.speaker))) + '</span>';
@@ -176,7 +176,7 @@
   fetch("data/talks.json").then(function (r) { return r.json(); }).then(function (rows) { TALKS = rows; renderAll(); loadLive(); })
     .catch(function () { var b = $("#programme-body"); if (b) b.innerHTML = '<tr><td colspan="4" class="p-space-md text-on-surface-variant">Programme could not be loaded.</td></tr>'; });
 
-  /* ---------- live data from Firestore, written by the committee app: public/programme (term schedule) and public/team (organizer cards) ---------- */
+  /* ---------- published data from Firestore: public/programme (term schedule) and public/team (organizer cards) ---------- */
   function loadScript(src) { return new Promise(function (res, rej) { var s = document.createElement("script"); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
   function applyProgramme(doc) {
     if (!doc || !doc.exists) return; var d = doc.data() || {}; var live = (d.sessions || []).filter(function (s) { return s && s.date; }); if (!live.length) return;

@@ -47,17 +47,17 @@
 </style>
 </head>
 <body>
-<header><img src="../assets/tada-logo.png" alt="" /><h1>TaDa social card</h1><a href="../committee/">Committee app</a><button id="signout" type="button" hidden>Sign out</button></header>
+<header><img src="../assets/tada-logo.png" alt="" /><h1>TaDa social card</h1><a href="../committee/" id="applink" hidden>Committee app</a><button id="signout" type="button" hidden>Sign out</button></header>
 <div id="gate">
   <form id="gate-form" autocomplete="on">
     <img class="logo" src="../assets/tada-logo.png" alt="" />
     <h2>Organizer sign-in</h2>
-    <p class="hint">The card and poster generator is for the TaDa executive committee. Use your committee-app account.</p>
+    <p class="hint">The card and poster generator is for the TaDa organizers. Use your organizer account.</p>
     <label>E-mail<input id="gate-email" type="email" autocomplete="username" required /></label>
     <label>Password<input id="gate-password" type="password" autocomplete="current-password" required /></label>
     <button class="btn" type="submit" id="gate-btn">Sign in</button>
     <span class="err" id="gate-err"></span>
-    <p class="hint">Forgot your password? Use “Forgot password?” in the <a href="../committee/">committee app</a>.</p>
+    <p class="hint">Forgot your password? Use the reset link in the organizer app, or ask another organizer.</p>
   </form>
 </div>
 <main id="app" hidden>
@@ -85,7 +85,7 @@
   </form>
   <div class="preview"><canvas id="c" width="1200" height="1200"></canvas></div>
 </main>
-<script src="../committee/config.js"></script>
+<script src="../assets/tada-config.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-auth-compat.js"></script>
 <script>
@@ -97,7 +97,7 @@
   if (!CFG.firebase || !window.firebase) { $("#gate-err").textContent = "Sign-in is not configured (Firebase scripts or config missing)."; $("#gate-btn").disabled = true; }
   else {
     var auth = (firebase.apps.length ? firebase.app() : firebase.initializeApp(CFG.firebase)).auth();
-    auth.onAuthStateChanged(function (u) { var on = !!u; $("#gate").hidden = on; $("#app").hidden = !on; $("#signout").hidden = !on; if (on) { $("#gate-err").textContent = ""; try { draw(); } catch (e) { } } });
+    auth.onAuthStateChanged(function (u) { var on = !!u; $("#gate").hidden = on; $("#app").hidden = !on; $("#signout").hidden = !on; $("#applink").hidden = !on; if (on) { $("#gate-err").textContent = ""; try { draw(); } catch (e) { } } });
     $("#gate-form").addEventListener("submit", function (e) {
       e.preventDefault(); $("#gate-err").textContent = ""; $("#gate-btn").disabled = true;
       auth.signInWithEmailAndPassword($("#gate-email").value.trim(), $("#gate-password").value).catch(function (err) {

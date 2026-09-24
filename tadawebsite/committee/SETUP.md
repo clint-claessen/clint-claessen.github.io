@@ -13,8 +13,10 @@ Console: https://console.firebase.google.com/project/tadawebsite
 | `/tadawebsite/speak/` | Speaker form linked from invitation e-mails: title, abstract, links, portrait, available dates (the open slots), notes. Writes to Firestore `responses` (the recording question was removed in Sep 2026; the field is sent empty so the published rules still apply). |
 | `/tadawebsite/committee/` | Organizer app: Series, Speaker responses, Candidates, Messages, Profile & settings. |
 
-## 1. Web app config → `committee/config.js` — DONE (10 Sep 2026)
-The `firebaseConfig` object from Project settings → General → Your apps is in `config.js`.
+## 1. Web app config → `assets/tada-config.js` — DONE (10 Sep 2026)
+The `firebaseConfig` object from Project settings → General → Your apps is in `assets/tada-config.js`
+(shared by the public page, the speaker form, the card generator and this app; it lives outside the
+committee folder so that the public page's source does not reveal the portal's address).
 It is public by design; access is controlled by the rules in step 3.
 
 ## 2. Logins (Authentication) — steps 1–3 DONE, step 4 is yours
@@ -85,7 +87,10 @@ Series view refreshes the same document. Portraits: put a square JPEG in `assets
 - **Newsletter sign-up** (public page, "Subscribe to the newsletter"): the form posts straight to the tada.cool
   mailing list on IONOS (`ml.kundenserver.de`, list `news@tada.cool`), the same sign-up as on the old Google Site;
   the list is administered in Christopher's IONOS account. Bluesky/LinkedIn links on the page show up only once a
-  real profile URL is set in `committee/config.js`.
+  real profile URL is set in `assets/tada-config.js`.
+- **Discretion**: the public page has no link to this portal or to the card generator; both are `noindex`,
+  and the shared config sits in `assets/`. Organizers open `/tadawebsite/committee/` from a bookmark.
+  Anyone who guesses the address only sees the sign-in card (accounts exist for the four organizers only).
 - **Logo files**: `assets/tada-logo.png` (1024 px, transparent) is used everywhere on the site and in the cards.
   It is the "TaDa · SPEAKER SERIES" badge (Sep 2026): the official "READING GROUP" master
   (`assets/brand/tada-logo-transparent.png`, brand colours #274387 dark blue, #3AB8EF light blue) with the
