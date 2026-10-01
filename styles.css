@@ -322,7 +322,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .contact-card:hover { transform: translateY(-4px); box-shadow: 0 26px 54px -30px rgba(24,36,46,.3); }
 .contact-card .label { font-family: var(--ui); font-size: .72rem; text-transform: uppercase; letter-spacing: .16em; font-weight: 600; color: var(--muted); margin-bottom: 10px; }
 .contact-card address { font-style: normal; font-size: 1.1rem; line-height: 1.85; }
-.contact-card .email { font-family: var(--ui); font-size: 1.2rem; font-weight: 500; }
+.contact-card .email { font-family: var(--ui); font-size: 1.2rem; font-weight: 500; overflow-wrap: anywhere; }
 
 /* ---------- Page hero (inner pages) ---------- */
 .page-hero { position: relative; padding: 190px 0 70px; overflow: hidden; }
