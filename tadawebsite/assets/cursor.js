@@ -1,10 +1,13 @@
 /* TaDa pointer: a navy arrow cursor that leaves short, falling columns of binary digits in the logo's
    blues, plus a small burst of digits on click. Decorative only: real mouse pointers only (no touch),
-   off for prefers-reduced-motion, nothing runs while the mouse is still. No dependencies. */
+   off for prefers-reduced-motion and forced colours (high-contrast themes), nothing runs while the
+   mouse is still. Visitors who ask for more contrast keep their own system pointer. No dependencies. */
 (function () {
   "use strict";
   var mm = window.matchMedia;
-  if (!mm || !mm("(hover: hover) and (pointer: fine)").matches || mm("(prefers-reduced-motion: reduce)").matches) return;
+  if (!mm) return;
+  var rm = mm("(prefers-reduced-motion: reduce)");   /* .matches is live: re-checked on every event */
+  if (!mm("(hover: hover) and (pointer: fine)").matches || rm.matches || mm("(forced-colors: active)").matches) return;
   if (!document.body || !document.body.animate) return;
 
   var NAVY = "#274387", BLUE = "#0167d4", LIGHT = "#3ab8ef", PALE = "#e6f4fc";
@@ -12,8 +15,8 @@
   function grad(head) { return "linear-gradient(to top," + head + " 0," + head + " 20%," + LIGHT + " 58%,rgba(58,184,239,0) 100%)"; }
   var st = document.createElement("style");
   /* arrow only: links, buttons and text fields keep their native hand / I-beam */
-  st.textContent = "html,body{cursor:url(\"data:image/svg+xml," + arrow + "\") 4 3,auto}" +
-    ".tada-rain{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:9999;contain:strict}" +
+  st.textContent = (mm("(prefers-contrast: more)").matches ? "" : "html,body{cursor:url(\"data:image/svg+xml," + arrow + "\") 4 3,auto}") +
+    ".tada-rain{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:9999;contain:strict;-webkit-user-select:none;user-select:none}" +
     ".tada-rain span{position:absolute;left:0;top:0;white-space:pre;text-align:center;font:600 12px/1.08 'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;will-change:transform,opacity;" +
     "color:" + LIGHT + ";background:" + grad(BLUE) + ";-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}" +
     ".tada-rain span.d{background-image:" + grad(PALE) + "}" +   /* over dark backgrounds: pale head */
@@ -82,7 +85,7 @@
 
   var lastX = null, lastY = null, acc = 0, lastT = 0;
   window.addEventListener("pointermove", function (e) {
-    if (e.pointerType && e.pointerType !== "mouse") return;
+    if (rm.matches || (e.pointerType && e.pointerType !== "mouse")) return;
     var x = e.clientX, y = e.clientY;
     if (lastX === null) { lastX = x; lastY = y; return; }
     var dx = x - lastX, dy = y - lastY;
@@ -94,7 +97,7 @@
     stream(x, y, isDark(e.target));
   }, { passive: true });
   window.addEventListener("pointerdown", function (e) {
-    if (e.pointerType && e.pointerType !== "mouse") return;
+    if (rm.matches || (e.pointerType && e.pointerType !== "mouse")) return;
     if (e.button === 0) burst(e.clientX, e.clientY, isDark(e.target));
   }, { passive: true });
 })();
