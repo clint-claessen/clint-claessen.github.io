@@ -211,7 +211,8 @@
                 <div><label class="flabel" for="cd-owner">Owner (sends the e-mail)</label><select class="field" id="cd-owner"></select></div>
                 <div><label class="flabel" for="cd-status">Status</label><select class="field" id="cd-status"><option value="idea">idea</option><option value="invited">invited</option><option value="replied">replied</option><option value="confirmed">confirmed</option><option value="declined">declined</option><option value="waitlist">waitlist</option></select></div>
                 <div><label class="flabel" for="cd-slot">Target slot</label><select class="field" id="cd-slot"></select></div>
-                <div class="full"><label class="flabel" for="cd-notes">Hook (why this person, which paper)</label><textarea class="field" id="cd-notes" rows="3" placeholder="One or two sentences; used in the invitation draft."></textarea></div>
+                <div class="full"><label class="flabel" for="cd-hook">Sentence for the invitation (optional, goes into the e-mail as written)</label><textarea class="field" id="cd-hook" rows="2" placeholder="Written to the speaker, e.g. “Your recent paper on … speaks directly to this term's theme.”"></textarea></div>
+                <div class="full"><label class="flabel" for="cd-notes">Internal notes (never used in an e-mail)</label><textarea class="field" id="cd-notes" rows="2" placeholder="Why this person, which paper, who knows them…"></textarea></div>
               </div>
               <div class="block">
                 <div class="block-h"><h3>Invitation e-mail</h3><div class="flex items-center gap-1"><button class="btn btn-ghost" type="button" data-gen="cand-invitation" title="Generate draft"><span class="material-symbols-outlined text-[16px]">auto_awesome</span>Generate</button><button class="btn btn-ghost" type="button" data-copy="cd-draft" title="Copy"><span class="material-symbols-outlined text-[16px]">content_copy</span></button><button class="btn btn-ghost" type="button" data-mailto="cand-invitation" title="Open in e-mail"><span class="material-symbols-outlined text-[16px]">outgoing_mail</span></button></div></div>
@@ -368,13 +369,19 @@
           <div class="full"><label class="flabel" for="sd-abstract">Abstract</label><textarea class="field" id="sd-abstract" rows="5"></textarea></div>
           <div><label class="flabel" for="sd-paper">Paper / preprint</label><input class="field" id="sd-paper" type="url" placeholder="https://" /></div>
           <div><label class="flabel" for="sd-recording">Recording (consent / link)</label><input class="field" id="sd-recording" placeholder="public · unlisted · no, or the link" /></div>
-          <div class="full"><label class="flabel" for="sd-notes">Internal notes</label><textarea class="field" id="sd-notes" rows="2" placeholder="Hook for the invitation, time-zone wishes, co-presenters…"></textarea></div>
+          <div class="full"><label class="flabel" for="sd-notes">Internal notes (never used in an e-mail)</label><textarea class="field" id="sd-notes" rows="2" placeholder="Who invited, time-zone wishes, co-presenters…"></textarea></div>
         </div>
       </div>
       <div class="block">
         <div class="block-h"><h3>Invitation e-mail</h3><div class="flex items-center gap-1"><select class="pill-select" id="sd-inv-status" title="Invitation status"><option value="none">none</option><option value="draft">draft</option><option value="sent">sent</option><option value="replied">replied</option><option value="confirmed">confirmed</option><option value="declined">declined</option></select><button class="btn btn-ghost" type="button" data-gen="invitation" title="Generate draft"><span class="material-symbols-outlined text-[16px]">auto_awesome</span>Generate</button><button class="btn btn-ghost" type="button" data-copy="sd-inv-draft" title="Copy"><span class="material-symbols-outlined text-[16px]">content_copy</span></button><button class="btn btn-ghost" type="button" data-mailto="invitation" title="Open in e-mail"><span class="material-symbols-outlined text-[16px]">outgoing_mail</span></button></div></div>
         <textarea class="field mono text-[12px] leading-[18px]" id="sd-inv-draft" rows="10" placeholder="Click Generate, then edit. The other organizers go in cc automatically when you open it in your e-mail program."></textarea>
         <div class="flex items-center justify-between"><span class="hint" id="sd-inv-meta"></span><button class="btn btn-secondary" type="button" data-mark-sent><span class="material-symbols-outlined text-[16px]">mark_email_read</span>Mark as sent</button></div>
+      </div>
+      <div class="block">
+        <div class="block-h"><h3>Session details e-mail</h3><div class="flex items-center gap-1"><button class="btn btn-ghost" type="button" data-gen="details" title="Generate draft"><span class="material-symbols-outlined text-[16px]">auto_awesome</span>Generate</button><button class="btn btn-ghost" type="button" data-copy="sd-det-draft" title="Copy"><span class="material-symbols-outlined text-[16px]">content_copy</span></button><button class="btn btn-ghost" type="button" data-talk-ics title="Download the calendar invite (.ics) for the speaker"><span class="material-symbols-outlined text-[16px]">event</span></button><button class="btn btn-ghost" type="button" data-mailto="details" title="Open in e-mail (also downloads the calendar invite to attach)"><span class="material-symbols-outlined text-[16px]">outgoing_mail</span></button></div></div>
+        <p class="hint">For a confirmed speaker, two weeks before: date, time, format, Zoom link and what we have on file. Enter the Zoom link under Schedule first. Opening it in your e-mail program also downloads a calendar invite (.ics): attach that file to the e-mail.</p>
+        <textarea class="field mono text-[12px] leading-[18px]" id="sd-det-draft" rows="10" placeholder="Click Generate, then edit. The other organizers go in cc automatically when you open it in your e-mail program."></textarea>
+        <div class="flex items-center justify-between"><span class="hint" id="sd-det-meta"></span><button class="btn btn-secondary" type="button" data-mark-details><span class="material-symbols-outlined text-[16px]">mark_email_read</span>Mark as sent</button></div>
       </div>
       <div class="block">
         <div class="block-h"><h3>Newsletter</h3><div class="flex items-center gap-1"><select class="pill-select" id="sd-p-newsletter"><option value="todo">to do</option><option value="draft">draft</option><option value="scheduled">scheduled</option><option value="done">done</option></select><button class="btn btn-ghost" type="button" data-gen="newsletter"><span class="material-symbols-outlined text-[16px]">auto_awesome</span>Generate</button><button class="btn btn-ghost" type="button" data-copy="sd-d-newsletter" title="Copy"><span class="material-symbols-outlined text-[16px]">content_copy</span></button><button class="btn btn-ghost" type="button" data-mailto="newsletter" title="Open in e-mail"><span class="material-symbols-outlined text-[16px]">outgoing_mail</span></button></div></div>
@@ -444,6 +451,6 @@
 <script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore-compat.js"></script>
-<script src="committee.js"></script>
+<script src="committee.js?v=20261002d"></script>
 </body>
 </html>

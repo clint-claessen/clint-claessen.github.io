@@ -297,6 +297,8 @@
     var inv = (s && s.invitation) || {}, pr = (s && s.promo) || {};
     $("#sd-inv-status").value = inv.status || "none"; $("#sd-inv-draft").value = inv.draft || "";
     $("#sd-inv-meta").textContent = inv.sentBy ? "Sent by " + inv.sentBy + " on " + (inv.sentAt || "") + (inv.to ? " to " + inv.to : "") : "";
+    var det = (s && s.detailsMail) || {};
+    $("#sd-det-draft").value = det.draft || ""; $("#sd-det-meta").textContent = det.sentBy ? "Sent by " + det.sentBy + " on " + (det.sentAt || "") : "";
     ["newsletter", "linkedin", "bluesky"].forEach(function (k) { $("#sd-p-" + k).value = (pr[k] || {}).status || "todo"; $("#sd-d-" + k).value = (pr[k] || {}).draft || ""; });
     $("#sd-p-website").value = (pr.website || {}).status || "todo";
     $("#sd-hint").textContent = $("#sd-hint2").textContent = s && s.updatedBy ? "Last change " + s.updatedBy + " · " + (s.updatedAtLabel || "") : "";
@@ -307,6 +309,8 @@
   function sessionFromForm() {
     var o = {}; F.forEach(function (k) { o[k === "talktitle" ? "title" : k] = sd(k).value.trim(); });
     o.invitation = { status: $("#sd-inv-status").value, draft: $("#sd-inv-draft").value, sentBy: (editing && editing.invitation && editing.invitation.sentBy) || "", sentAt: (editing && editing.invitation && editing.invitation.sentAt) || "", to: o.email };
+    var det = (editing && editing.detailsMail) || {};
+    o.detailsMail = { draft: $("#sd-det-draft").value, sentBy: det.sentBy || "", sentAt: det.sentAt || "" };
     o.promo = { newsletter: { status: $("#sd-p-newsletter").value, draft: $("#sd-d-newsletter").value }, linkedin: { status: $("#sd-p-linkedin").value, draft: $("#sd-d-linkedin").value }, bluesky: { status: $("#sd-p-bluesky").value, draft: $("#sd-d-bluesky").value }, website: { status: $("#sd-p-website").value } };
     return o;
   }
@@ -323,7 +327,16 @@
     $("#sd-inv-status").value = "sent"; recolorPills();
     if (!editing) { toast("Save the session first"); return; }
     var upd = { "invitation.status": "sent", "invitation.sentBy": me.initials, "invitation.sentAt": nowLabel(), "invitation.to": sd("email").value.trim(), "invitation.draft": $("#sd-inv-draft").value, status: editing.status === "open" ? "invited" : editing.status };
+    /* keep the open session object in step, otherwise a later "Save" writes the old (empty) sender back */
+    editing.invitation = Object.assign({}, editing.invitation, { status: "sent", sentBy: upd["invitation.sentBy"], sentAt: upd["invitation.sentAt"], to: upd["invitation.to"] });
     patchSession(editing.id, upd).then(function () { $("#sd-inv-meta").textContent = "Sent by " + me.initials + " on " + upd["invitation.sentAt"]; sd("status").value = upd.status; });
+  });
+  $("[data-mark-details]").addEventListener("click", function () {
+    if (!editing) { toast("Save the session first"); return; }
+    var upd = { zoom: sd("zoom").value.trim(), "detailsMail.sentBy": me.initials, "detailsMail.sentAt": nowLabel(), "detailsMail.draft": $("#sd-det-draft").value };
+    editing.zoom = upd.zoom;
+    editing.detailsMail ={ draft: upd["detailsMail.draft"], sentBy: upd["detailsMail.sentBy"], sentAt: upd["detailsMail.sentAt"] };
+    patchSession(editing.id, upd).then(function () { $("#sd-det-meta").textContent = "Sent by " + me.initials + " on " + upd["detailsMail.sentAt"]; });
   });
   function bskyCount() { var n = $("#sd-d-bluesky").value.length, c = $("#bsky-count"); c.textContent = n + "/300"; c.classList.toggle("over", n > 300); }
   $("#sd-d-bluesky").addEventListener("input", bskyCount);
@@ -334,26 +347,71 @@
     var c = e.target.closest("[data-copy]"); if (c) { copyText($("#" + c.getAttribute("data-copy")).value); return; }
     var m = e.target.closest("[data-mailto]"); if (m) mailto(m.getAttribute("data-mailto"));
   });
-  function others() { return rosterList().filter(function (m) { return m.uid !== user.uid && key0(m.name) !== key0(me.name); }); }
+  /* The other organizers, one entry per person, for "together with …" and the cc line: without me (also not a second
+     profile with my e-mail), and a profile whose name is a configured organizer's name in another order ("Klamm Christopher")
+     counts as that organizer, shown under the configured name with the profile's e-mail. */
+  function nameKey(n) { return key0(n).split(/\s+/).sort().join(" "); }
+  function canonName(n) { var o = (CFG.organizers || []).filter(function (x) { return x && x.name && nameKey(x.name) === nameKey(n); })[0]; return o ? o.name : (n || ""); }
+  function others() {
+    var cfg = {}, seen = {}, out = [], myMail = key0((me && me.email) || (user && user.email));
+    (CFG.organizers || []).forEach(function (o) { if (o && o.name) cfg[nameKey(o.name)] = o.name; });
+    rosterList().forEach(function (m) {
+      var k = nameKey(m.name);
+      if (m.uid === user.uid || k === nameKey(me.name) || (myMail && key0(m.email) === myMail)) return;
+      if (seen[k]) { if (!seen[k].email && m.email) seen[k].email = m.email; if (!seen[k].uid && m.uid) seen[k].uid = m.uid; return; }   /* the uid addresses direct messages */
+      seen[k] = { uid: m.uid, initials: m.initials, name: cfg[k] || m.name, email: m.email || "" }; out.push(seen[k]);
+    });
+    return out.sort(function (a, b) { return (a.name || "").localeCompare(b.name || ""); });
+  }
   function key0(s) { return String(s || "").trim().toLowerCase(); }
   function joinNames(a) { return a.length <= 1 ? a.join("") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1]; }
   function openDates() { return sessionsOfTerm().filter(function (s) { return s.status === "open" && !s.speaker; }).map(function (s) { return s.date; }); }
   function datesSentence(ds) { if (!ds.length) return "one of our sessions this term"; var parts = ds.map(function (d) { var p = dparts(d); return p.d + " " + MONTHS_LONG[p.m - 1]; }); return "one of our sessions on " + joinNames(parts) + " " + dparts(ds[ds.length - 1]).y + " (Wednesdays, 17:00 Berlin time)"; }
   function T() { var ts = termSettings[currentTerm] || {}; return { term: currentTerm || "", theme: ts.theme || CFG.termTheme || "", form: ts.formUrl || FORM_URL }; }
   function invitationText(p) {
-    var t = T(), intro = me.intro ? me.intro.replace(/^\s*(I am|I'm)\s+/i, "") : "[your position and institution]";
-    var hook = (p.notes || "").trim(); var hookSentence = hook ? (/[.!?]$/.test(hook) ? hook : hook + ".") + " I think this work would be a great fit for this term." : "Given your work in this area, I think it would be a great fit for this term.";
+    var t = T(), co = others(), intro = me.intro ? me.intro.replace(/^\s*(I am|I'm)\s+/i, "") : "[your position and institution]";
+    /* p.hook is the candidate's "Sentence for the invitation" and goes into the mail as written; internal notes never do. */
+    var hook = (p.hook || "").trim(); var hookSentence = hook ? (/[.!?]$/.test(hook) ? hook : hook + ".") + " I think this work would be a great fit for this term." : "Given your work in this area, I think it would be a great fit for this term.";
     return "Dear " + (p.name || "[name]") + ",\n\n" +
-      "My name is " + me.name + ", I am " + intro + ", as well as one of the co-organizers of the online TaDa Reading Group/Speaker Series (together with " + joinNames(others().map(function (m) { return m.name; })) + ", all in cc). This online series invites experts from the intersection of computational linguistics and the social sciences to present and discuss their work with early-career researchers.\n\n" +
+      "My name is " + canonName(me.name) + ", I am " + intro + ", as well as one of the co-organizers of the online TaDa Reading Group/Speaker Series (together with " + joinNames(co.map(function (m) { return m.name; })) + (co.length && co.every(function (m) { return m.email; }) ? ", all in cc" : "") + "). This online series invites experts from the intersection of computational linguistics and the social sciences to present and discuss their work with early-career researchers.\n\n" +
       "The " + (t.term.toLowerCase().indexOf("spring") === 0 ? "spring" : "fall") + " term of our Speaker Series will be all about " + (t.theme || "[theme]") + ". " + hookSentence + " More generally, given your expertise and impact on the text-as-data field, it would be a particular honour to host you.\n\n" +
       "We would like to invite you for " + datesSentence(openDates()) + "; you can select your preferred date and send us a title and abstract in this short form: " + t.form + ". If the times of the sessions are inconvenient, we are more than happy to accommodate an alternative date or time that works for you. The online session lasts about 60 minutes, with a 20–30-minute presentation followed by discussion (this is flexible).\n\n" +
-      "Looking forward to your response and with best regards,\n" + firstName(me.name) + " & the TaDa organizing team";
+      "Looking forward to your response and with best regards,\n" + firstName(canonName(me.name)) + " & the TaDa organizing team";
   }
   function newsletterText(s) {
     var t = T();
     return "Subject: TaDa Speaker Series: " + (s.speaker || "[speaker]") + " — " + fmtMid(s.date) + ", " + (s.time || "17:00") + " " + tz(s.date) + "\n\nDear all,\n\nNext up in the TaDa Speaker Series" + (t.term ? " (" + t.term + (t.theme ? ": " + t.theme : "") + ")" : "") + ":\n\n" +
       (s.speaker || "[speaker]") + (s.affiliation ? " (" + s.affiliation + ")" : "") + "\n“" + (s.title || "[title]") + "”\n" + fmtLong(s.date) + ", " + (s.time || "17:00") + " " + tz(s.date) + " (Berlin time), online on Zoom\n\n" + (s.abstract ? s.abstract + "\n\n" : "") +
-      "Zoom: " + (s.zoom || "the link follows in the reminder on the morning of the session") + "\n" + (s.paper ? "Paper: " + s.paper + "\n" : "") + "\nWe hope to see many of you there!\n" + firstName(me.name) + " & the TaDa team\ntada.cool";
+      "Zoom: " + (s.zoom || "the link follows in the reminder on the morning of the session") + "\n" + (s.paper ? "Paper: " + s.paper + "\n" : "") + "\nWe hope to see many of you there!\n" + firstName(canonName(me.name)) + " & the TaDa team\ntada.cool";
+  }
+  /* Session details for a confirmed speaker (the chair's e-mail two weeks before): date, time, format, Zoom link, what we
+     have on file, and a calendar invite (.ics downloaded when the mail opens, plus a Google Calendar link in the text).
+     Built only from the speaker, schedule and talk fields; internal notes are never used. */
+  function whenLine(s) { return fmtLong(s.date) + ", " + (s.time || "17:00") + " " + tz(s.date) + " (Berlin time)"; }
+  function talkEvent(s) {
+    var t = T(), chair = s.chair ? chairName(s) : "";
+    return { kind: "talk", date: s.date, time: s.time || "17:00", dur: 60, loc: s.zoom || "Online (Zoom)",
+      title: "TaDa Speaker Series: " + (s.speaker || "talk") + (s.title ? " – “" + s.title + "”" : ""),
+      desc: "TaDa Speaker Series" + (t.term ? " (" + t.term + (t.theme ? ": " + t.theme : "") + ")" : "") + "\n" + whenLine(s) + "\nFormat: about 60 minutes, a 20–30-minute talk followed by Q&A" + (s.zoom ? "\nZoom: " + s.zoom : "") + (chair ? "\nChair: " + chair : "") + "\nContact: team@tada.cool" };
+  }
+  function detailsSubject(s) { var p = dparts(s.date); return "TaDa Speaker Series: your talk on " + p.d + " " + MONTHS_LONG[p.m - 1] + " " + p.y + " – details and Zoom link"; }
+  function detailsText(s) {
+    /* name only the organizers who really go into the cc line (mailto() uses the same set) */
+    var t = T(), names = others().filter(function (m) { return m.email; }).map(function (m) { return m.name; }), chair = s.chair ? chairName(s) : "";
+    var deadline = addDays(s.date, -8), by = deadline > todayISO() ? "by " + fmtLong(deadline) : "as soon as you can";
+    var ask = s.title && s.abstract ? "We will announce your talk with the title above and the abstract you sent us; if you would like to change either, please let us know " + by + "."
+      : s.title ? "Could you send us a short abstract of your talk " + by + "? If you would like to adjust the title, please let us know at the same time."
+      : "Could you send us the title and a short abstract of your talk " + by + "?";
+    return "Dear " + (s.speaker || "[name]") + ",\n\n" +
+      "Thank you again for agreeing to speak in the TaDa Speaker Series" + (t.term ? " (" + t.term + (t.theme ? ": " + t.theme : "") + ")" : "") + ". Here are the details for your session.\n\n" +
+      "Date and time: " + whenLine(s) + "\n" +
+      "Format: online on Zoom, about 60 minutes: a 20–30-minute talk, followed by Q&A\n" +
+      "Zoom link: " + (s.zoom || "[add the Zoom link before sending]") + "\n" +
+      (chair ? "Chair: " + chair + "\n" : "") + (s.title ? "Title: “" + s.title + "”\n" : "") + "\n" +
+      "A calendar invite for the session is attached to this e-mail (.ics file). If you use Google Calendar, this link adds it directly: " + gcalUrl({ title: "TaDa Speaker Series: " + (s.speaker || "talk"), date: s.date, time: s.time || "17:00", dur: 60, loc: s.zoom || "" }) + "\n\n" +
+      ask + " One week before the session we announce the talk in our newsletter and on LinkedIn and Bluesky" + (s.photo ? "" : "; if you have a portrait photo we may use for the announcement, please send it along") + ".\n\n" +
+      "If anything comes up or you have questions about the format, just reply to this e-mail" + (names.length ? "; the other organizers (" + joinNames(names) + ") are in cc" : "") + ".\n\n" +
+      "Looking forward to your talk, and with best regards,\n" + firstName(canonName(me.name)) + " & the TaDa organizing team";
   }
   /* Post templates follow the wording of the team's earlier posts (spring 2026). Attach the social card (button in the drawer) as the image. */
   function termWord() { var t = T().term || ""; return /spring/i.test(t) ? "Spring " : /fall|autumn/i.test(t) ? "Fall " : ""; }
@@ -372,9 +430,17 @@
     return base.replace("{T}", title);
   }
   function generate(kind) {
-    if (kind === "cand-invitation") { $("#cd-draft").value = invitationText({ name: $("#cd-name").value.trim(), notes: $("#cd-notes").value.trim() }); return; }
+    if (kind === "cand-invitation") { $("#cd-draft").value = invitationText({ name: $("#cd-name").value.trim(), hook: $("#cd-hook").value.trim() }); return; }
     var s = sessionFromForm(); s.date = s.date || todayISO();
-    if (kind === "invitation") $("#sd-inv-draft").value = invitationText({ name: s.speaker, notes: s.notes });
+    if (kind === "invitation") {
+      $("#sd-inv-draft").value = invitationText({ name: s.speaker });
+      if (s.status === "confirmed" || s.status === "done") toast("This speaker is already confirmed: use “Session details e-mail” below for the date, Zoom link and calendar invite");
+    }
+    if (kind === "details") {
+      if (!s.speaker) { toast("Add the speaker first"); return; }
+      $("#sd-det-draft").value = detailsText(s);
+      if (!s.zoom) toast("No Zoom link yet: add it under Schedule, then generate again");
+    }
     if (kind === "newsletter") $("#sd-d-newsletter").value = newsletterText(s);
     if (kind === "linkedin") $("#sd-d-linkedin").value = linkedinText(s);
     if (kind === "bluesky") { $("#sd-d-bluesky").value = blueskyText(s); bskyCount(); }
@@ -384,8 +450,26 @@
     if (kind === "invitation") { to = sd("email").value.trim(); subject = "Invitation: TaDa Speaker Series " + (currentTerm || ""); body = $("#sd-inv-draft").value; }
     if (kind === "cand-invitation") { to = $("#cd-email").value.trim(); subject = "Invitation: TaDa Speaker Series " + (currentTerm || ""); body = $("#cd-draft").value; }
     if (kind === "newsletter") { openNewsletterMail($("#sd-d-newsletter").value, true); return; }
+    var invite = null;
+    if (kind === "details") {
+      var sD = sessionFromForm(); body = $("#sd-det-draft").value;
+      if (!body.trim()) { toast("Click Generate first"); return; }
+      if (!sD.date) { toast("Date is required"); return; }
+      /* the subject and the invite come from Schedule, the body from the (possibly older or hand-edited) draft: warn when they differ */
+      var noZoom = !sD.zoom, stale = body.indexOf(whenLine(sD)) < 0 || (sD.zoom && body.indexOf(sD.zoom) < 0);
+      if ((noZoom || stale) && !confirm(noZoom ? "There is no Zoom link under Schedule, so the calendar invite will not contain one. Open the e-mail anyway?" : "The draft does not show the current date, time or Zoom link from Schedule, which the subject and the calendar invite use. Open it anyway?\n(Cancel, then click Generate, to refresh the draft.)")) return;
+      to = sD.email; subject = detailsSubject(sD); invite = sD;
+    }
     var url = "mailto:" + encodeURIComponent(to) + "?subject=" + encodeURIComponent(subject) + (cc ? "&cc=" + encodeURIComponent(cc) : "") + "&body=" + encodeURIComponent(body);
     if (url.length > 7000) { copyText(body); toast("Text copied (too long for a mail link): paste it into your e-mail"); }
+    if (invite) {   /* a mail link cannot carry an attachment: download the invite, save what was typed, then open the mail */
+      downloadTalkInvite(invite);
+      /* a webmail handler replaces this page: the Zoom link and the draft must be in the database before that happens */
+      var saved = editing ? patchSession(editing.id, { zoom: invite.zoom, "detailsMail.draft": body }) : Promise.resolve();
+      if (editing) { editing.zoom = invite.zoom; editing.detailsMail = Object.assign({}, editing.detailsMail, { draft: body }); }
+      saved.then(function () { toast("Calendar invite downloaded: attach the .ics file to the e-mail"); setTimeout(function () { window.location.href = url; }, 400); });
+      return;
+    }
     window.location.href = url;
   }
   /* Newsletter: with CFG.newsletterWebmail set, copy the draft (recipient, subject, body) and open the webmail of the
@@ -412,7 +496,7 @@
   function addDays(iso, n) { var p = iso.split("-"); return isoOf(new Date(+p[0], +p[1] - 1, +p[2] + n)); }
   function timeLabel(t) { var p = (t || "17:00").split(":"), h = +p[0], m = +p[1] || 0; return (h % 12 || 12) + (m ? ":" + pad(m) : "") + (h >= 12 ? "pm" : "am"); }
   function daysUntil(iso) { var a = iso.split("-"), b = todayISO().split("-"); return Math.round((Date.UTC(+a[0], +a[1] - 1, +a[2]) - Date.UTC(+b[0], +b[1] - 1, +b[2])) / 864e5); }
-  function chairName(s) { var m = rosterList().filter(function (x) { return x.initials === s.chair; })[0]; return m ? m.name : (s.chair || "unassigned"); }
+  function chairName(s) { var m = rosterList().filter(function (x) { return x.initials === s.chair; })[0]; return m ? canonName(m.name) : (s.chair || "unassigned"); }
   function siteRoot() { return location.origin + location.pathname.replace(/committee\/[^/]*$/, ""); }
   function cardUrl(s) { return siteRoot() + "card/?" + ["date", "time", "speaker", "affiliation", "title", "photo"].filter(function (k) { return s[k]; }).map(function (k) { return k + "=" + encodeURIComponent(s[k]); }).join("&"); }
   var REM_LABEL = { chair: "Chair pings the speaker (2 weeks before)", promo: "Invitation newsletter + posts (1 week before)", day: "Session day: chair + reminder newsletter", session: "The session itself" };
@@ -421,7 +505,7 @@
     var when = fmtLong(s.date) + ", " + (s.time || "17:00") + " " + tz(s.date) + " (Berlin time)";
     if (s.speaker) {
       out.push({ kind: "chair", date: addDays(s.date, -14), time: "10:00", dur: 30, title: "TaDa chair (" + (s.chair || "?") + "): e-mail " + who + " – session " + fmtShort(s.date),
-        desc: "Two weeks before the session, the chair (" + chair + ") writes to " + who + (s.email ? " <" + s.email + ">" : "") + ": confirm date and time (" + when + "), the format (60 minutes, 20–30-minute talk then discussion), ask for the final title and abstract, a portrait photo and links. Create the Zoom meeting yourself and put the link in the e-mail" + (s.zoom ? " (" + s.zoom + ")" : "") + ".\nCommittee app: " + app });
+        desc: "Two weeks before the session, the chair (" + chair + ") writes to " + who + (s.email ? " <" + s.email + ">" : "") + ": confirm date and time (" + when + "), the format (60 minutes, 20–30-minute talk then discussion), ask for the final title and abstract, a portrait photo and links. Create the Zoom meeting yourself and put the link in the e-mail" + (s.zoom ? " (" + s.zoom + ")" : "") + ".\nDraft: open the session in the committee app, enter the Zoom link, then “Session details e-mail” → Generate → Open in e-mail (the calendar invite downloads; attach it).\nCommittee app: " + app });
       out.push({ kind: "promo", date: addDays(s.date, -7), time: "10:00", dur: 30, title: "TaDa: invitation newsletter for " + who + " (with Zoom link) + LinkedIn, Bluesky",
         desc: "One week before: announce " + who + " – " + when + ": newsletter to the list (it must contain the Zoom link), then the LinkedIn and Bluesky posts.\nDrafts: open the session in the committee app (" + app + "), Generate, Newsletter.\nSocial card with photo: " + cardUrl(s) });
       out.push({ kind: "day", date: s.date, time: "09:00", dur: 30, title: "TaDa today: " + who + " – chair " + (s.chair || "?") + ", reminder newsletter + posts",
@@ -433,15 +517,17 @@
   }
   function stamp(iso, time) { var p = iso.split("-"), t = (time || "17:00").split(":"); return p.join("") + "T" + pad(+t[0]) + pad(+t[1] || 0) + "00"; }
   function stampEnd(iso, time, dur) { var t = (time || "17:00").split(":"), mins = (+t[0]) * 60 + (+t[1] || 0) + (dur || 30), d = iso; if (mins >= 1440) { mins -= 1440; d = addDays(iso, 1); } return stamp(d, pad(Math.floor(mins / 60)) + ":" + pad(mins % 60)); }
-  function gcalUrl(r) { return "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(r.title) + "&dates=" + stamp(r.date, r.time) + "/" + stampEnd(r.date, r.time, r.dur) + "&ctz=Europe%2FBerlin&details=" + encodeURIComponent(r.desc); }
+  function gcalUrl(r) { return "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(r.title) + "&dates=" + stamp(r.date, r.time) + "/" + stampEnd(r.date, r.time, r.dur) + "&ctz=Europe%2FBerlin" + (r.desc ? "&details=" + encodeURIComponent(r.desc) : "") + (r.loc ? "&location=" + encodeURIComponent(r.loc) : ""); }
   function icsText(v) { return String(v || "").replace(/\\/g, "\\\\").replace(/\r?\n/g, "\\n").replace(/[,;]/g, function (c) { return "\\" + c; }); }
   var VTZ = ["BEGIN:VTIMEZONE", "TZID:Europe/Berlin", "BEGIN:DAYLIGHT", "TZOFFSETFROM:+0100", "TZOFFSETTO:+0200", "TZNAME:CEST", "DTSTART:19700329T020000", "RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU", "END:DAYLIGHT", "BEGIN:STANDARD", "TZOFFSETFROM:+0200", "TZOFFSETTO:+0100", "TZNAME:CET", "DTSTART:19701025T030000", "RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU", "END:STANDARD", "END:VTIMEZONE"];
   function icsOf(list, name) {
     var dt = new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) + "Z";
-    var ev = list.map(function (r) { return ["BEGIN:VEVENT", "UID:tada-" + r.kind + "-" + r.date + "@tada.cool", "DTSTAMP:" + dt, "DTSTART;TZID=Europe/Berlin:" + stamp(r.date, r.time), "DTEND;TZID=Europe/Berlin:" + stampEnd(r.date, r.time, r.dur), "SUMMARY:" + icsText(r.title), "DESCRIPTION:" + icsText(r.desc), "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:" + icsText(r.title), "TRIGGER:" + (r.kind === "session" ? "-PT30M" : "-PT0M"), "END:VALARM", "END:VEVENT"].join("\r\n"); });
+    var seq = Math.floor((Date.now() - Date.UTC(2026, 0, 1)) / 1000);   /* rising SEQUENCE: a re-issued event (same UID) replaces the earlier one */
+    var ev = list.map(function (r) { return ["BEGIN:VEVENT", "UID:tada-" + r.kind + "-" + r.date + "@tada.cool", "DTSTAMP:" + dt, "SEQUENCE:" + seq,"DTSTART;TZID=Europe/Berlin:" + stamp(r.date, r.time), "DTEND;TZID=Europe/Berlin:" + stampEnd(r.date, r.time, r.dur), "SUMMARY:" + icsText(r.title), "DESCRIPTION:" + icsText(r.desc)].concat(r.loc ? ["LOCATION:" + icsText(r.loc)] : [], ["BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:" + icsText(r.title), "TRIGGER:" + (r.kind === "session" || r.kind === "talk" ? "-PT30M" : "-PT0M"), "END:VALARM", "END:VEVENT"]).join("\r\n"); });
     return ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//TaDa//Committee reminders//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH", "X-WR-CALNAME:" + icsText(name), "X-WR-TIMEZONE:Europe/Berlin"].concat(VTZ, ev, ["END:VCALENDAR"]).join("\r\n");
   }
   function downloadText(name, text, type) { var blob = new Blob([text], { type: type || "text/plain" }), a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000); }
+  function downloadTalkInvite(s) { downloadText("tada-talk-" + s.date + ".ics", icsOf([talkEvent(s)], "TaDa Speaker Series"), "text/calendar"); }
   $("#reminders-btn").addEventListener("click", function () { if (!currentTerm) { toast("Create a term first"); return; } $("#rem-term").textContent = currentTerm; $("#rem-dlg").showModal(); });
   $("#rem-form").addEventListener("submit", function (e) {
     if (e.submitter && e.submitter.value !== "download") return;
@@ -461,6 +547,7 @@
   }
   drawer.addEventListener("click", function (e) {
     if (e.target.closest("[data-rem-ics]")) { var s = sessionFromForm(); if (!s.date) { toast("Date is required"); return; } downloadText("tada-reminders-" + s.date + ".ics", icsOf(remindersFor(s), "TaDa " + s.date), "text/calendar"); return; }
+    if (e.target.closest("[data-talk-ics]")) { var s3 = sessionFromForm(); if (!s3.date) { toast("Date is required"); return; } downloadTalkInvite(s3); toast("Calendar invite downloaded"); return; }
     if (e.target.closest("[data-card]")) { var s2 = sessionFromForm(); if (!s2.date) { toast("Date is required"); return; } window.open(cardUrl(s2), "_blank", "noopener"); }
   });
 
@@ -505,7 +592,7 @@
   });
 
   /* ---------- candidates ---------- */
-  var CF = { f: "active", q: "" }, CFIELDS = ["name", "affiliation", "email", "url", "proposedBy", "owner", "status", "notes"];
+  var CF = { f: "active", q: "" }, CFIELDS = ["name", "affiliation", "email", "url", "proposedBy", "owner", "status", "hook", "notes"];
   function renderCandidates() {
     var q = CF.q.toLowerCase(), rows = candidates.filter(function (c) {
       var st = c.status || "idea";

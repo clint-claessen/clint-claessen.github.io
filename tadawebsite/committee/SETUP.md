@@ -52,6 +52,13 @@ Series view refreshes the same document. Portraits: put a square JPEG in `assets
 ## Daily use
 - **Candidates**: keep ideas, generate the invitation draft (uses your intro, the open dates and
   the speaker-form link), *Open in e-mail* puts the other organizers in cc, *Mark as sent*.
+  Only the field *Sentence for the invitation* goes into the e-mail (as written); *Internal notes*
+  never appear in any draft, neither for candidates nor for sessions.
+- **Two e-mails to a speaker** (session drawer): *Invitation e-mail* asks someone to speak (dates,
+  form link). *Session details e-mail* is for a confirmed speaker, two weeks before: date, time,
+  format, Zoom link, chair, title, and what we still need. Enter the Zoom link under Schedule
+  first. *Open in e-mail* also downloads `tada-talk-<date>.ics`, a calendar invite to attach (a
+  mail link cannot attach files); the text carries a Google Calendar link as well.
 - **Speaker responses**: what speakers submit through the form. *Assign to slot* fills the
   session (name, title, abstract, links, recording consent) and sets it to confirmed.
 - **Series**: one row per date; inline status, invitation status and the N/L/B/W promotion

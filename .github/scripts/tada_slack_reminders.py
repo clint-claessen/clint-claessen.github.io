@@ -72,7 +72,9 @@ def due_messages(sessions: list, now: dt.datetime) -> list:
                 f":envelope: *Two weeks to go: ping the speaker* for the session on {when}.\n"
                 f"{opener} to *{who}* {title}: confirm date and time, the 60-minute format "
                 f"(20–30-minute talk, then discussion), ask for the final title, abstract, portrait and links, "
-                f"and *create the Zoom meeting yourself and put the link in the e-mail*{zoom}. Drafts and details: {APP_URL}"
+                f"and *create the Zoom meeting yourself and put the link in the e-mail*{zoom}. "
+                f"Draft with a calendar invite: open the session in the committee app ({APP_URL}), enter the Zoom link, "
+                f"then “Session details e-mail” → Generate."
             )
         elif days == 7 and hour == 9:
             out.append(
