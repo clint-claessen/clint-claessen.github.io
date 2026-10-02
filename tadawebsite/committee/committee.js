@@ -113,6 +113,13 @@
   function start() {
     unsub.forEach(function (u) { u(); }); unsub = [];
     paintMe(); fillProfile(); $("#form-link").textContent = FORM_URL; $("#pf-form-link").textContent = FORM_URL; $("#pf-form-link").href = FORM_URL;
+    /* reminder marks: read what is stored once, then syncDone() writes only when the boxes differ from it */
+    lastDone = undefined; sessionsLoaded = false;
+    unsub.push(db.collection("public").doc("duties").onSnapshot(function (d) {
+      var v = (d.exists && d.data().done) || "";
+      /* first read, or the field was wiped (a Publish from a tab still running an older script): write the marks back */
+      if (lastDone === undefined || !v) { lastDone = v; syncDone(); }
+    }, function () { if (lastDone === undefined) { lastDone = ""; syncDone(); } }));
     unsub.push(db.collection("members").onSnapshot(function (qs) {
       members = {}; qs.forEach(function (d) { members[d.id] = d.data(); });
       if (members[user.uid]) { me = members[user.uid]; paintMe(); }
@@ -122,6 +129,7 @@
       sessions = []; qs.forEach(function (d) { var x = d.data(); x.id = d.id; sessions.push(x); });
       sessions.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
       renderTerms(); renderSessions(); fillSlotSelect(); renderResponses();
+      sessionsLoaded = true; syncDone();
     }, function (err) { toast(friendly(err)); }));
     unsub.push(db.collection("candidates").onSnapshot(function (qs) {
       candidates = []; qs.forEach(function (d) { var x = d.data(); x.id = d.id; candidates.push(x); });
@@ -222,7 +230,30 @@
   function sessionsOfTerm() { return sessions.filter(function (s) { return termOf(s) === currentTerm; }); }
   function pillSel(field, kind, value, opts) { return '<select class="pill-select ' + pillClass(kind, value) + '" data-field="' + field + '">' + opts.map(function (o) { return '<option value="' + o + '"' + (o === value ? " selected" : "") + '>' + o + '</option>'; }).join("") + '</select>'; }
   var PROMO = ["todo", "draft", "scheduled", "done"], INV = ["none", "draft", "sent", "replied", "confirmed", "declined"], STATUS = ["open", "invited", "confirmed", "declined", "done", "cancelled"];
-  function promoCell(k, letter, st) { return '<span class="promo-cell ' + esc(st) + '" data-promo="' + k + '" title="' + k + ": " + esc(st) + '">' + letter + '</span>'; }
+  var PROMO_TITLE = { speaker: "speaker e-mail (session details, 2 weeks before)", newsletter: "newsletter", linkedin: "LinkedIn post", bluesky: "Bluesky post", website: "website" };
+  function promoCell(k, letter, st) { return '<span class="promo-cell ' + esc(st) + '" data-promo="' + k + '" title="' + esc(PROMO_TITLE[k] || k) + ": " + esc(st) + (k === "website" ? "" : " · Slack reminds every morning until this is done") + '">' + letter + '</span>'; }
+  /* What stops the repeating Slack reminders (.github/scripts/tada_slack_reminders.py): per upcoming session date, whether the
+     speaker e-mail and the three announcements are dealt with. Booleans only; kept in public/duties.done and rewritten whenever
+     a box changes, so a click takes effect without "Publish to website". */
+  var lastDone, sessionsLoaded = false;   /* lastDone stays undefined until the stored value has been read */
+  /* S box: the explicit mark if there is one; otherwise a details e-mail marked as sent before the box existed counts as done */
+  function speakerSt(s) { var p = ((s && s.promo) || {}).speaker; return p && p.status ? (p.status === "done" ? "done" : "todo") : (((s && s.detailsMail) || {}).sentBy ? "done" : "todo"); }
+  function doneFlags() {
+    var from = addDays(todayISO(), -1), o = {};
+    sessions.forEach(function (s) {
+      if (!s.date || s.date < from || s.status === "cancelled" || s.status === "declined") return;   /* a published date missing here gets no reminders */
+      var p = s.promo || {}, ok = function (k) { var st = (p[k] || {}).status; return st === "done" || st === "scheduled"; };
+      o[s.date] = { speaker: speakerSt(s) === "done", newsletter: ok("newsletter"), linkedin: ok("linkedin"), bluesky: ok("bluesky") };
+    });
+    return JSON.stringify(o);
+  }
+  function syncDone() {
+    if (lastDone === undefined || !sessionsLoaded || !me) return;
+    var j = doneFlags(); if (j === lastDone) return;
+    var prev = lastDone; lastDone = j;
+    db.collection("public").doc("duties").set({ done: j, doneAt: TS(), doneBy: me.initials }, { merge: true })
+      .catch(function (err) { lastDone = prev; toast("Reminder status not saved: " + friendly(err)); });
+  }
   function renderSessions() {
     var q = SF.q.toLowerCase(), rows = sessionsOfTerm().filter(function (s) {
       var st = s.status || "open"; if (SF.status === "off" && !(st === "declined" || st === "cancelled")) return false; if (SF.status !== "all" && SF.status !== "off" && st !== SF.status) return false;
@@ -237,7 +268,7 @@
         '<td>' + pillSel("status", "session", s.status || "open", STATUS) + '</td>' +
         '<td>' + (s.chair ? '<span class="avatar w-7 h-7 text-[10px] ' + (chairM ? avColor(chairM.uid) : "bg-surface-container-high text-on-surface") + '" title="' + esc(chairM ? chairM.name : s.chair) + '">' + esc(s.chair) + '</span>' : '<span class="text-outline">—</span>') + '</td>' +
         '<td>' + pillSel("invitation.status", "inv", inv, INV) + (s.invitation && s.invitation.sentBy ? '<div class="hint mt-1">' + esc(s.invitation.sentBy + " · " + (s.invitation.sentAt || "").slice(0, 10)) + '</div>' : "") + '</td>' +
-        '<td><span class="promo-grid">' + promoCell("newsletter", "N", (pr.newsletter || {}).status || "todo") + promoCell("linkedin", "L", (pr.linkedin || {}).status || "todo") + promoCell("bluesky", "B", (pr.bluesky || {}).status || "todo") + promoCell("website", "W", (pr.website || {}).status || "todo") + '</span>' +
+        '<td><span class="promo-grid">' + promoCell("speaker", "S", speakerSt(s)) + promoCell("newsletter", "N", (pr.newsletter || {}).status || "todo") + promoCell("linkedin", "L", (pr.linkedin || {}).status || "todo") + promoCell("bluesky", "B", (pr.bluesky || {}).status || "todo") + promoCell("website", "W", (pr.website || {}).status || "todo") + '</span>' +
         (s.speaker ? '<button class="btn btn-ghost mt-1" type="button" data-newsletter title="Copies the newsletter draft for this session and opens the team@tada.cool webmail: paste it into a new message to the mailing list"><span class="material-symbols-outlined text-[16px]">outgoing_mail</span>Newsletter</button>' : "") + '</td>' +
         '<td><span class="hint">' + esc(s.updatedBy ? s.updatedBy + " · " + (s.updatedAtLabel || "") : "") + '</span></td>' +
         '<td><button class="btn btn-ghost" type="button" data-open title="Open"><span class="material-symbols-outlined text-[18px]">open_in_full</span></button></td></tr>';
@@ -258,7 +289,7 @@
     var nbtn = e.target.closest("[data-newsletter]");
     if (nbtn) { var sN = sessionById(nbtn.closest("tr").getAttribute("data-id")); if (sN) openNewsletterMail(((sN.promo || {}).newsletter || {}).draft || newsletterText(sN)); return; }
     var pc = e.target.closest("[data-promo]");
-    if (pc) { var id0 = pc.closest("tr").getAttribute("data-id"), k = pc.getAttribute("data-promo"), s0 = sessionById(id0), cur = ((s0.promo || {})[k] || {}).status || "todo", list = k === "website" ? ["todo", "done"] : PROMO, upd = {}; upd["promo." + k + ".status"] = list[(list.indexOf(cur) + 1) % list.length]; patchSession(id0, upd); return; }
+    if (pc) { var id0 = pc.closest("tr").getAttribute("data-id"), k = pc.getAttribute("data-promo"), s0 = sessionById(id0), cur = k === "speaker" ? speakerSt(s0) : ((s0.promo || {})[k] || {}).status || "todo", list = k === "website" || k === "speaker" ? ["todo", "done"] : PROMO, upd = {}; upd["promo." + k + ".status"] = list[(list.indexOf(cur) + 1) % list.length]; patchSession(id0, upd); return; }
     var tr = e.target.closest("tr[data-id]"); if (!tr) return; var s = sessionById(tr.getAttribute("data-id")); if (s) openSession(s);
   });
   $("#new-session").addEventListener("click", function () { openSession(null); });
@@ -273,7 +304,8 @@
     /* Duties list read by the Slack reminder job (.github/scripts/tada_slack_reminders.py): names and initials only, no e-mails, no Zoom links. */
     var nameOf = function (ini) { var m = rosterList().filter(function (x) { return x.initials === ini; })[0]; return m ? m.name : ""; };
     var duties = sessionsOfTerm().filter(function (s) { return s.status !== "cancelled" && s.status !== "declined"; }).map(function (s) { var inv = (s.invitation || {}).sentBy || ""; return { date: s.date, time: s.time || "17:00", term: currentTerm, speaker: s.speaker || "", title: s.title || "", status: s.status || "open", chair: s.chair || "", chairName: s.chair ? nameOf(s.chair) : "", inviter: inv, inviterName: inv ? nameOf(inv) : "" }; });
-    db.collection("public").doc("duties").set({ json: JSON.stringify(duties), term: currentTerm, updatedAt: TS(), updatedBy: me.initials, updatedAtLabel: label }).catch(function (err) { toast("Duties list not saved: " + friendly(err)); });
+    var doneNow = doneFlags(); lastDone = doneNow;
+    db.collection("public").doc("duties").set({ json: JSON.stringify(duties), done: doneNow, term: currentTerm, updatedAt: TS(), updatedBy: me.initials, updatedAtLabel: label }).catch(function (err) { toast("Duties list not saved: " + friendly(err)); });
     publishTeam().catch(function (err) { toast("Team cards not saved: " + friendly(err)); });
     db.collection("public").doc("programme").set({ term: currentTerm, theme: ts.theme || CFG.termTheme || "", sessions: pub, updatedAt: TS(), updatedBy: me.initials, updatedAtLabel: label })
       .then(function () { return db.collection("settings").doc("term-" + currentTerm).set({ publishedAtLabel: label, publishedBy: me.initials }, { merge: true }); })
@@ -311,15 +343,26 @@
     o.invitation = { status: $("#sd-inv-status").value, draft: $("#sd-inv-draft").value, sentBy: (editing && editing.invitation && editing.invitation.sentBy) || "", sentAt: (editing && editing.invitation && editing.invitation.sentAt) || "", to: o.email };
     var det = (editing && editing.detailsMail) || {};
     o.detailsMail = { draft: $("#sd-det-draft").value, sentBy: det.sentBy || "", sentAt: det.sentAt || "" };
+    /* promo.speaker (the S box) is not part of the form: a merge save leaves the stored mark alone */
     o.promo = { newsletter: { status: $("#sd-p-newsletter").value, draft: $("#sd-d-newsletter").value }, linkedin: { status: $("#sd-p-linkedin").value, draft: $("#sd-d-linkedin").value }, bluesky: { status: $("#sd-p-bluesky").value, draft: $("#sd-d-bluesky").value }, website: { status: $("#sd-p-website").value } };
     return o;
   }
   sform.addEventListener("submit", function (e) {
     e.preventDefault(); var o = sessionFromForm(); if (!o.date) { $("#sd-hint").textContent = "Date is required."; sd("date").focus(); return; }
     o.updatedAt = TS(); o.updatedBy = me.initials; o.updatedAtLabel = nowLabel();
+    /* another (or no) speaker in this slot: the e-mail and the announcements made for the previous one do not count, so the
+       boxes go back to todo and the Slack reminders start again. Same e-mail address = a corrected name, nothing is reset. */
+    if (editing && editing.speaker && o.speaker !== editing.speaker && (!o.email || !editing.email || o.email.toLowerCase() !== editing.email.toLowerCase())) {
+      o.promo.speaker = { status: "todo" }; ["newsletter", "linkedin", "bluesky"].forEach(function (k) { o.promo[k].status = "todo"; });
+      o.detailsMail.sentBy = o.detailsMail.sentAt = "";
+    }
     var p;
-    if (editing && editing.id !== o.date) p = db.collection("sessions").doc(o.date).set(Object.assign({ createdAt: TS() }, editing, o, { id: undefined })).then(function () { return db.collection("sessions").doc(editing.id).delete(); });
-    else p = db.collection("sessions").doc(editing ? editing.id : o.date).set(Object.assign(editing ? {} : { createdAt: TS() }, o), { merge: true });
+    if (editing && editing.id !== o.date) {   /* new date = new document: start from the stored session, not from the copy made when the drawer opened */
+      var live = sessionById(editing.id) || editing, data = Object.assign({ createdAt: TS() }, live, o, { id: undefined });
+      data.promo = Object.assign({}, live.promo, o.promo);
+      p = db.collection("sessions").doc(o.date).set(data).then(function () { return db.collection("sessions").doc(editing.id).delete(); });
+    }
+    else p =db.collection("sessions").doc(editing ? editing.id : o.date).set(Object.assign(editing ? {} : { createdAt: TS() }, o), { merge: true });
     p.then(function () { toast("Session saved"); closeDrawer(); }, function (err) { $("#sd-hint").textContent = friendly(err); toast(friendly(err)); });
   });
   $("[data-delete-session]").addEventListener("click", function () { if (!editing || !confirm("Delete this session? This cannot be undone.")) return; db.collection("sessions").doc(editing.id).delete().then(function () { toast("Deleted"); closeDrawer(); }, function (err) { toast(friendly(err)); }); });
@@ -333,8 +376,8 @@
   });
   $("[data-mark-details]").addEventListener("click", function () {
     if (!editing) { toast("Save the session first"); return; }
-    var upd = { zoom: sd("zoom").value.trim(), "detailsMail.sentBy": me.initials, "detailsMail.sentAt": nowLabel(), "detailsMail.draft": $("#sd-det-draft").value };
-    editing.zoom = upd.zoom;
+    var upd = { zoom: sd("zoom").value.trim(), "detailsMail.sentBy": me.initials, "detailsMail.sentAt": nowLabel(), "detailsMail.draft": $("#sd-det-draft").value, "promo.speaker.status": "done" };   /* also marks the S box: stops the Slack reminder */
+    editing.zoom = upd.zoom; editing.promo = Object.assign({}, editing.promo, { speaker: { status: "done" } });
     editing.detailsMail ={ draft: upd["detailsMail.draft"], sentBy: upd["detailsMail.sentBy"], sentAt: upd["detailsMail.sentAt"] };
     patchSession(editing.id, upd).then(function () { $("#sd-det-meta").textContent = "Sent by " + me.initials + " on " + upd["detailsMail.sentAt"]; });
   });

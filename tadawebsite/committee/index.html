@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet" />
 <link rel="stylesheet" href="../assets/tada.css" />
-<link rel="stylesheet" href="committee.css" />
+<link rel="stylesheet" href="committee.css?v=20261002e" />
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="../assets/tw-config.js"></script>
 </head>
@@ -124,7 +124,7 @@
         <div class="overflow-x-auto rounded-lg shadow-sm bg-surface-container-lowest">
           <table class="tbl w-full min-w-[1080px] text-left">
             <thead><tr class="bg-surface-container-low">
-              <th class="w-36">Date &amp; time</th><th>Speaker &amp; talk</th><th class="w-28">Status</th><th class="w-20">Chair</th><th class="w-32">Invitation</th><th class="w-32">Promotion</th><th class="w-32">Audit</th><th class="w-12"></th>
+              <th class="w-36">Date &amp; time</th><th>Speaker &amp; talk</th><th class="w-28">Status</th><th class="w-20">Chair</th><th class="w-32">Invitation</th><th class="w-36" title="S speaker e-mail · N newsletter · L LinkedIn · B Bluesky · W website. Click a box to mark it. Slack repeats its reminder every morning until S (from two weeks before) and N, L, B (from one week before) are done.">Duties <span class="font-normal normal-case text-tertiary">S N L B W</span></th><th class="w-32">Audit</th><th class="w-12"></th>
             </tr></thead>
             <tbody class="divide-y divide-surface-container" id="sessions-body"></tbody>
           </table>
@@ -359,7 +359,7 @@
       </div>
       <div class="block">
         <div class="block-h"><h3>Reminders &amp; social card</h3><button class="btn btn-ghost" type="button" data-card title="Open the social-card generator with this session's data"><span class="material-symbols-outlined text-[16px]">image</span>Social card</button></div>
-        <p class="hint">Put this session's duties in your calendar: chair pings the speaker two weeks before, invitation newsletter one week before, reminder newsletter on the day. Links open Google Calendar prefilled; the .ics is for Outlook or Apple Calendar. “Reminders” in the Series view exports the whole term at once; the same three moments are posted to Slack automatically.</p>
+        <p class="hint">Put this session's duties in your calendar: chair pings the speaker two weeks before, invitation newsletter one week before, reminder newsletter on the day. Links open Google Calendar prefilled; the .ics is for Outlook or Apple Calendar. “Reminders” in the Series view exports the whole term at once; the same three moments are posted to Slack automatically. Slack repeats the first two every morning until the session's boxes in the Series view are marked: S for the speaker e-mail (“Mark as sent” below does that too), N, L and B for the announcement.</p>
         <div class="flex flex-col gap-1" id="sd-reminders"></div>
       </div>
       <div class="block">
@@ -451,6 +451,6 @@
 <script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore-compat.js"></script>
-<script src="committee.js?v=20261002d"></script>
+<script src="committee.js?v=20261002f"></script>
 </body>
 </html>

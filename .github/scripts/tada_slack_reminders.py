@@ -6,10 +6,14 @@ committee app publishes to Firestore (public/duties: dates, speakers, chairs by 
 and posts to the organizers' Slack channel through an incoming webhook (secret SLACK_WEBHOOK_URL).
 
 Schedule, all in Berlin time (the workflow runs at xx:30, the script decides what is due):
-  14 days before, 09:xx  chair pings the speaker (creates the Zoom meeting and puts the link in the e-mail)
-   7 days before, 09:xx  invitation newsletter to the list (with the Zoom link) + LinkedIn / Bluesky posts
-  session day,    09:xx  reminder to the chair + reminder newsletter with the Zoom link + reminder posts
-Standard library only. `--dry-run` prints instead of posting; `--now` and `--duties-file` are for testing.
+  from 14 days before, 09:xx  chair pings the speaker (creates the Zoom meeting and puts the link in the e-mail)
+  from  7 days before, 09:xx  invitation newsletter to the list (with the Zoom link) + LinkedIn / Bluesky posts
+  session day,         09:xx  reminder to the chair + reminder newsletter with the Zoom link + reminder posts
+The first two repeat every morning up to the day before the session until the matching box of the session is
+marked in the committee app (Series view: S = speaker e-mail, N / L / B = newsletter, LinkedIn, Bluesky). The app
+writes those marks to the field `done` of public/duties (a JSON map by date, booleans only) whenever a box changes.
+Standard library only. `--dry-run` prints instead of posting; `--now` and `--duties-file` are for testing
+(a duty in the file may carry "done": {"speaker": true, "newsletter": false, ...}).
 """
 import argparse
 import datetime as dt
@@ -38,8 +42,36 @@ def fetch_duties(url: str) -> list:
             print("No duties list published yet (public/duties missing): press 'Publish to website' in the committee app.")
             return []
         raise
-    raw = doc.get("fields", {}).get("json", {}).get("stringValue", "")
-    return json.loads(raw) if raw else []
+    fields = doc.get("fields", {})
+    raw = fields.get("json", {}).get("stringValue", "")
+    sessions = json.loads(raw) if raw else []
+    # `done` is kept up to date by the app on every click, independently of "Publish to website". It has an entry for
+    # every upcoming session that still exists and is neither cancelled nor declined, so a published date missing from
+    # it was moved, cancelled or deleted since the last Publish: no reminders for it (no box could stop them).
+    # A missing or unreadable field (nobody has opened the current app yet) keeps the published list as it is.
+    raw_done = fields.get("done", {}).get("stringValue", "")
+    try:
+        done = json.loads(raw_done) if raw_done else None
+    except ValueError:
+        done = None
+    if isinstance(done, dict):
+        sessions = [s for s in sessions if isinstance(s, dict) and s.get("date") in done]
+        for s in sessions:
+            if isinstance(done[s["date"]], dict):
+                s["done"] = done[s["date"]]
+    return sessions
+
+
+# Boxes of the Series view that stop a repeating reminder: key in `done` -> (letter on the box, what it stands for)
+PROMO_BOXES = (("newsletter", "N", "newsletter"), ("linkedin", "L", "LinkedIn post"), ("bluesky", "B", "Bluesky post"))
+
+
+def join_words(a: list) -> str:
+    return a[0] if len(a) == 1 else ", ".join(a[:-1]) + " and " + a[-1]
+
+
+def countdown(days: int) -> str:
+    return "tomorrow" if days == 1 else f"in {days} days"
 
 
 def when_label(s: dict) -> str:
@@ -64,26 +96,45 @@ def due_messages(sessions: list, now: dt.datetime) -> list:
         inviter = s.get("inviterName") or s.get("inviter") or ""
         when = when_label(s)
         card = CARD_URL + s["date"]
-        if days == 14 and hour == 9:
+        done = s.get("done") if isinstance(s.get("done"), dict) else {}
+        if hour != 9:
+            continue
+        # 1. E-mail to the speaker: from 14 days before, every morning until the S box is marked.
+        if 1 <= days <= 14 and not done.get("speaker"):
             opener = (f"*{chair_name}*, please write" if chair_name
                       else "No chair is set for this session yet (set it in the committee app). Whoever invited the speaker, please write")
             zoom = " (Zoom links are made by the inviter" + (f", here {inviter}" if inviter else "") + ")"
+            head = (f":envelope: *Two weeks to go: ping the speaker* for the session on {when}." if days == 14
+                    else f":envelope: *Still open: e-mail to the speaker* for the session {countdown(days)} ({when}).")
             out.append(
-                f":envelope: *Two weeks to go: ping the speaker* for the session on {when}.\n"
+                f"{head}\n"
                 f"{opener} to *{who}* {title}: confirm date and time, the 60-minute format "
                 f"(20–30-minute talk, then discussion), ask for the final title, abstract, portrait and links, "
                 f"and *create the Zoom meeting yourself and put the link in the e-mail*{zoom}. "
                 f"Draft with a calendar invite: open the session in the committee app ({APP_URL}), enter the Zoom link, "
-                f"then “Session details e-mail” → Generate."
+                f"then “Session details e-mail” → Generate.\n"
+                f"_To stop this reminder, click the *S* box (speaker e-mail) for the session in the committee app._"
             )
-        elif days == 7 and hour == 9:
+        # 2. Announcement: from 7 days before, every morning until the N, L and B boxes are marked done.
+        still = [(letter, label) for key, letter, label in PROMO_BOXES if not done.get(key)]
+        if 1 <= days <= 7 and still:
+            what = join_words([label for _, label in still])
+            boxes = join_words([f"*{letter}* ({label})" for letter, label in still])
+            head = (f":loudspeaker: *One week to go: invitation newsletter* for *{who}* {title} on {when}."
+                    if days == 7 and len(still) == len(PROMO_BOXES)
+                    else f":loudspeaker: *Still open: {what}* for *{who}* {title}, session {countdown(days)} ({when}).")
+            posts = [label for key, _, label in PROMO_BOXES if key != "newsletter" and not done.get(key)]
+            todo = ("Send the newsletter to the list *with the Zoom link in it*"
+                    + (f", then the {join_words(posts)}" if posts else "") + ". "
+                    if not done.get("newsletter") else f"The newsletter is marked done; still to do: the {join_words(posts)}. ")
             out.append(
-                f":loudspeaker: *One week to go: invitation newsletter* for *{who}* {title} on {when}.\n"
-                f"Send the newsletter to the list *with the Zoom link in it*, then the LinkedIn and Bluesky posts. "
+                f"{head}\n{todo}"
                 f"Drafts: open the session in the committee app ({APP_URL}) and click Generate / Newsletter. "
-                f"Social card with photo: {card}"
+                f"Social card with photo: {card}\n"
+                f"_To stop this reminder, click the {boxes} box{'es' if len(still) > 1 else ''} for the session "
+                f"in the committee app until {'they show' if len(still) > 1 else 'it shows'} done (or scheduled)._"
             )
-        elif days == 0 and hour == 9:
+        if days == 0:
             out.append(
                 f":calendar: *Today at {s.get('time') or '17:00'} Berlin time: {who}* {title}.\n"
                 f"Chair *{chair}*: you host today. Everyone: reminder newsletter with the Zoom link to the subscribers, "

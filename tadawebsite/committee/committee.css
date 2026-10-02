@@ -30,7 +30,7 @@
 .filter-chip.is-on { background: #0050a7; color: #fff; }
 
 /* promotion mini-grid */
-.promo-grid { display: inline-grid; grid-template-columns: repeat(4, 22px); gap: 3px; }
+.promo-grid { display: inline-grid; grid-template-columns: repeat(5, 22px); gap: 3px; }
 .promo-cell { width: 22px; height: 22px; border-radius: 4px; border: 1px solid #cbd5e1; background: #f1f5f9; color: #475569; font: 600 9px/20px "JetBrains Mono", ui-monospace, monospace; text-align: center; cursor: pointer; user-select: none; }
 .promo-cell.draft { background: #fffbeb; border-color: #fde68a; color: #b45309; }
 .promo-cell.scheduled { background: #f0f9ff; border-color: #bae6fd; color: #0369a1; }

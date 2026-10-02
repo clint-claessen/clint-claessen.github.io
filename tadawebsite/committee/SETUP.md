@@ -79,7 +79,16 @@ Series view refreshes the same document. Portraits: put a square JPEG in `assets
   name; no e-mails, no Zoom links) and posts to the organizers' Slack channel, Berlin time, at 09:30: 14 days
   before (chair pings the speaker; the inviter creates the Zoom meeting and puts the link in the e-mail), 7 days
   before (invitation newsletter with the Zoom link, LinkedIn, Bluesky) and on the session day (chair hosts,
-  reminder newsletter with the Zoom link, reminder posts). One-time setup: (1) in Slack, https://api.slack.com/apps → *Create New App* → *From
+  reminder newsletter with the Zoom link, reminder posts). The first two **repeat every morning** up to the day
+  before the session until the session's boxes in the Series view (column *Duties*) are marked: **S** for the
+  speaker e-mail (one click, or *Mark as sent* under *Session details e-mail*), **N**, **L**, **B** for newsletter,
+  LinkedIn and Bluesky (click until the box shows done or scheduled). Each message ends with the box that stops
+  it. The app writes the marks to `public/duties` (field `done`: dates and yes/no only) at every click, so no
+  *Publish to website* is needed for that; names, dates and chairs still come from the last publish. A session that
+  was moved, cancelled or deleted after the last publish gets no reminders until you publish again, and a new speaker
+  in an existing slot resets that slot's boxes. If the reminders ever stop altogether, look at *Actions → TaDa Slack
+  reminders* on GitHub: GitHub switches scheduled jobs off after 60 days without a commit in the repository (it
+  e-mails the owner first); *Enable workflow* turns them back on. One-time setup: (1) in Slack, https://api.slack.com/apps → *Create New App* → *From
   scratch* → name "TaDa reminders", workspace tadapolisci → *Incoming Webhooks* → activate → *Add New Webhook to
   Workspace* → pick the organizers' channel → copy the URL; (2) on GitHub, repository *Settings → Secrets and
   variables → Actions → New repository secret* named `SLACK_WEBHOOK_URL` with that URL; (3) *Actions → TaDa Slack
