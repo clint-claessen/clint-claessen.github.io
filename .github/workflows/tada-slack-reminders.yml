@@ -1,8 +1,12 @@
 name: TaDa Slack reminders
 
-# Hourly; the script works in Berlin time and posts only what is due that hour
-# (chair pings the speaker from 14 days before, invitation newsletter from 7 days before, both repeated every
-# morning until the matching box is marked in the committee app; session-day reminder).
+# Hourly. One round of reminders per day: the first scheduled run that starts at or after 09:00 Berlin time (and
+# before 13:00) posts it and marks the day in the Actions cache, so a late GitHub run does not skip a day and a
+# second run in the same morning does not post twice. Every other run only reports what is due (see the notice on
+# the run page); so does a manual run, unless "Post a test message" is ticked. If the Actions cache itself fails,
+# each run in the window posts again, which is why the window is short.
+# Content of a round: chair pings the speaker from 14 days before, invitation newsletter from 7 days before (both
+# repeated daily until the matching box is marked in the committee app), session-day reminder.
 # Needs the repository secret SLACK_WEBHOOK_URL (Slack incoming webhook for the organizers' channel).
 on:
   schedule:
@@ -10,20 +14,24 @@ on:
   workflow_dispatch:
     inputs:
       test:
-        description: "Post a test message to the channel"
+        description: "Post a test message to the channel (it also names the next reminders)"
         type: boolean
         default: false
       now:
-        description: "Pretend it is this Berlin date-time (YYYY-MM-DDTHH:MM), to preview a day's reminders"
+        description: "Preview only: pretend it is this Berlin date-time (YYYY-MM-DDTHH:MM)"
         required: false
         default: ""
       dry_run:
-        description: "Print instead of posting"
+        description: "Print the test message instead of posting it"
         type: boolean
         default: false
 
 permissions:
   contents: read
+
+concurrency:
+  group: tada-slack-reminders
+  cancel-in-progress: false
 
 jobs:
   remind:
@@ -33,15 +41,49 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Berlin date and posting window
+        id: when
+        run: |
+          H=$(TZ=Europe/Berlin date +%-H)
+          echo "date=$(TZ=Europe/Berlin date +%F)" >> "$GITHUB_OUTPUT"
+          if [ "$H" -ge 9 ] && [ "$H" -lt 13 ]; then echo "open=true" >> "$GITHUB_OUTPUT"; else echo "open=false" >> "$GITHUB_OUTPUT"; fi
+      - name: Was today's round posted already?
+        id: round
+        if: github.event_name == 'schedule' && steps.when.outputs.open == 'true'
+        uses: actions/cache@v4
+        with:
+          path: .tada-round
+          key: tada-round-${{ steps.when.outputs.date }}
       - name: Post due reminders
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          EVENT: ${{ github.event_name }}
+          OPEN: ${{ steps.when.outputs.open }}
+          CACHE_HIT: ${{ steps.round.outputs.cache-hit }}
           TEST: ${{ inputs.test }}
           NOW: ${{ inputs.now }}
           DRY_RUN: ${{ inputs.dry_run }}
         run: |
           ARGS=""
-          if [ "$TEST" = "true" ]; then ARGS="$ARGS --test"; fi
-          if [ -n "$NOW" ]; then ARGS="$ARGS --now $NOW"; fi
-          if [ "$DRY_RUN" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+          POSTING=false
+          if [ "$EVENT" = "schedule" ]; then
+            # the day's round goes out once; all other scheduled runs only report
+            if [ "$OPEN" != "true" ]; then
+              ARGS="--dry-run"
+              export REPORT_WHY="outside 09:00-12:59 Berlin time"
+            elif [ "$CACHE_HIT" = "true" ]; then
+              ARGS="--dry-run"
+              export REPORT_WHY="today's round was posted by an earlier run"
+            else
+              POSTING=true
+            fi
+          else
+            # manual runs never post the round (the scheduled run does, and marks the day); a ticked test posts the test message
+            export REPORT_WHY="manual run"
+            if [ "$TEST" = "true" ]; then ARGS="$ARGS --test"; fi
+            if [ -n "$NOW" ]; then ARGS="$ARGS --now $NOW"; fi
+            if [ "$DRY_RUN" = "true" ] || [ "$TEST" != "true" ]; then ARGS="$ARGS --dry-run"; fi
+          fi
           python .github/scripts/tada_slack_reminders.py $ARGS
+          # reached only when the script succeeded: this folder is what the cache step saves as "done for today"
+          if [ "$POSTING" = "true" ]; then mkdir -p .tada-round && date -u +%FT%TZ > .tada-round/posted-at; fi

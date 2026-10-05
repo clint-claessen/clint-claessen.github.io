@@ -117,6 +117,8 @@
     lastDone = undefined; sessionsLoaded = false;
     unsub.push(db.collection("public").doc("duties").onSnapshot(function (d) {
       var v = (d.exists && d.data().done) || "";
+      try { pubDuties = d.exists && d.data().json ? JSON.parse(d.data().json) : []; } catch (e) { pubDuties = null; }
+      slackHint();
       /* first read, or the field was wiped (a Publish from a tab still running an older script): write the marks back */
       if (lastDone === undefined || !v) { lastDone = v; syncDone(); }
     }, function () { if (lastDone === undefined) { lastDone = ""; syncDone(); } }));
@@ -231,7 +233,51 @@
   function pillSel(field, kind, value, opts) { return '<select class="pill-select ' + pillClass(kind, value) + '" data-field="' + field + '">' + opts.map(function (o) { return '<option value="' + o + '"' + (o === value ? " selected" : "") + '>' + o + '</option>'; }).join("") + '</select>'; }
   var PROMO = ["todo", "draft", "scheduled", "done"], INV = ["none", "draft", "sent", "replied", "confirmed", "declined"], STATUS = ["open", "invited", "confirmed", "declined", "done", "cancelled"];
   var PROMO_TITLE = { speaker: "speaker e-mail (session details, 2 weeks before)", newsletter: "newsletter", linkedin: "LinkedIn post", bluesky: "Bluesky post", website: "website" };
-  function promoCell(k, letter, st) { return '<span class="promo-cell ' + esc(st) + '" data-promo="' + k + '" title="' + esc(PROMO_TITLE[k] || k) + ": " + esc(st) + (k === "website" ? "" : " · Slack reminds every morning until this is done") + '">' + letter + '</span>'; }
+  /* Slack windows: speaker e-mail from 14 days before, announcements from 7 days before, both up to the day before the session */
+  function slackStart(k, s) { return addDays(s.date, k === "speaker" ? -14 : -7); }
+  function slackOpen(k, s) { var st = k === "speaker" ? speakerSt(s) : (((s.promo || {})[k]) || {}).status; return !(st === "done" || (k !== "speaker" && st === "scheduled")); }
+  function slackActive(s) { return !!(s.date && s.speaker && s.status !== "cancelled" && s.status !== "declined"); }
+  function slackNote(k, s) {
+    if (k === "website" || !slackActive(s) || s.date <= todayISO()) return "";
+    if (!slackOpen(k, s)) return " · no Slack reminder";
+    var from = slackStart(k, s);
+    return from > todayISO() ? " · Slack reminds every morning from " + fmtShort(from) + " until this is done" : " · Slack reminds every morning until this is done";
+  }
+  function promoCell(k, letter, st, s) { return '<span class="promo-cell ' + esc(st) + '" data-promo="' + k + '" title="' + esc(PROMO_TITLE[k] || k) + ": " + esc(st) + esc(slackNote(k, s)) + '">' + letter + '</span>'; }
+  /* One line under the filters: when Slack posts next and about what, so that a quiet channel is not a riddle. Works from the
+     sessions as they are now; pubDuties (the list the Slack job reads, written by "Publish to website") tells which of them it knows. */
+  var pubDuties = null;
+  function slackHint() {
+    var el = $("#slack-hint"); if (!el) return;
+    /* Berlin clock, like the job. The day's round goes out with the first run at or after 09:00, in practice between 09:05 and
+       10:15, so today still counts until 11:00. */
+    var bp = {}; new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Berlin", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", hourCycle: "h23" }).formatToParts(new Date()).forEach(function (x) { bp[x.type] = x.value; });
+    var today = bp.year + "-" + bp.month + "-" + bp.day, bh = +bp.hour, first = bh < 11 ? today : addDays(today, 1), best = null, unpub = 0, stale = 0;
+    sessions.forEach(function (s) {
+      var pd = pubDuties && pubDuties.filter(function (d) { return d && d.date === s.date && d.speaker; })[0];
+      if (pd && s.date >= first && s.status !== "cancelled" && s.status !== "declined" && pd.speaker !== (s.speaker || "")) stale++;
+      if (!slackActive(s) || s.date < first) return;
+      if (pubDuties && !pd) { unpub++; return; }
+      var c = [];
+      ["speaker", "newsletter", "linkedin", "bluesky"].forEach(function (k) {
+        if (!slackOpen(k, s)) return; var d = slackStart(k, s); if (d < first) d = first;
+        if (d < s.date) c.push([d, k === "speaker" ? "speaker e-mail" : "announcement"]);
+      });
+      c.push([s.date, "session day"]);
+      c.forEach(function (x) {
+        if (best && x[0] > best.date) return;
+        if (!best || x[0] < best.date) best = { date: x[0], by: [] };
+        var g = best.by.filter(function (b) { return b.s === s; })[0];
+        if (!g) best.by.push(g = { s: s, what: [] });
+        if (g.what.indexOf(x[1]) < 0) g.what.push(x[1]);
+      });
+    });
+    el.textContent = (best ? "Next Slack reminder: " + fmtShort(best.date) + (best.date === today ? (bh < 9 ? " (today)" : " (today, unless already posted)") : "") + ", between 09:00 and 10:15 · " +
+        best.by.map(function (g) { return g.what.join(" + ") + " · " + g.s.speaker + " (" + fmtShort(g.s.date) + ")"; }).join("; ")
+      : "No Slack reminder is due for the sessions on this list.") +
+      (unpub ? " · " + unpub + " session" + (unpub > 1 ? "s are" : " is") + " not in the published list yet: press “Publish to website” so Slack knows about " + (unpub > 1 ? "them" : "it") + "." : "") +
+      (stale ? " · " + stale + " session" + (stale > 1 ? "s have" : " has") + " a different speaker (or none) than the published list: Slack names the previous one until you press “Publish to website”." : "");
+  }
   /* What stops the repeating Slack reminders (.github/scripts/tada_slack_reminders.py): per upcoming session date, whether the
      speaker e-mail and the three announcements are dealt with. Booleans only; kept in public/duties.done and rewritten whenever
      a box changes, so a click takes effect without "Publish to website". */
@@ -268,11 +314,12 @@
         '<td>' + pillSel("status", "session", s.status || "open", STATUS) + '</td>' +
         '<td>' + (s.chair ? '<span class="avatar w-7 h-7 text-[10px] ' + (chairM ? avColor(chairM.uid) : "bg-surface-container-high text-on-surface") + '" title="' + esc(chairM ? chairM.name : s.chair) + '">' + esc(s.chair) + '</span>' : '<span class="text-outline">—</span>') + '</td>' +
         '<td>' + pillSel("invitation.status", "inv", inv, INV) + (s.invitation && s.invitation.sentBy ? '<div class="hint mt-1">' + esc(s.invitation.sentBy + " · " + (s.invitation.sentAt || "").slice(0, 10)) + '</div>' : "") + '</td>' +
-        '<td><span class="promo-grid">' + promoCell("speaker", "S", speakerSt(s)) + promoCell("newsletter", "N", (pr.newsletter || {}).status || "todo") + promoCell("linkedin", "L", (pr.linkedin || {}).status || "todo") + promoCell("bluesky", "B", (pr.bluesky || {}).status || "todo") + promoCell("website", "W", (pr.website || {}).status || "todo") + '</span>' +
+        '<td><span class="promo-grid">' + promoCell("speaker", "S", speakerSt(s), s) + promoCell("newsletter", "N", (pr.newsletter || {}).status || "todo", s) + promoCell("linkedin", "L", (pr.linkedin || {}).status || "todo", s) + promoCell("bluesky", "B", (pr.bluesky || {}).status || "todo", s) + promoCell("website", "W", (pr.website || {}).status || "todo", s) + '</span>' +
         (s.speaker ? '<button class="btn btn-ghost mt-1" type="button" data-newsletter title="Copies the newsletter draft for this session and opens the team@tada.cool webmail: paste it into a new message to the mailing list"><span class="material-symbols-outlined text-[16px]">outgoing_mail</span>Newsletter</button>' : "") + '</td>' +
         '<td><span class="hint">' + esc(s.updatedBy ? s.updatedBy + " · " + (s.updatedAtLabel || "") : "") + '</span></td>' +
         '<td><button class="btn btn-ghost" type="button" data-open title="Open"><span class="material-symbols-outlined text-[18px]">open_in_full</span></button></td></tr>';
     }).join("");
+    slackHint();
   }
   $("#status-chips").addEventListener("click", function (e) { var b = e.target.closest("[data-status]"); if (!b) return; SF.status = b.getAttribute("data-status"); $$(".filter-chip", this).forEach(function (x) { x.classList.toggle("is-on", x === b); }); renderSessions(); });
   $("#session-search").addEventListener("input", function () { SF.q = this.value.trim(); renderSessions(); });

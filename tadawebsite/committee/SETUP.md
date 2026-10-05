@@ -76,7 +76,10 @@ Series view refreshes the same document. Portraits: put a square JPEG in `assets
 - **Slack reminders (automatic)**: a GitHub Actions job in the site repository
   (`.github/workflows/tada-slack-reminders.yml`, script `.github/scripts/tada_slack_reminders.py`) runs every hour,
   reads the duties list that *Publish to website* writes to Firestore (`public/duties`: dates, speakers, chairs by
-  name; no e-mails, no Zoom links) and posts to the organizers' Slack channel, Berlin time, at 09:30: 14 days
+  name; no e-mails, no Zoom links) and posts one round a day to the organizers' Slack channel: with the first run
+  that starts at or after 09:00 Berlin time (usually between 09:00 and 10:15; GitHub starts scheduled jobs late, and
+  the job remembers the day, so a late run does not skip a day and a second run does not post twice; a round that
+  could not go out before 13:00 is skipped). The round is one Slack post. It holds: 14 days
   before (chair pings the speaker; the inviter creates the Zoom meeting and puts the link in the e-mail), 7 days
   before (invitation newsletter with the Zoom link, LinkedIn, Bluesky) and on the session day (chair hosts,
   reminder newsletter with the Zoom link, reminder posts). The first two **repeat every morning** up to the day
@@ -86,9 +89,16 @@ Series view refreshes the same document. Portraits: put a square JPEG in `assets
   it. The app writes the marks to `public/duties` (field `done`: dates and yes/no only) at every click, so no
   *Publish to website* is needed for that; names, dates and chairs still come from the last publish. A session that
   was moved, cancelled or deleted after the last publish gets no reminders until you publish again, and a new speaker
-  in an existing slot resets that slot's boxes. If the reminders ever stop altogether, look at *Actions → TaDa Slack
-  reminders* on GitHub: GitHub switches scheduled jobs off after 60 days without a commit in the repository (it
-  e-mails the owner first); *Enable workflow* turns them back on. One-time setup: (1) in Slack, https://api.slack.com/apps → *Create New App* → *From
+  in an existing slot resets that slot's boxes. **Is it working?** The Series view shows, under the filters, when
+  Slack posts next and about what; hovering a box says from which day it is reminded about. A quiet channel is
+  normal while every open box is still outside its window (S: 14 days, N/L/B: 7 days before). To check the whole
+  chain, run *Actions → TaDa Slack reminders → Run workflow* with "Post a test message" ticked: the message arrives
+  in the channel and names the next reminders (a manual run without that tick only reports and posts nothing).
+  Every run also leaves a notice on its page: reminders in today's round, the next round, webhook secret present or
+  missing, and, for every run except the one that posts the day's round, "report only" with the reason. A round that
+  has something to post but no working webhook turns red and GitHub e-mails the repository owner. If the reminders stop altogether, look at the same page:
+  GitHub switches scheduled jobs off after 60 days without a commit in the repository (it e-mails the owner
+  first); *Enable workflow* turns them back on. One-time setup: (1) in Slack, https://api.slack.com/apps → *Create New App* → *From
   scratch* → name "TaDa reminders", workspace tadapolisci → *Incoming Webhooks* → activate → *Add New Webhook to
   Workspace* → pick the organizers' channel → copy the URL; (2) on GitHub, repository *Settings → Secrets and
   variables → Actions → New repository secret* named `SLACK_WEBHOOK_URL` with that URL; (3) *Actions → TaDa Slack

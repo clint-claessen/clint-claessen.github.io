@@ -5,13 +5,17 @@ Runs hourly from GitHub Actions (see .github/workflows/tada-slack-reminders.yml)
 committee app publishes to Firestore (public/duties: dates, speakers, chairs by name - no e-mails, no Zoom links)
 and posts to the organizers' Slack channel through an incoming webhook (secret SLACK_WEBHOOK_URL).
 
-Schedule, all in Berlin time (the workflow runs at xx:30, the script decides what is due):
-  from 14 days before, 09:xx  chair pings the speaker (creates the Zoom meeting and puts the link in the e-mail)
-  from  7 days before, 09:xx  invitation newsletter to the list (with the Zoom link) + LinkedIn / Bluesky posts
-  session day,         09:xx  reminder to the chair + reminder newsletter with the Zoom link + reminder posts
-The first two repeat every morning up to the day before the session until the matching box of the session is
+One round of reminders per day, as one Slack post. The workflow posts it with the first scheduled run that starts at
+or after 09:00 Berlin time (and before 13:00) and remembers the day, so a late or doubled GitHub run neither skips a
+day nor posts twice; every other run only reports (`--dry-run`). What a round contains, by Berlin date:
+  from 14 days before  chair pings the speaker (creates the Zoom meeting and puts the link in the e-mail)
+  from  7 days before  invitation newsletter to the list (with the Zoom link) + LinkedIn / Bluesky posts
+  session day          reminder to the chair + reminder newsletter with the Zoom link + reminder posts
+The first two repeat every day up to the day before the session until the matching box of the session is
 marked in the committee app (Series view: S = speaker e-mail, N / L / B = newsletter, LinkedIn, Bluesky). The app
 writes those marks to the field `done` of public/duties (a JSON map by date, booleans only) whenever a box changes.
+Every run leaves a notice on the run page (counts and dates only, the page is public): what was due, when the next
+reminders are due, and whether the webhook secret is there. A round that has something to post but no webhook fails.
 Standard library only. `--dry-run` prints instead of posting; `--now` and `--duties-file` are for testing
 (a duty in the file may carry "done": {"speaker": true, "newsletter": false, ...}).
 """
@@ -79,8 +83,18 @@ def when_label(s: dict) -> str:
     return f"{d.strftime('%A %d %B %Y')}, {s.get('time') or '17:00'} Berlin time"
 
 
+def session_started(s: dict, now: dt.datetime) -> bool:
+    """True once today's session has begun (a session-day reminder after that would be noise)."""
+    try:
+        h, m = (s.get("time") or "17:00").split(":")[:2]
+        return (now.hour, now.minute) >= (int(h), int(m))
+    except ValueError:
+        return False
+
+
 def due_messages(sessions: list, now: dt.datetime) -> list:
-    today, hour = now.date(), now.hour
+    """Today's round. When it is posted is the workflow's business (once a day, see the module text)."""
+    today = now.date()
     out = []
     for s in sessions:
         if s.get("status") in ("cancelled", "declined") or not s.get("speaker"):
@@ -97,8 +111,6 @@ def due_messages(sessions: list, now: dt.datetime) -> list:
         when = when_label(s)
         card = CARD_URL + s["date"]
         done = s.get("done") if isinstance(s.get("done"), dict) else {}
-        if hour != 9:
-            continue
         # 1. E-mail to the speaker: from 14 days before, every morning until the S box is marked.
         if 1 <= days <= 14 and not done.get("speaker"):
             opener = (f"*{chair_name}*, please write" if chair_name
@@ -134,7 +146,7 @@ def due_messages(sessions: list, now: dt.datetime) -> list:
                 f"_To stop this reminder, click the {boxes} box{'es' if len(still) > 1 else ''} for the session "
                 f"in the committee app until {'they show' if len(still) > 1 else 'it shows'} done (or scheduled)._"
             )
-        if days == 0:
+        if days == 0 and not session_started(s, now):
             out.append(
                 f":calendar: *Today at {s.get('time') or '17:00'} Berlin time: {who}* {title}.\n"
                 f"Chair *{chair}*: you host today. Everyone: reminder newsletter with the Zoom link to the subscribers, "
@@ -143,12 +155,49 @@ def due_messages(sessions: list, now: dt.datetime) -> list:
     return out
 
 
+def next_round(sessions: list, now: dt.datetime, horizon: int = 60):
+    """The first later day whose morning round has something in it: (date, messages), or None."""
+    for d in range(1, horizon + 1):
+        day = (now + dt.timedelta(days=d)).replace(hour=9, minute=30, second=0, microsecond=0)
+        msgs = due_messages(sessions, day)
+        if msgs:
+            return day.date(), msgs
+    return None
+
+
+def headline(msg: str) -> str:
+    """First line of a reminder without the leading emoji code and the bold marks, for the test message."""
+    first = msg.split("\n", 1)[0]
+    if first.startswith(":") and ": " in first[1:]:
+        first = first.split(" ", 1)[1]
+    return first.replace("*", "").rstrip(".")
+
+
+def annotate(level: str, text: str) -> None:
+    """A line for the log; on GitHub Actions also an annotation on the run page (which is public: no names here)."""
+    if os.environ.get("GITHUB_ACTIONS") == "true":
+        print(f"::{level} title=TaDa Slack reminders::{text}")
+    else:
+        print(f"[{level}] {text}", file=sys.stderr if level != "notice" else sys.stdout)
+
+
 def post(webhook: str, text: str) -> None:
     body = json.dumps({"text": text}).encode("utf-8")
-    req = urllib.request.Request(webhook, data=body, headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        if r.status != 200:
-            raise RuntimeError(f"Slack answered {r.status}")
+    try:
+        req = urllib.request.Request(webhook, data=body, headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            if r.status != 200:
+                raise RuntimeError(f"Slack answered {r.status}")
+    except urllib.error.HTTPError as e:
+        # 403/404/410 mean the webhook was revoked or its channel or app is gone. Never echo the URL itself.
+        annotate("error", f"Slack refused the message (HTTP {e.code}). If the webhook was removed, create a new one "
+                          "and store it as the repository secret SLACK_WEBHOOK_URL (see committee/SETUP.md).")
+        raise SystemExit(1)
+    except Exception as e:  # InvalidURL / ValueError quote the URL in their text: keep it out of the log
+        annotate("error", f"Posting to Slack failed ({type(e).__name__}; details withheld because they can contain the "
+                          "webhook URL). If it is InvalidURL or ValueError, store SLACK_WEBHOOK_URL again as the bare "
+                          "webhook URL on one line, without spaces.")
+        raise SystemExit(1)
 
 
 def main() -> int:
@@ -161,29 +210,61 @@ def main() -> int:
 
     webhook = os.environ.get("SLACK_WEBHOOK_URL", "").strip()
     now = dt.datetime.fromisoformat(args.now).replace(tzinfo=BERLIN) if args.now else dt.datetime.now(BERLIN)
+    no_hook = "SLACK_WEBHOOK_URL is not set: add the Slack webhook as a repository secret (see committee/SETUP.md)."
+
+    def load() -> list:
+        if args.duties_file:
+            with open(args.duties_file, encoding="utf-8") as f:
+                return json.load(f)
+        return fetch_duties(DUTIES_URL)
 
     if args.test:
         msg = f":white_check_mark: TaDa reminders are connected to this channel (test message, {now:%Y-%m-%d %H:%M} Berlin time)."
-        if args.dry_run or not webhook:
+        try:
+            sessions = load()
+            # until 11:00 today's own round may still be on its way (GitHub starts the morning run late)
+            todays = due_messages(sessions, now.replace(hour=9, minute=30)) if now.hour < 11 else []
+            nxt = (now.date(), todays) if todays else next_round(sessions, now)
+            if nxt:
+                today_note = "" if nxt[0] != now.date() else " (today" + (", unless already posted" if now.hour >= 9 else "") + ")"
+                msg += (f"\nNext reminders: {nxt[0]:%A} {nxt[0].day} {nxt[0]:%B}{today_note}, between 09:00 and 10:15 – "
+                        + join_words([headline(m) for m in nxt[1]]) + ".")
+            else:
+                msg += "\nNo reminders are due in the next 60 days."
+        except Exception as e:  # the test is about the connection; the outlook is a bonus
+            msg += f"\n(The duties list could not be read: {e})"
+        if args.dry_run:
             print(msg)
+        elif not webhook:
+            annotate("error", no_hook)
+            return 1
         else:
             post(webhook, msg)
         return 0
 
-    if args.duties_file:
-        with open(args.duties_file, encoding="utf-8") as f:
-            sessions = json.load(f)
-    else:
-        sessions = fetch_duties(DUTIES_URL)
+    sessions = load()
     msgs = due_messages(sessions, now)
-    print(f"{now:%Y-%m-%d %H:%M} Berlin: {len(sessions)} sessions in the duties list, {len(msgs)} reminder(s) due")
-    for m in msgs:
-        if args.dry_run or not webhook:
+    nxt = next_round(sessions, now)
+    # REPORT_WHY comes from the workflow: why this run only reports (outside the window, round already posted, manual run)
+    mode = "posting" if not args.dry_run else "report only" + (f", {os.environ['REPORT_WHY']}" if os.environ.get("REPORT_WHY") else "")
+    print(f"{now:%Y-%m-%d %H:%M} Berlin ({mode}): {len(sessions)} sessions in the duties list, {len(msgs)} reminder(s) in today's round")
+    # Shown on the public run page: counts and dates only, no names.
+    annotate("notice", f"{now:%Y-%m-%d %H:%M} Berlin, {mode}: {len(msgs)} reminder(s) in today's round; "
+             + (f"next round with reminders after today: {nxt[0]:%Y-%m-%d} ({len(nxt[1])})" if nxt else "none in the next 60 days")
+             + f"; webhook secret {'present' if webhook else 'MISSING'}.")
+    if not webhook:
+        annotate("warning", no_hook)
+    if args.dry_run:
+        for m in msgs:
             print("---\n" + m)
-        else:
-            post(webhook, m)
-    if msgs and not webhook and not args.dry_run:
-        print("SLACK_WEBHOOK_URL is not set: nothing was posted (see committee/SETUP.md).", file=sys.stderr)
+        return 0
+    if msgs and not webhook:
+        annotate("error", f"{len(msgs)} reminder(s) are due but cannot be posted. " + no_hook)
+        return 1
+    if msgs:
+        # One Slack post per round: it goes out completely or not at all, so the retry of a failed run (the workflow
+        # marks the day as done only after a successful run) never repeats half a round.
+        post(webhook, "\n\n".join(msgs))
     return 0
 
 
