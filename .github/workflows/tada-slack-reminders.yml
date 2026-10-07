@@ -3,7 +3,7 @@ name: TaDa Slack reminders
 # Hourly. One round of reminders per day: the first scheduled run that starts at or after 09:00 Berlin time (and
 # before 20:00) posts it and marks the day in the Actions cache, so a late GitHub run does not skip a day and a
 # second run in the same morning does not post twice. Every other run only reports what is due (see the notice on
-# the run page); so does a manual run, unless "Post a test message" is ticked. A round that could not go out in the
+# the run page); so does a manual run, unless "Post a test message" or "Post today's round now" is ticked. A round that could not go out in the
 # morning (for example because the webhook secret was missing) is caught up by the next run that can, until 20:00.
 # Content of a round: chair pings the speaker from 14 days before, invitation newsletter from 7 days before (both
 # repeated daily until the matching box is marked in the committee app), session-day reminder.
@@ -13,6 +13,10 @@ on:
     - cron: "30 * * * *"
   workflow_dispatch:
     inputs:
+      round:
+        description: "Post today's round now, if it has not gone out yet (same once-a-day check as the hourly run)"
+        type: boolean
+        default: false
       test:
         description: "Post a test message to the channel (it also names the next reminders)"
         type: boolean
@@ -49,7 +53,7 @@ jobs:
           if [ "$H" -ge 9 ] && [ "$H" -lt 20 ]; then echo "open=true" >> "$GITHUB_OUTPUT"; else echo "open=false" >> "$GITHUB_OUTPUT"; fi
       - name: Was today's round posted already?
         id: round
-        if: github.event_name == 'schedule' && steps.when.outputs.open == 'true'
+        if: (github.event_name == 'schedule' || inputs.round) && steps.when.outputs.open == 'true'
         uses: actions/cache@v4
         with:
           path: .tada-round
@@ -58,6 +62,7 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           EVENT: ${{ github.event_name }}
+          ROUND: ${{ inputs.round }}
           OPEN: ${{ steps.when.outputs.open }}
           CACHE_HIT: ${{ steps.round.outputs.cache-hit }}
           TEST: ${{ inputs.test }}
@@ -66,7 +71,7 @@ jobs:
         run: |
           ARGS=""
           POSTING=false
-          if [ "$EVENT" = "schedule" ]; then
+          if [ "$EVENT" = "schedule" ] || [ "$ROUND" = "true" ]; then
             # the day's round goes out once; all other scheduled runs only report
             if [ "$OPEN" != "true" ]; then
               ARGS="--dry-run"
