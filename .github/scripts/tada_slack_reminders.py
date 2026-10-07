@@ -6,7 +6,7 @@ committee app publishes to Firestore (public/duties: dates, speakers, chairs by 
 and posts to the organizers' Slack channel through an incoming webhook (secret SLACK_WEBHOOK_URL).
 
 One round of reminders per day, as one Slack post. The workflow posts it with the first scheduled run that starts at
-or after 09:00 Berlin time (and before 13:00) and remembers the day, so a late or doubled GitHub run neither skips a
+or after 09:00 Berlin time (and before 20:00) and remembers the day, so a late or doubled GitHub run neither skips a
 day nor posts twice; every other run only reports (`--dry-run`). What a round contains, by Berlin date:
   from 14 days before  chair pings the speaker (creates the Zoom meeting and puts the link in the e-mail)
   from  7 days before  invitation newsletter to the list (with the Zoom link) + LinkedIn / Bluesky posts

@@ -79,7 +79,7 @@ Series view refreshes the same document. Portraits: put a square JPEG in `assets
   name; no e-mails, no Zoom links) and posts one round a day to the organizers' Slack channel: with the first run
   that starts at or after 09:00 Berlin time (usually between 09:00 and 10:15; GitHub starts scheduled jobs late, and
   the job remembers the day, so a late run does not skip a day and a second run does not post twice; a round that
-  could not go out before 13:00 is skipped). The round is one Slack post. It holds: 14 days
+  could not go out in the morning, e.g. while the webhook secret was missing, is caught up by the next run until 20:00). The round is one Slack post. It holds: 14 days
   before (chair pings the speaker; the inviter creates the Zoom meeting and puts the link in the e-mail), 7 days
   before (invitation newsletter with the Zoom link, LinkedIn, Bluesky) and on the session day (chair hosts,
   reminder newsletter with the Zoom link, reminder posts). The first two **repeat every morning** up to the day
