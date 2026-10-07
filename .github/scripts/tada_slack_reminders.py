@@ -210,7 +210,10 @@ def main() -> int:
 
     webhook = os.environ.get("SLACK_WEBHOOK_URL", "").strip()
     now = dt.datetime.fromisoformat(args.now).replace(tzinfo=BERLIN) if args.now else dt.datetime.now(BERLIN)
-    no_hook = "SLACK_WEBHOOK_URL is not set: add the Slack webhook as a repository secret (see committee/SETUP.md)."
+    no_hook = ("SLACK_WEBHOOK_URL is not set. Add it on GitHub as a REPOSITORY secret: Settings > Secrets and variables > "
+               "Actions > tab Secrets > New repository secret, name SLACK_WEBHOOK_URL, value = the webhook URL from "
+               "api.slack.com/apps > TaDa reminders > Incoming Webhooks. A Variable, a Dependabot/Codespaces secret "
+               "or an environment secret (e.g. github-pages) is not seen by this job (see committee/SETUP.md).")
 
     def load() -> list:
         if args.duties_file:

@@ -101,7 +101,9 @@ Series view refreshes the same document. Portraits: put a square JPEG in `assets
   first); *Enable workflow* turns them back on. One-time setup: (1) in Slack, https://api.slack.com/apps → *Create New App* → *From
   scratch* → name "TaDa reminders", workspace tadapolisci → *Incoming Webhooks* → activate → *Add New Webhook to
   Workspace* → pick the organizers' channel → copy the URL; (2) on GitHub, repository *Settings → Secrets and
-  variables → Actions → New repository secret* named `SLACK_WEBHOOK_URL` with that URL; (3) *Actions → TaDa Slack
+  variables → Actions → tab **Secrets** → New repository secret* named `SLACK_WEBHOOK_URL` with that URL (it must be a
+  *repository* secret: a Variable, a Dependabot or Codespaces secret, or an environment secret such as `github-pages`
+  is not visible to the job; the run page then says "webhook secret MISSING"); (3) *Actions → TaDa Slack
   reminders → Run workflow* with "Post a test message" ticked. Set the chairs in the Series view and press
   *Publish to website* whenever the programme or the chairs change, otherwise the reminders name nobody.
 - **Social card** (session drawer, or `/tadawebsite/card/`; organizer sign-in required, same accounts as this app; also makes the term poster, format "Term poster"): renders the announcement image for
