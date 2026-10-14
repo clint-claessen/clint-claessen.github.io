@@ -465,7 +465,7 @@
     return "Dear " + (p.name || "[name]") + ",\n\n" +
       "My name is " + canonName(me.name) + ", I am " + intro + ", as well as one of the co-organizers of the online TaDa Reading Group/Speaker Series (together with " + joinNames(co.map(function (m) { return m.name; })) + (co.length && co.every(function (m) { return m.email; }) ? ", all in cc" : "") + "). This online series invites experts from the intersection of computational linguistics and the social sciences to present and discuss their work with early-career researchers.\n\n" +
       "The " + (t.term.toLowerCase().indexOf("spring") === 0 ? "spring" : "fall") + " term of our Speaker Series will be all about " + (t.theme || "[theme]") + ". " + hookSentence + " More generally, given your expertise and impact on the text-as-data field, it would be a particular honour to host you.\n\n" +
-      "We would like to invite you for " + datesSentence(openDates()) + "; you can select your preferred date and send us a title and abstract in this short form: " + t.form + ". If the times of the sessions are inconvenient, we are more than happy to accommodate an alternative date or time that works for you. The online session lasts about 60 minutes, with a 20–30-minute presentation followed by discussion (this is flexible).\n\n" +
+      "We would like to invite you for " + datesSentence(openDates()) + "; you can select your preferred date and send us a title and abstract in this short form: " + t.form + ". If the times of the sessions are inconvenient, we are more than happy to accommodate an alternative date or time that works for you. The online session lasts about 60 minutes, with a 35–40-minute presentation followed by discussion (this is flexible).\n\n" +
       "Looking forward to your response and with best regards,\n" + firstName(canonName(me.name)) + " & the TaDa organizing team";
   }
   function newsletterText(s) {
@@ -482,7 +482,7 @@
     var t = T(), chair = s.chair ? chairName(s) : "";
     return { kind: "talk", date: s.date, time: s.time || "17:00", dur: 60, loc: s.zoom || "Online (Zoom)",
       title: "TaDa Speaker Series: " + (s.speaker || "talk") + (s.title ? " – “" + s.title + "”" : ""),
-      desc: "TaDa Speaker Series" + (t.term ? " (" + t.term + (t.theme ? ": " + t.theme : "") + ")" : "") + "\n" + whenLine(s) + "\nFormat: about 60 minutes, a 20–30-minute talk followed by Q&A" + (s.zoom ? "\nZoom: " + s.zoom : "") + (chair ? "\nChair: " + chair : "") + "\nContact: team@tada.cool" };
+      desc: "TaDa Speaker Series" + (t.term ? " (" + t.term + (t.theme ? ": " + t.theme : "") + ")" : "") + "\n" + whenLine(s) + "\nFormat: about 60 minutes, a 35–40-minute talk followed by Q&A" + (s.zoom ? "\nZoom: " + s.zoom : "") + (chair ? "\nChair: " + chair : "") + "\nContact: team@tada.cool" };
   }
   function detailsSubject(s) { var p = dparts(s.date); return "TaDa Speaker Series: your talk on " + p.d + " " + MONTHS_LONG[p.m - 1] + " " + p.y + " – details and Zoom link"; }
   function detailsText(s) {
@@ -495,7 +495,7 @@
     return "Dear " + (s.speaker || "[name]") + ",\n\n" +
       "Thank you again for agreeing to speak in the TaDa Speaker Series" + (t.term ? " (" + t.term + (t.theme ? ": " + t.theme : "") + ")" : "") + ". Here are the details for your session.\n\n" +
       "Date and time: " + whenLine(s) + "\n" +
-      "Format: online on Zoom, about 60 minutes: a 20–30-minute talk, followed by Q&A\n" +
+      "Format: online on Zoom, about 60 minutes: a 35–40-minute talk, followed by Q&A\n" +
       "Zoom link: " + (s.zoom || "[add the Zoom link before sending]") + "\n" +
       (chair ? "Chair: " + chair + "\n" : "") + (s.title ? "Title: “" + s.title + "”\n" : "") + "\n" +
       "A calendar invite for the session is attached to this e-mail (.ics file). If you use Google Calendar, this link adds it directly: " + gcalUrl({ title: "TaDa Speaker Series: " + (s.speaker || "talk"), date: s.date, time: s.time || "17:00", dur: 60, loc: s.zoom || "" }) + "\n\n" +
@@ -595,7 +595,7 @@
     var when = fmtLong(s.date) + ", " + (s.time || "17:00") + " " + tz(s.date) + " (Berlin time)";
     if (s.speaker) {
       out.push({ kind: "chair", date: addDays(s.date, -14), time: "10:00", dur: 30, title: "TaDa chair (" + (s.chair || "?") + "): e-mail " + who + " – session " + fmtShort(s.date),
-        desc: "Two weeks before the session, the chair (" + chair + ") writes to " + who + (s.email ? " <" + s.email + ">" : "") + ": confirm date and time (" + when + "), the format (60 minutes, 20–30-minute talk then discussion), ask for the final title and abstract, a portrait photo and links. Create the Zoom meeting yourself and put the link in the e-mail" + (s.zoom ? " (" + s.zoom + ")" : "") + ".\nDraft: open the session in the committee app, enter the Zoom link, then “Session details e-mail” → Generate → Open in e-mail (the calendar invite downloads; attach it).\nCommittee app: " + app });
+        desc: "Two weeks before the session, the chair (" + chair + ") writes to " + who + (s.email ? " <" + s.email + ">" : "") + ": confirm date and time (" + when + "), the format (60 minutes, 35–40-minute talk then discussion), ask for the final title and abstract, a portrait photo and links. Create the Zoom meeting yourself and put the link in the e-mail" + (s.zoom ? " (" + s.zoom + ")" : "") + ".\nDraft: open the session in the committee app, enter the Zoom link, then “Session details e-mail” → Generate → Open in e-mail (the calendar invite downloads; attach it).\nCommittee app: " + app });
       out.push({ kind: "promo", date: addDays(s.date, -7), time: "10:00", dur: 30, title: "TaDa: invitation newsletter for " + who + " (with Zoom link) + LinkedIn, Bluesky",
         desc: "One week before: announce " + who + " – " + when + ": newsletter to the list (it must contain the Zoom link), then the LinkedIn and Bluesky posts.\nDrafts: open the session in the committee app (" + app + "), Generate, Newsletter.\nSocial card with photo: " + cardUrl(s) });
       out.push({ kind: "day", date: s.date, time: "09:00", dur: 30, title: "TaDa today: " + who + " – chair " + (s.chair || "?") + ", reminder newsletter + posts",
